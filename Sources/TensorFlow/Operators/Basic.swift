@@ -534,160 +534,18 @@ extension Tensor {
       params: self, indices: indices, axis: Tensor<Int32>(Int32(axis), on: device))
   }
 
-  /// Returns slices of this tensor at `indices` along the `axis` dimension, while ignoring the
-  /// first `batchDimensionCount` dimensions that correspond to batch dimensions. The gather is
-  /// performed along the first non-batch dimension.
-  ///
-  /// Performs similar functionality to `gathering`, except that the resulting tensor shape is
-  /// now `shape[..<axis] + indices.shape[batchDimensionCount...] + shape[(axis + 1)...]`.
-  ///
-  /// - Parameters:
-  ///   - indices: Contains the indices to gather.
-  ///   - axis: Dimension along which to gather. Negative values wrap around.
-  ///   - batchDimensionCount: Number of leading batch dimensions to ignore.
-  ///
-  /// - Precondition: `axis` must be in the range `-rank..<rank`, while also being greater than
-  ///   or equal to `batchDimensionCount`.
-  /// - Precondition: `batchDimensionCount` must be less than `indices.rank`.
-  ///
-  /// - Returns: The gathered tensor.
   @inlinable
-  @differentiable(reverse, wrt: self where Scalar: TensorFlowFloatingPoint)
   public func batchGathering<Index: TensorFlowIndex>(
     atIndices indices: Tensor<Index>,
     alongAxis axis: Int = 1,
     batchDimensionCount: Int = 1
   ) -> Tensor {
-    precondition(batchDimensionCount >= 0, "'batchDimensionCount' must be non-negative.")
-    precondition(
-      batchDimensionCount < indices.rank,
-      "'batchDimensionCount' must be less than 'indices.rank'.")
-    withoutDerivative(at: rank) {
-      precondition(
-        batchDimensionCount < $0,
-        "'batchDimensionCount' must be less than the tensor's rank.")
-    }
-
-    // Adjust axis to be positive.
-    let axis = axis < 0 ? axis + rank : axis
-    let device = self.device
-
-    // Handle the axis argument by transposing the axis dimension so that it is the first
-    // non-batch dimension, recursively calling `batchGathering` with `axis = 0`, and then
-    // transposing the result to put the pre-axis dimensions before the indices dimensions.
-    if axis != batchDimensionCount {
-       precondition(axis >= 0 && axis < rank, "'axis' is out of range.")
-       precondition(
-         batchDimensionCount <= axis,
-         "'batchDimensionCount' must be less than or equal to 'axis'.")
-
-      // Move self[axis] up to self[batchDimensionCount].
-      let permutation = Tensor<Int32>(concatenating: [
-        Tensor<Int32>(rangeFrom: 0, to: Int32(batchDimensionCount), stride: 1, on: device),
-        Tensor<Int32>(Int32(axis), on: device).rankLifted(),
-        Tensor<Int32>(
-          rangeFrom: Int32(batchDimensionCount), to: Int32(axis), stride: 1, on: device),
-        Tensor<Int32>(rangeFrom: Int32(axis) + 1, to: Int32(rank), stride: 1, on: device),
-      ])
-      let tensor = transposed(permutation: permutation)
-      let result = tensor.batchGathering(
-        atIndices: indices,
-        alongAxis: batchDimensionCount,
-        batchDimensionCount: batchDimensionCount)
-
-      // Move the result dimensions corresponding to self[batchDimensionCount..<axis] to
-      // just before the dimensions corresponding to indices[batchDimensionCount...].
-      let start = indices.rank + axis - batchDimensionCount
-      let resultPermutation = Tensor<Int32>(concatenating: [
-        Tensor<Int32>(rangeFrom: 0, to: Int32(batchDimensionCount), stride: 1, on: device),
-        Tensor<Int32>(rangeFrom: Int32(indices.rank), to: Int32(start), stride: 1, on: device),
-        Tensor<Int32>(
-          rangeFrom: Int32(batchDimensionCount),
-          to: Int32(indices.rank),
-          stride: 1, on: device),
-        Tensor<Int32>(rangeFrom: Int32(start), to: Int32(result.rank), stride: 1, on: device),
-      ])
-      return result.transposed(permutation: resultPermutation)
-    }
-
-    let batchIndices: Tensor<Index> = withoutDerivative(
-      at: {
-        var batchIndices = indices
-        var accumulated = Tensor<Index>(ones: [], on: device)
-        for d in (1...batchDimensionCount).reversed() {
-          accumulated *= Tensor<Index>(self.shapeTensor[d])
-          let dValue = self.shapeTensor[d - 1]
-          let dIndices =
-            Tensor<Index>(
-              rangeFrom: Tensor<Index>(zeros: [], on: device),
-              to: Tensor<Index>(dValue),
-              stride: Tensor<Index>(ones: [], on: device)
-            ) * accumulated
-          let dShape = Tensor<Int32>(concatenating: [
-            Tensor<Int32>([Int32](repeating: 1, count: d - 1), on: device),
-            dValue.rankLifted(),
-            Tensor<Int32>([Int32](repeating: 1, count: indices.rank - d), on: device),
-          ])
-          batchIndices += dIndices.reshaped(toShape: dShape)
-        }
-        return batchIndices
-      }())
-
-    let flatIndices = batchIndices.flattened()
-    let outerShape = shapeTensor[(batchDimensionCount + 1)...]
-    let innerShape = shapeTensor[..<(batchDimensionCount + 1)].product(squeezingAxes: [0])
-    let flatTensor = reshaped(toShape: innerShape.rankLifted().concatenated(with: outerShape))
-    let flatResult = flatTensor.gathering(atIndices: flatIndices)
-    return flatResult.reshaped(toShape: batchIndices.shapeTensor.concatenated(with: outerShape))
+    fatalError()
   }
 
-  /// Returns a tensor by gathering the values after applying the provided boolean mask to the input.
-  ///
-  /// For example:
-  /// ```
-  /// // 1-D example
-  /// // tensor is [0, 1, 2, 3]
-  /// // mask is [true, false, true, false]
-  /// tensor.gathering(where: mask) // is [0, 2]
-  ///
-  /// // 2-D example
-  /// // tensor is [[1, 2], [3, 4], [5, 6]]
-  /// // mask is [true, false, true]
-  /// tensor.gathering(where: mask) // is [[1, 2], [5, 6]]
-  /// ```
-  ///
-  /// In general, `0 < mask.rank = K <= tensor.rank`, and the `mask`'s shape must match the first
-  /// K dimensions of the `tensor`'s shape. We then have:
-  /// `tensor.gathering(where: mask)[i, j1, ..., jd] = tensor[i1, ..., iK, j1, ..., jd]`, where
-  /// `[i1, ..., iK]` is the `i`th `true` entry of `mask` (row-major order).
-  ///
-  /// The `axis` could be used with `mask` to indicate the axis to mask from. In that case,
-  /// `axis + mask.rank <= tensor.rank` and the `mask``'s shape must match the first
-  /// `axis + mask.rank` dimensions of the `tensor`'s shape.
-  ///
-  /// - Parameters:
-  ///   - mask: K-D boolean tensor, where `K <= self.rank`.
-  ///   - axis: 0-D integer tensor representing the axis in `self` to mask from, where
-  ///     `K + axis <= self.rank`.
-  ///
-  /// - Precondition: The `mask` cannot be a scalar: `mask.rank != 0`.
-  ///
-  /// - Returns: `(self.rank - K + 1)`-dimensional tensor populated by entries in this tensor
-  ///   corresponding to `true` values in `mask`.
   @inlinable
-  @differentiable(reverse, wrt: self where Scalar: TensorFlowFloatingPoint)
   public func gathering(where mask: Tensor<Bool>, alongAxis axis: Int = 0) -> Tensor {
-    precondition(mask.rank != 0, "The boolean mask cannot be a scalar.")
-    let posAxis = withoutDerivative(at: self.rank) { r in axis < 0 ? axis + r : axis }
-    let leadingSize = shapeTensor[posAxis..<posAxis + mask.rank].product().rankLifted()
-    let reshapedTensor = reshaped(
-      toShape: Tensor<Int32>(concatenating: [
-        shapeTensor[..<posAxis],
-        leadingSize,
-        shapeTensor[(posAxis + mask.rank)...],
-      ]))
-    let indices = Tensor<Int32>(mask.flattened().nonZeroIndices().squeezingShape(at: 1))
-    return reshapedTensor.gathering(atIndices: indices, alongAxis: posAxis)
+    fatalError()
   }
 }
 
