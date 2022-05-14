@@ -482,9 +482,6 @@ extension Tensor: ExpressibleByArrayLiteral {
   /// The type of the elements of an array literal.
   public typealias ArrayLiteralElement = _TensorElementLiteral<Scalar>
 
-  /// Creates a tensor initialized with the given elements.
-  /// - Note: This is for conversion from tensor element literals. This is a
-  ///   separate method because `ShapedArray` initializers need to call it.
   @inlinable
   internal init(_tensorElementLiterals elements: [_TensorElementLiteral<Scalar>]) {
     self = _Raw.pack(elements.map { $0.tensor })
@@ -683,12 +680,12 @@ extension Tensor: PointwiseMultiplicative where Scalar: Numeric {
 
   /// Returns the element-wise reciprocal of `self`.
   @inlinable
-  public var reciprocal: Tensor { 1 / self }
+  public var reciprocal: Tensor { fatalError() }
 
   /// Multiplies two tensors element-wise and produces their product.
   /// - Note: `.*` supports broadcasting.
   public static func .* (lhs: Tensor, rhs: Tensor) -> Tensor {
-    return lhs * rhs
+    fatalError()
   }
 }
 

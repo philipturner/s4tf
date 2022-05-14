@@ -125,15 +125,7 @@ extension Tensor {
   @inlinable
   @differentiable(reverse, wrt: self where Scalar: TensorFlowFloatingPoint)
   public func split(sizes: Tensor<Int32>, alongAxis axis: Int = 0) -> [Tensor] {
-    ensureValid(axis: axis)
-    precondition(
-      shapeTensor[axis] == sizes.sum(),
-      "The values in sizes must add up to the size of dimension axis.")
-    return _Raw.splitV(
-      value: self,
-      sizeSplits: sizes,
-      splitDim: Tensor<Int32>(Int32(axis), on: device),
-      numSplit: Int64(sizes.shape[0]))
+    fatalError()
   }
 
   @inlinable
@@ -278,29 +270,13 @@ extension Tensor where Scalar: TensorFlowFloatingPoint {
   @inlinable
   @derivative(of: tiled)
   func _vjpTiled(multiples: Tensor<Int32>) -> (value: Tensor, pullback: (Tensor) -> Tensor) {
-    (
-      tiled(multiples: multiples),
-      { [shape = shapeTensor] v in
-        let splitShape = Tensor<Int32>(stacking: [multiples, shape]).transposed()
-          .flattened()
-        let axes = Tensor<Int32>(
-          rangeFrom: 0, to: Int32(splitShape.scalarCount), stride: 2, on: device)
-        return v.reshaped(toShape: splitShape).sum(squeezingAxes: axes)
-      }
-    )
+    fatalError()
   }
 
   @inlinable
   @derivative(of: tiled)
   func _vjpTiled(multiples: [Int]) -> (value: Tensor, pullback: (Tensor) -> Tensor) {
-    (
-      tiled(multiples: multiples),
-      { v in
-        let splits = zip(multiples, shape.dimensions).flatMap { [$0, $1] }
-        let axes = Array(stride(from: 0, to: splits.count, by: 2))
-        return v.reshaped(to: TensorShape(splits)).sum(squeezingAxes: axes)
-      }
-    )
+    fatalError()
   }
 
   @inlinable
@@ -818,30 +794,7 @@ extension Tensor where Scalar: Numeric {
   @inlinable
   @differentiable(reverse, wrt: self where Scalar: TensorFlowFloatingPoint)
   public func unbroadcasted(to shape: TensorShape) -> Tensor {
-    let dimensions = self.shape.dimensions
-    var otherDimensions = shape.dimensions
-    let rankDifference = dimensions.count - otherDimensions.count
-    precondition(
-      rankDifference >= 0,
-      """
-      The rank of 'self' must be greater than or equal to the number of \
-      dimensions in the destination shape
-      """)
-    if rankDifference > 0 {
-      otherDimensions.insert(contentsOf: repeatElement(1, count: rankDifference), at: 0)
-    }
-    assert(dimensions.count == otherDimensions.count)
-    var axes: [Int] = []
-    axes.reserveCapacity(dimensions.count)
-    for (i, (dim, otherDim)) in zip(dimensions, otherDimensions).enumerated() {
-      if dim == otherDim { continue }
-      if otherDim == 1 {
-        axes.append(i)
-        continue
-      }
-      preconditionFailure("Cannot unbroadcast \(self.shape) to \(shape)")
-    }
-    return sum(alongAxes: axes).reshaped(to: shape)
+    fatalError()
   }
 }
 
