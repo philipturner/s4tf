@@ -14,6 +14,7 @@
 
 import _Differentiation
 import CTensorFlow
+import Darwin
 
 infix operator .==: ComparisonPrecedence
 infix operator .!=: ComparisonPrecedence
@@ -148,8 +149,9 @@ extension Tensor where Scalar: TensorFlowFloatingPoint {
   @inlinable
   @derivative(of: scalarized)
   func _vjpScalarized() -> (value: Scalar, pullback: (Scalar) -> Tensor) {
-    let device = self.device
-    return (scalarized(), { v in Tensor(v, on: device) })
+    fatalError()
+//    let device = self.device
+//    return (scalarized(), { v in Tensor(v, on: device) })
   }
 }
 
@@ -191,12 +193,8 @@ extension Tensor where Scalar: TensorFlowFloatingPoint {
   @inlinable
   @derivative(of: scalars)
   func _vjpScalars() -> (value: [Scalar], pullback: (Array<Scalar>.TangentVector) -> Tensor) {
-    (
-      value: scalars,
-      pullback: { [shape = self.shape, device = self.device] v in
-        Tensor(shape: shape, scalars: v.base, on: device)
-      }
-    )
+    fatalError()
+//    )
   }
 }
 
@@ -240,7 +238,8 @@ extension Tensor {
   public init<C: Collection>(
     _ vector: C, on device: Device = .default
   ) where C.Element == Scalar {
-    self.init([Scalar](vector), on: device)
+    fatalError()
+//    self.init([Scalar](vector), on: device)
   }
 
   /// Creates a tensor with the specified shape and contiguous scalars in row-major order.
@@ -516,109 +515,11 @@ extension Tensor: Equatable where Scalar: Equatable {
   }
 }
 
-//===------------------------------------------------------------------------------------------===//
-// Description and Visualization
-//===------------------------------------------------------------------------------------------===//
-
-// String conversion.
-extension Tensor: CustomStringConvertible {
-  /// A textual representation of the tensor.
-  ///
-  /// - Note: use `fullDescription` for a non-pretty-printed description showing all scalars.
-  public var description: String {
-    @_semantics("autodiff.nonvarying")
-    get {
-      return array.description
-    }
-  }
-}
-
-extension Tensor {
-  /// A textual representation of the tensor. Returns a summarized description if `summarize` is
-  /// true and the element count exceeds twice the `edgeElementCount`.
-  ///
-  /// - Parameters:
-  ///   - lineWidth: The max line width for printing. Used to determine number of scalars to print
-  ///     per line.
-  ///   - edgeElementCount: The maximum number of elements to print before and after summarization
-  ///     via ellipses (`...`).
-  ///   - summarizing: If true, summarize description if element count exceeds twice
-  ///     `edgeElementCount`.
-  public func description(
-    lineWidth: Int = 80,
-    edgeElementCount: Int = 3,
-    summarizing: Bool = false
-  ) -> String {
-    return array.description(
-      lineWidth: lineWidth,
-      edgeElementCount: edgeElementCount,
-      summarizing: summarizing)
-  }
-
-  /// A full, non-pretty-printed textual representation of the tensor, showing
-  /// all scalars.
-  public var fullDescription: String {
-    @_semantics("autodiff.nonvarying")
-    get {
-      return array.fullDescription
-    }
-  }
-
-  public var irText: String { XLATensor.irText(xlaTensor) }
-}
-
-// Xcode Playground display conversion.
-extension Tensor: CustomPlaygroundDisplayConvertible {
-  public var playgroundDescription: Any {
-    @_semantics("autodiff.nonvarying")
-    get {
-      return description
-    }
-  }
-}
-
-// Mirror representation, used by debugger/REPL.
-extension Tensor: CustomReflectable {
-  public var customMirror: Mirror {
-    @_semantics("autodiff.nonvarying")
-    get {
-      return Mirror(self, children: [], displayStyle: .struct)
-    }
-  }
-}
-
-//===------------------------------------------------------------------------------------------===//
-// Codable Conformance
-//===------------------------------------------------------------------------------------------===//
-
-extension Tensor: Codable where Scalar: Codable {
-  @inlinable
-  public func encode(to encoder: Encoder) throws {
-    var container = encoder.singleValueContainer()
-    try container.encode(array)
-  }
-
-  @inlinable
-  public init(from decoder: Decoder) throws {
-    let container = try decoder.singleValueContainer()
-    let array = try container.decode(ShapedArray<Scalar>.self)
-    self.init(array)
-  }
-}
-
-//===------------------------------------------------------------------------------------------===//
-// Additive Group
-//===------------------------------------------------------------------------------------------===//
 
 extension Tensor: AdditiveArithmetic where Scalar: Numeric {
   /// The scalar zero tensor.
   public static var zero: Tensor {
-    var zero = Tensor(0, on: _DeviceThreadLocalState.local.currentDevice)
-    if _DeviceThreadLocalState.local.isReducedPrecision {
-      zero = zero.toReducedPrecision
-    }
-    zero._isScalarZero = true
-    return zero
+    fatalError()
   }
 
   /// Adds two tensors and produces their sum.
@@ -627,12 +528,6 @@ extension Tensor: AdditiveArithmetic where Scalar: Numeric {
   @differentiable(reverse where Scalar: TensorFlowFloatingPoint)
   public static func + (lhs: Tensor, rhs: Tensor) -> Tensor {
     fatalError()
-//    if lhs._isScalarZero {
-//      return rhs
-//    } else if rhs._isScalarZero {
-//      return lhs
-//    }
-//    return _Raw.addV2(lhs, rhs)
   }
 
   /// Subtracts one tensor from another and produces their difference.
@@ -641,10 +536,6 @@ extension Tensor: AdditiveArithmetic where Scalar: Numeric {
   @differentiable(reverse where Scalar: TensorFlowFloatingPoint)
   public static func - (lhs: Tensor, rhs: Tensor) -> Tensor {
     fatalError()
-//    if rhs._isScalarZero {
-//      return lhs
-//    }
-//    return _Raw.sub(lhs, rhs)
   }
 }
 
@@ -672,23 +563,4 @@ extension Tensor where Scalar: TensorFlowFloatingPoint {
 
 extension Tensor: Differentiable where Scalar: TensorFlowFloatingPoint {
   public typealias TangentVector = Tensor
-}
-
-//===------------------------------------------------------------------------------------------===//
-// Multi-device support
-//===------------------------------------------------------------------------------------------===//
-
-extension Tensor {
-  /// The device on which `self` is allocated.
-  public var device: Device {
-    @_semantics("autodiff.nonvarying")
-    get {
-      switch handle.backend {
-      case .XLA:
-        return xlaTensor.device
-      case .TF_EAGER:
-        return Device.defaultTFEager
-      }
-    }
-  }
 }

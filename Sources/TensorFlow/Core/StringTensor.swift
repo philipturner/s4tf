@@ -102,6 +102,7 @@ extension StringTensor {
   /// - Note: `elementsEqual` supports broadcasting.
   @inlinable
   public func elementsEqual(_ other: StringTensor) -> Tensor<Bool> {
-    return _RawTFEager.equal(self, other)
+    fatalError()
+//    return _RawTFEager.equal(self, other)
   }
 }

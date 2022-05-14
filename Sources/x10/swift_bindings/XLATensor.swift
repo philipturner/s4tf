@@ -260,44 +260,45 @@ extension TensorFlowScalar {
   }
 }
 
-extension _RawXLA {
-  public static func functionalWhile(
-    n: Tensor<Int32>,
-    initial: [AnyTensor],
-    placeholders: [AnyTensor],
-    indexPlaceholder: Tensor<Int32>,
-    results: [AnyTensor]
-  ) -> [AnyTensor] {
-    initial.withArrayRef { initial in
-      placeholders.withArrayRef { placeholders in
-        results.withArrayRef { resultHandles in
-          let tensorListHandle = XLATensor_functional_while(
-            n.xlaHandle, initial, placeholders, indexPlaceholder.xlaHandle, resultHandles)
-          defer { destroyOpaqueXLATensorArrayRef(tensorListHandle) }
-          return (0..<tensorListHandle.size).map { i in
-            results[i].scalarType.wrapTensor(XLATensor(_handle: tensorListHandle.data[i]!))
-          }
-        }
-      }
-    }
-  }
 
-  public static func functionalWhile(
-    n: Tensor<Int32>, initial: [AnyTensor],
-    body: ([AnyTensor], Tensor<Int32>) -> ([AnyTensor])
-  ) -> [AnyTensor] {
-    var idx = 0
-    let placeholders = initial.map { (v: AnyTensor) -> AnyTensor in
-      idx += 1
-      return v.scalarType.makePlaceholder(v, i: idx)
-    }
-    let i = n.placeholder
-    let results = body(placeholders, i)
-    return functionalWhile(
-      n: n, initial: initial, placeholders: placeholders,
-      indexPlaceholder: i, results: results)
-  }
-}
+//extension _RawXLA {
+//  public static func functionalWhile(
+//    n: Tensor<Int32>,
+//    initial: [AnyTensor],
+//    placeholders: [AnyTensor],
+//    indexPlaceholder: Tensor<Int32>,
+//    results: [AnyTensor]
+//  ) -> [AnyTensor] {
+//    initial.withArrayRef { initial in
+//      placeholders.withArrayRef { placeholders in
+//        results.withArrayRef { resultHandles in
+//          let tensorListHandle = XLATensor_functional_while(
+//            n.xlaHandle, initial, placeholders, indexPlaceholder.xlaHandle, resultHandles)
+//          defer { destroyOpaqueXLATensorArrayRef(tensorListHandle) }
+//          return (0..<tensorListHandle.size).map { i in
+//            results[i].scalarType.wrapTensor(XLATensor(_handle: tensorListHandle.data[i]!))
+//          }
+//        }
+//      }
+//    }
+//  }
+//
+//  public static func functionalWhile(
+//    n: Tensor<Int32>, initial: [AnyTensor],
+//    body: ([AnyTensor], Tensor<Int32>) -> ([AnyTensor])
+//  ) -> [AnyTensor] {
+//    var idx = 0
+//    let placeholders = initial.map { (v: AnyTensor) -> AnyTensor in
+//      idx += 1
+//      return v.scalarType.makePlaceholder(v, i: idx)
+//    }
+//    let i = n.placeholder
+//    let results = body(placeholders, i)
+//    return functionalWhile(
+//      n: n, initial: initial, placeholders: placeholders,
+//      indexPlaceholder: i, results: results)
+//  }
+//}
 
 /// Add more op wrappers here:
 extension XLATensor {

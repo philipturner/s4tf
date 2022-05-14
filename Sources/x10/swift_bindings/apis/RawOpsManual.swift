@@ -1,3 +1,4 @@
+#if false
 // Copyright 2020 TensorFlow Authors
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
@@ -3810,3 +3811,4 @@ public enum _RawXLA {
     Tensor(_xla: XLATensor.rand(dims.map { Int64($0) }, Int64(seed)))
   }
 }
+#endif
