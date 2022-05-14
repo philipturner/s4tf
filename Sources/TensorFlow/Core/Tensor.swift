@@ -686,7 +686,7 @@ extension Tensor: PointwiseMultiplicative where Scalar: Numeric {
   /// - Note: `.*` supports broadcasting.
   public static func .* (lhs: Tensor, rhs: Tensor) -> Tensor {
     fatalError()
-  }
+//  }
 }
 
 //===------------------------------------------------------------------------------------------===//
