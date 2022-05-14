@@ -85,14 +85,7 @@ extension KeyPathIterable {
 extension Tensor: CopyableToDevice {
   /// Creates a copy of `other` on the given `Device`.
   public init(copying other: Tensor, to device: Device) {
-    self = _Raw.toDevice(other, device)
-  }
-}
-
-extension Parameter: CopyableToDevice {
-  /// Creates a copy of `other` on the given `Device`.
-  public convenience init(copying other: Parameter, to device: Device) {
-    self.init(.init(copying: other.value, to: device))
+    fatalError()
   }
 }
 

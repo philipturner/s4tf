@@ -184,24 +184,12 @@ extension Tensor where Scalar: TensorFlowFloatingPoint {
 extension Tensor: ReducedPrecisionConvertible, _ReducedPrecisionConvertible {
   /// Returns a copy of `self` converted to `BFloat16` physical scalar type.
   public var toReducedPrecision: Self {
-    if isReducedPrecision {
-      fatalError("Must not already have reduced precision")
-    }
-    if Scalar.self != Float.self {
-      fatalError("Reduced precision is only supported for Float tensors")
-    }
-    return _Raw.physicalCast(self, destType: BFloat16.self)
+    fatalError()
   }
 
   /// Returns a copy of `self` converted to `Scalar` physical scalar type.
   public var toFullPrecision: Self {
-    if !isReducedPrecision {
-      fatalError("Must have reduced precision")
-    }
-    if Scalar.self != Float.self {
-      fatalError("Reduced precision is only supported for Float tensors")
-    }
-    return _Raw.physicalCast(self, destType: Scalar.self)
+    fatalError()
   }
 }
 

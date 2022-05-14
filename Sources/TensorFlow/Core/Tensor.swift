@@ -88,7 +88,8 @@ extension Tensor {
   public var rankTensor: Tensor<Int32> {
     @_semantics("autodiff.nonvarying")
     get {
-      return _Raw.rank(self)
+      fatalError()
+//      return _Raw.rank(self)
     }
   }
 
@@ -97,7 +98,8 @@ extension Tensor {
   public var shapeTensor: Tensor<Int32> {
     @_semantics("autodiff.nonvarying")
     get {
-      return _Raw.shape(self)
+      fatalError()
+//      return _Raw.shape(self)
     }
   }
 
@@ -106,7 +108,8 @@ extension Tensor {
   public var scalarCountTensor: Tensor<Int32> {
     @_semantics("autodiff.nonvarying")
     get {
-      return _Raw.size(self)
+      fatalError()
+//      return _Raw.size(self)
     }
   }
 }
@@ -474,7 +477,8 @@ extension _TensorElementLiteral: ExpressibleByArrayLiteral {
   public typealias ArrayLiteralElement = _TensorElementLiteral<Scalar>
   @inlinable
   public init(arrayLiteral elements: _TensorElementLiteral<Scalar>...) {
-    tensor = _Raw.pack(elements.map { $0.tensor })
+    fatalError()
+//    tensor = _Raw.pack(elements.map { $0.tensor })
   }
 }
 
@@ -484,7 +488,8 @@ extension Tensor: ExpressibleByArrayLiteral {
 
   @inlinable
   internal init(_tensorElementLiterals elements: [_TensorElementLiteral<Scalar>]) {
-    self = _Raw.pack(elements.map { $0.tensor })
+    fatalError()
+//    self = _Raw.pack(elements.map { $0.tensor })
   }
 
   /// Creates a tensor initialized with the given elements.
@@ -621,12 +626,13 @@ extension Tensor: AdditiveArithmetic where Scalar: Numeric {
   @inlinable
   @differentiable(reverse where Scalar: TensorFlowFloatingPoint)
   public static func + (lhs: Tensor, rhs: Tensor) -> Tensor {
-    if lhs._isScalarZero {
-      return rhs
-    } else if rhs._isScalarZero {
-      return lhs
-    }
-    return _Raw.addV2(lhs, rhs)
+    fatalError()
+//    if lhs._isScalarZero {
+//      return rhs
+//    } else if rhs._isScalarZero {
+//      return lhs
+//    }
+//    return _Raw.addV2(lhs, rhs)
   }
 
   /// Subtracts one tensor from another and produces their difference.
@@ -634,10 +640,11 @@ extension Tensor: AdditiveArithmetic where Scalar: Numeric {
   @inlinable
   @differentiable(reverse where Scalar: TensorFlowFloatingPoint)
   public static func - (lhs: Tensor, rhs: Tensor) -> Tensor {
-    if rhs._isScalarZero {
-      return lhs
-    }
-    return _Raw.sub(lhs, rhs)
+    fatalError()
+//    if rhs._isScalarZero {
+//      return lhs
+//    }
+//    return _Raw.sub(lhs, rhs)
   }
 }
 
@@ -647,12 +654,7 @@ extension Tensor where Scalar: TensorFlowFloatingPoint {
   static func _vjpAdd(lhs: Tensor, rhs: Tensor) -> (
     value: Tensor, pullback: (Tensor) -> (Tensor, Tensor)
   ) {
-    (
-      lhs + rhs,
-      { [broadcastPb = BroadcastingPullback(lhs, rhs)] v in
-        return broadcastPb(v, v)
-      }
-    )
+    fatalError()
   }
 
   @inlinable
@@ -660,31 +662,6 @@ extension Tensor where Scalar: TensorFlowFloatingPoint {
   static func _vjpSubtract(lhs: Tensor, rhs: Tensor) -> (
     value: Tensor, pullback: (Tensor) -> (Tensor, Tensor)
   ) {
-    (
-      lhs - rhs,
-      { [broadcastPb = BroadcastingPullback(lhs, rhs)] v in
-        return broadcastPb(v, -v)
-      }
-    )
-  }
-}
-
-//===------------------------------------------------------------------------------------------===//
-// Multiplicative Group
-//===------------------------------------------------------------------------------------------===//
-
-extension Tensor: PointwiseMultiplicative where Scalar: Numeric {
-  /// The scalar one tensor.
-  @inlinable
-  public static var one: Tensor { Tensor(1) }
-
-  /// Returns the element-wise reciprocal of `self`.
-  @inlinable
-  public var reciprocal: Tensor { fatalError() }
-
-  /// Multiplies two tensors element-wise and produces their product.
-  /// - Note: `.*` supports broadcasting.
-  public static func .* (lhs: Tensor, rhs: Tensor) -> Tensor {
     fatalError()
   }
 }
@@ -693,14 +670,8 @@ extension Tensor: PointwiseMultiplicative where Scalar: Numeric {
 // Differentiable
 //===------------------------------------------------------------------------------------------===//
 
-extension Tensor: Differentiable & EuclideanDifferentiable where Scalar: TensorFlowFloatingPoint {
+extension Tensor: Differentiable where Scalar: TensorFlowFloatingPoint {
   public typealias TangentVector = Tensor
-
-  public var zeroTangentVectorInitializer: () -> TangentVector {
-    fatalError()
-//    let shape = self.shape
-//    return { Tensor(zeros: shape) }
-  }
 }
 
 //===------------------------------------------------------------------------------------------===//
@@ -719,67 +690,5 @@ extension Tensor {
         return Device.defaultTFEager
       }
     }
-  }
-}
-
-//===------------------------------------------------------------------------------------------===//
-// Annotations
-//===------------------------------------------------------------------------------------------===//
-
-public protocol TensorProtocol {
-  associatedtype Scalar: TensorFlowScalar
-  init(repeating repeatedValue: Scalar, shape: TensorShape, on device: Device)
-  var annotations: String { get }
-  var shape: TensorShape { get }
-  var summary: String { get }
-}
-
-public protocol DifferentiableTensorProtocol:
-  TensorProtocol & Differentiable & EuclideanDifferentiable
-where Scalar: TensorFlowFloatingPoint {
-  @differentiable(reverse, wrt: self)
-  func annotate(_ annotation: String) -> Self
-}
-
-extension Tensor: TensorProtocol {
-  /// The annotations describing this tensor.
-  public var annotations: String {
-    switch handle.backend {
-    case .XLA:
-      return XLATensor.annotations(xlaTensor)
-    case .TF_EAGER:
-      return Device.defaultTFEager.annotationsAvailable
-    }
-  }
-
-  /// An alias for annotations.
-  public var summary: String { annotations }
-}
-
-extension Tensor: DifferentiableTensorProtocol
-where Scalar: TensorFlowFloatingPoint {
-  /// Adds an annotation.
-  ///
-  /// Note: Only X10 is supported. For other backends, umodified `self` is
-  /// returned.
-  ///
-  /// - Parameter annotation: The annotation to be added.
-  /// - Returns: The annotated tensor.
-  @differentiable(reverse, wrt: self)
-  public func annotate(_ annotation: String) -> Tensor<Scalar> {
-    switch handle.backend {
-    case .XLA:
-      return Tensor<Scalar>(_xla: XLATensor.annotate(xlaTensor, annotation))
-    case .TF_EAGER:
-      return self
-    }
-  }
-
-  @derivative(of: annotate)
-  @usableFromInline
-  func vjpAnnotate(_ annotation: String) -> (
-    value: Tensor<Scalar>, pullback: (Tensor<Scalar>) -> Tensor<Scalar>
-  ) {
-    (annotate(annotation), { $0 })
   }
 }

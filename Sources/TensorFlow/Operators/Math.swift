@@ -14,22 +14,6 @@
 
 import _Differentiation
 
-extension Tensor: VectorProtocol where Scalar: TensorFlowFloatingPoint {
-  public typealias VectorSpaceScalar = Float
-
-  public func scaled(by scale: Float) -> Self {
-    fatalError()
-  }
-
-  public func adding(_ scalar: Float) -> Self {
-    fatalError()
-  }
-
-  public func subtracting(_ scalar: Float) -> Self {
-    fatalError()
-  }
-}
-
 #if os(macOS) || os(iOS) || os(watchOS) || os(tvOS)
   @_exported import Darwin.C
 #elseif os(Windows)
@@ -37,9 +21,3 @@ extension Tensor: VectorProtocol where Scalar: TensorFlowFloatingPoint {
 #else
   @_exported import Glibc
 #endif
-
-extension Tensor where Scalar: SignedNumeric {
-  public static prefix func - (rhs: Tensor) -> Tensor {
-    return _Raw.neg(rhs)
-  }
-}
