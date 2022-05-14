@@ -697,8 +697,9 @@ extension Tensor: Differentiable & EuclideanDifferentiable where Scalar: TensorF
   public typealias TangentVector = Tensor
 
   public var zeroTangentVectorInitializer: () -> TangentVector {
-    let shape = self.shape
-    return { Tensor(zeros: shape) }
+    fatalError()
+//    let shape = self.shape
+//    return { Tensor(zeros: shape) }
   }
 }
 

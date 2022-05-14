@@ -1439,43 +1439,19 @@ public enum _RawXLA {
     axis: Tensor<Taxis>,
     batchDims: Int64 = 0
   ) -> Tensor<Tparams> {
-    precondition(batchDims == 0)
-    let canonicalAxis = canonicalDims(axis.scalars.map { Int64($0) }, Int64(params.rank)).first!
-    return gather(
-      params, indices: Tensor<Tindices>(stacking: [indices], alongAxis: indices.rank),
-      start_dim: canonicalAxis)
+    fatalError()
   }
 
-  /// Computes the inverse permutation of a tensor.
-  ///
-  /// This operation computes the inverse of an index permutation. It takes a 1-D
-  /// integer tensor `x`, which represents the indices of a zero-based array, and
-  /// swaps each value with its index position. In other words, for an output tensor
-  /// `y` and an input tensor `x`, this operation computes the following:
-  ///
-  /// `y[x[i]] = i for i in [0, 1, ..., len(x) - 1]`
-  ///
-  /// The values must include 0. There can be no duplicate values or negative values.
-  ///
-  /// For example:
-  ///
-  /// ```
-  /// # tensor `x` is [3, 4, 0, 2, 1]
-  /// invert_permutation(x) ==> [2, 4, 3, 0, 1]
-  /// ```
-  ///
-  /// - Parameter x: 1-D.
-  ///
-  /// - Output y: 1-D.
   @inlinable @inline(__always)
   public static func invertPermutation<T: TensorFlowIndex>(
     _ x: Tensor<T>
   ) -> Tensor<T> {
-    if x.rank != 1 {
-      fatalError("Input should be rank 1, got \(x.rank)")
-    }
-    let scalars = invertPermutationArray(x.scalars)
-    return Tensor<T>(shape: [scalars.count], scalars: scalars, on: x.device)
+    fatalError()
+//    if x.rank != 1 {
+//      fatalError("Input should be rank 1, got \(x.rank)")
+//    }
+//    let scalars = invertPermutationArray(x.scalars)
+//    return Tensor<T>(shape: [scalars.count], scalars: scalars, on: x.device)
   }
 
   /// Computes rectified linear: `max(features, features * alpha)`.
