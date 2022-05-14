@@ -505,18 +505,12 @@ extension Tensor: ExpressibleByArrayLiteral {
 extension Tensor: Equatable where Scalar: Equatable {
   @inlinable
   public static func == (lhs: Tensor, rhs: Tensor) -> Bool {
-    guard lhs.shape == rhs.shape else {
-      return false
-    }
-    return (lhs .== rhs).all()
+    fatalError()
   }
 
   @inlinable
   public static func != (lhs: Tensor, rhs: Tensor) -> Bool {
-    guard lhs.shape == rhs.shape else {
-      return true
-    }
-    return (lhs .!= rhs).any()
+    fatalError()
   }
 }
 
