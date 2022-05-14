@@ -27,10 +27,6 @@ let package = Package(
       name: "TensorFlow",
       type: .dynamic,
       targets: ["TensorFlow"]),
-    .library(
-      name: "x10_optimizers_tensor_visitor_plan",
-      type: .dynamic,
-      targets: ["x10_optimizers_tensor_visitor_plan"]),
   ],
   dependencies: [
     .package(url: "https://github.com/apple/swift-numerics", .branch("main")),
@@ -51,13 +47,6 @@ let package = Package(
       ],
       swiftSettings: [
         .define("DEFAULT_BACKEND_EAGER"),
-      ]),
-    .target(
-      name: "x10_optimizers_tensor_visitor_plan",
-      dependencies: ["TensorFlow"],
-      path: "Sources/x10",
-      sources: [
-        "swift_bindings/optimizers/TensorVisitorPlan.swift",
       ]),
     .testTarget(
       name: "TensorFlowTests",
