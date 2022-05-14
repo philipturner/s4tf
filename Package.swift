@@ -41,7 +41,7 @@ let package = Package(
       targets: ["x10_optimizers_tensor_visitor_plan"]),
   ],
   dependencies: [
-    .package(url: "https://github.com/apple/swift-numerics", .branch("main")),
+//    .package(url: "https://github.com/apple/swift-numerics", .branch("main")),
   ],
   targets: [
     .target(
@@ -59,7 +59,7 @@ let package = Package(
         "Tensor",
         "CTensorFlow",
         "CX10Modules",
-        .product(name: "Numerics", package: "swift-numerics"),
+//        .product(name: "Numerics", package: "swift-numerics"),
       ],
       swiftSettings: [
         .define("DEFAULT_BACKEND_EAGER"),
