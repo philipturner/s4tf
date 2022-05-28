@@ -108,6 +108,8 @@ class XLATensor {
 
   // Applies the queue of operations in preparation for using the data.
   void ApplyPendingGraph();
+  
+  void ApplyPendingGraph2();
 
   static ir::Value GetIrValueForScalar(at::Scalar value,
                                        xla::PrimitiveType type,

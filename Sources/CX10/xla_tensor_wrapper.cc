@@ -179,7 +179,10 @@ OpaqueMaterializedTensor* XLATensor_materialize(OpaqueXLATensor* t) {
   // Avoid barriers for fetching trivial local tensors.
   auto current_tensor = t->CurrentTensorData();
   if (current_tensor) return new at::Tensor(std::move(*current_tensor));
-  t->ApplyPendingGraph();
+//  t->ApplyPendingGraph();
+  
+  t->ApplyPendingGraph2();
+  
   return new at::Tensor(t->ToTensor(/*detached=*/false));
 }
 

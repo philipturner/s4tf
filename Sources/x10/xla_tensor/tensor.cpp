@@ -977,9 +977,76 @@ void XLATensor::ApplyPendingGraph() {
   DeviceBarrier(GetDevice());
   // This method is called to ensure that the tensor data is available on
   // device, so that a call to CurrentXlaData() returns a valid pointer.
-  if (CurrentXlaData() == nullptr) {
+  auto curr = CurrentXlaData();
+//  if (curr == nullptr) {
+//    TF_LOG(FATAL) << "branch 1-----";
+//  } else {
+//    TF_LOG(FATAL) << "branch 2-----";
+//  }
+  if (curr == nullptr) {
     std::vector<XLATensor> tensors({*this});
     SyncTensorsGraph(&tensors, {}, /*wait=*/true, /*sync_xla_data=*/false);
+  }
+}
+
+void XLATensor::ApplyPendingGraph2() {
+  DeviceBarrier(GetDevice());
+  // This method is called to ensure that the tensor data is available on
+  // device, so that a call to CurrentXlaData() returns a valid pointer.
+  auto curr0 = CurrentXlaData();
+  if (curr0 == nullptr) {
+    std::vector<XLATensor> tensors({*this});
+    SyncTensorsGraph(&tensors, {}, /*wait=*/true, /*sync_xla_data=*/false);
+    
+    auto curr = CurrentXlaData();
+    if (curr == nullptr) {
+      printf("branch 0-----");
+    } else if (curr->HasValue() ) {
+      printf("branch 1-----");
+    } else {
+      printf("branch 2-----");
+      
+      std::vector<XLATensor> tensors2({*this});
+      SyncTensorsGraph(&tensors2, {}, /*wait=*/true, /*sync_xla_data=*/true);
+      
+      auto curr2 = CurrentXlaData();
+      if (curr2 == nullptr) {
+        printf("branch 2.0-----");
+      } else if (curr2->HasValue() ) {
+        printf("branch 2.1-----");
+      } else {
+        printf("branch 2.2-----");
+      }
+    }
+  } else {
+    printf("branch 3-----");
+    
+    if (curr0->HasValue() ) {
+      printf("branch 3.1-----");
+    } else {
+      printf("branch 3.2-----");
+      
+//      const auto device_strings = DeviceListToStrings({});
+//      swift_xla::Device tmp_device;
+//      if (device) tmp_device = ConvertDevice(*device);
+//      const swift_xla::Device* converted_device = device ? &tmp_device : nullptr;
+      swift_xla::XLATensor::SyncLiveTensorsGraph(/*device=*/nullptr,
+                                                 /*devices=*/{},
+                                                 /*wait=*/true);
+//      swift_xla::XLATensor::MarkStep(converted_device);
+      
+//      std::vector<XLATensor> tensors({*this});
+//      SyncTensorsGraph(&tensors, {}, /*wait=*/true, /*sync_xla_data=*/true);
+      
+      auto curr2 = CurrentXlaData();
+      if (curr2 == nullptr) {
+        printf("branch 3.2.0-----");
+      } else if (curr2->HasValue() ) {
+        printf("branch 3.2.1-----");
+      } else {
+        printf("branch 3.2.2-----");
+      }
+    }
   }
 }
 

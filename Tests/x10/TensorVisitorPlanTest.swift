@@ -56,6 +56,7 @@ final class TensorVisitorPlanTests: XCTestCase {
       [true, false, true, false], plan.keysEnding(with: \Dense<Float>.TangentVector.weight))
   }
 
+  
   func testAllKeysBetween() {
     var model = Classifier()
     model.layers = [

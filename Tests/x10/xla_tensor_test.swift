@@ -16,14 +16,18 @@ import x10_optimizers_optimizer
 /// Direct tests of xla tensor.
 final class XLATensorTests: XCTestCase {
   func testLazyTensorBarrier() throws {
+    LazyTensorBarrier(wait: true)
     let x = Tensor<Float>(20, on: Device.defaultXLA) * Tensor<Float>(30, on: Device.defaultXLA)
     LazyTensorBarrier()
-//    XCTAssertEqual(x.scalarized(), 20 * 30)
+    LazyTensorBarrier(wait: true)
+    LazyTensorBarrier(wait: true)
+    LazyTensorBarrier(wait: true)
+    XCTAssertEqual(x.scalarized(), 20 * 30)
     
-    let xlaTensorHandle = XLATensor(x.handle.handle)!.handle
-    print("Marker 0")
-    let materialized = XLATensor_materialize(xlaTensorHandle)
-    print("Marker 1")
+//    let xlaTensorHandle = XLATensor(x.handle.handle)!.handle
+//    print("Marker 0")
+//    let materialized = XLATensor_materialize(xlaTensorHandle)
+//    print("Marker 1")
 
   }
 
