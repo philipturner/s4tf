@@ -99,7 +99,7 @@ let package = Package(
       dependencies: ["TensorFlow"]),
     .testTarget(
       name: "x10Tests",
-      dependencies: ["TensorFlow"],
+      dependencies: ["TensorFlow", "x10_optimizers_tensor_visitor_plan"],
       path: "Tests/x10")
   ]
 )

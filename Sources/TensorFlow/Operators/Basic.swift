@@ -1298,7 +1298,7 @@ extension Tensor {
   }
 
   @inlinable
-//  @differentiable(reverse, wrt: self where Scalar: TensorFlowFloatingPoint)
+  @differentiable(reverse, wrt: self where Scalar: TensorFlowFloatingPoint)
   internal subscript(_ indexPath: IndexPath) -> Tensor {
     get {
       let device = self.device
@@ -1336,8 +1336,8 @@ extension Tensor {
 }
 
 extension Tensor where Scalar: TensorFlowFloatingPoint {
-  @usableFromInline
-  @derivative(of: subscript(_:))
+  @inlinable
+  @derivative(of: subscript)
   internal func _vjpSubscript(
     _ indexPath: IndexPath
   ) -> (value: Tensor, pullback: (Tensor) -> Tensor) {
