@@ -95,18 +95,18 @@ let package = Package(
     //   sources: [
     //     "swift_bindings/training_loop.swift",
     //   ]),
-//     .target(
-//       name: "Experimental",
-//       dependencies: [],
-//       path: "Sources/third_party/Experimental"),
-//     .testTarget(
-//       name: "ExperimentalTests",
-//       dependencies: ["Experimental"]),
-//     .testTarget(
-//       name: "TensorTests",
-//       dependencies: ["Tensor"]),
-//     .testTarget(
-//       name: "TensorFlowTests",
-//       dependencies: ["TensorFlow"]),
+    .target(
+      name: "Experimental",
+      dependencies: [],
+      path: "Sources/third_party/Experimental"),
+    .testTarget(
+      name: "ExperimentalTests",
+      dependencies: ["Experimental"]),
+    .testTarget(
+      name: "TensorTests",
+      dependencies: ["Tensor"]),
+    .testTarget(
+      name: "TensorFlowTests",
+      dependencies: ["TensorFlow"]),
   ]
 )
