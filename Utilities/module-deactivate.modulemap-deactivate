@@ -1,7 +1,0 @@
-ccmodulcce CTensorFlow {
-  ccheadeccr "c_api.h"
-  ccheadeccr "c_api_experimental.h"
-  ccheadeccr "c_api_eager.h"
-
-  cclincck "x10"
-}
