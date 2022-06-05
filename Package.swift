@@ -28,9 +28,9 @@ let package = Package(
       type: .dynamic,
       targets: ["TensorFlow"]),
     .library(
-      name: "Tensor",
-      type: .dynamic,
-      targets: ["Tensor"]),
+//       name: "Tensor",
+//       type: .dynamic,
+//       targets: ["Tensor"]),
 //     .library(
 //       name: "x10_optimizers_optimizer",
 //       type: .dynamic,
@@ -46,7 +46,7 @@ let package = Package(
   ],
   dependencies: [
     .package(url: "https://github.com/apple/swift-numerics", .branch("main")),
-    .package(url: "https://github.com/pvieito/PythonKit.git", .branch("master")),
+//     .package(url: "https://github.com/pvieito/PythonKit.git", .branch("master")),
   ],
   targets: [
     .target(
@@ -62,7 +62,7 @@ let package = Package(
       name: "TensorFlow",
       dependencies: [
         "Tensor",
-        "PythonKit",
+//         "PythonKit",
         "CTensorFlow",
         "CX10Modules",
         .product(name: "Numerics", package: "swift-numerics"),
@@ -95,18 +95,18 @@ let package = Package(
     //   sources: [
     //     "swift_bindings/training_loop.swift",
     //   ]),
-    .target(
-      name: "Experimental",
-      dependencies: [],
-      path: "Sources/third_party/Experimental"),
-    .testTarget(
-      name: "ExperimentalTests",
-      dependencies: ["Experimental"]),
-    .testTarget(
-      name: "TensorTests",
-      dependencies: ["Tensor"]),
-    .testTarget(
-      name: "TensorFlowTests",
-      dependencies: ["TensorFlow"]),
+//     .target(
+//       name: "Experimental",
+//       dependencies: [],
+//       path: "Sources/third_party/Experimental"),
+//     .testTarget(
+//       name: "ExperimentalTests",
+//       dependencies: ["Experimental"]),
+//     .testTarget(
+//       name: "TensorTests",
+//       dependencies: ["Tensor"]),
+//     .testTarget(
+//       name: "TensorFlowTests",
+//       dependencies: ["TensorFlow"]),
   ]
 )
