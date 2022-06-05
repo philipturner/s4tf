@@ -27,9 +27,14 @@ let package = Package(
       name: "TensorFlow",
       type: .dynamic,
       targets: ["TensorFlow"]),
+    .library(
+      name: "Tensor",
+      type: .dynamic,
+      targets: ["Tensor"]),
   ],
   dependencies: [
     .package(url: "https://github.com/apple/swift-numerics", .branch("main")),
+    .package(url: "https://github.com/pvieito/PythonKit.git", .branch("master")),
   ],
   targets: [
     .target(
@@ -45,6 +50,7 @@ let package = Package(
       name: "TensorFlow",
       dependencies: [
         "Tensor",
+        "PythonKit",
         "CTensorFlow",
         "CX10Modules",
         .product(name: "Numerics", package: "swift-numerics"),
@@ -63,5 +69,11 @@ let package = Package(
     .testTarget(
       name: "ExperimentalTests",
       dependencies: ["Experimental"]),
+    .testTarget(
+      name: "TensorTests",
+      dependencies: ["Tensor"]),
+    .testTarget(
+      name: "TensorFlowTests",
+      dependencies: ["TensorFlow"]),
   ]
 )
