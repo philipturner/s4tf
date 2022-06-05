@@ -23,10 +23,10 @@ let package = Package(
     .macOS(.v10_13)
   ],
   products: [
-//     .library(
-//       name: "TensorFlow",
-//       type: .dynamic,
-//       targets: ["TensorFlow"]),
+    .library(
+      name: "TensorFlow",
+      type: .dynamic,
+      targets: ["TensorFlow"]),
     .library(
       name: "Tensor",
       type: .dynamic,
@@ -102,11 +102,11 @@ let package = Package(
 //     .testTarget(
 //       name: "ExperimentalTests",
 //       dependencies: ["Experimental"]),
-//     .testTarget(
-//       name: "TensorTests",
-//       dependencies: ["Tensor"]),
-//     .testTarget(
-//       name: "TensorFlowTests",
-//       dependencies: ["TensorFlow"]),
+    .testTarget(
+      name: "TensorTests",
+      dependencies: ["Tensor"]),
+    .testTarget(
+      name: "TensorFlowTests",
+      dependencies: ["TensorFlow"]),
   ]
 )
