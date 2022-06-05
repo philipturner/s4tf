@@ -12,10 +12,10 @@
 // // See the License for the specific language governing permissions and
 // // limitations under the License.
 
-// import XCTest
+import XCTest
 
-// import _Differentiation
-// @testable import Experimental
+import _Differentiation
+@testable import Experimental
 
 // final class ComplexTests: XCTestCase {
 //   func testInitializer() {
