@@ -102,11 +102,11 @@ let package = Package(
 //     .testTarget(
 //       name: "ExperimentalTests",
 //       dependencies: ["Experimental"]),
-//     .testTarget(
-//       name: "TensorTests",
-//       dependencies: ["Tensor"]),
-//     .testTarget(
-//       name: "TensorFlowTests",
-//       dependencies: ["TensorFlow"]),
+    .testTarget(
+      name: "TensorTests",
+      dependencies: ["Tensor"]),
+    .testTarget(
+      name: "TensorFlowTests",
+      dependencies: ["TensorFlow"]),
   ]
 )
