@@ -23,14 +23,14 @@ let package = Package(
     .macOS(.v10_13)
   ],
   products: [
-    .library(
-      name: "TensorFlow",
-      type: .dynamic,
-      targets: ["TensorFlow"]),
 //     .library(
-//       name: "Tensor",
+//       name: "TensorFlow",
 //       type: .dynamic,
-//       targets: ["Tensor"]),
+//       targets: ["TensorFlow"]),
+    .library(
+      name: "Tensor",
+      type: .dynamic,
+      targets: ["Tensor"]),
 //     .library(
 //       name: "x10_optimizers_optimizer",
 //       type: .dynamic,
@@ -99,9 +99,9 @@ let package = Package(
       name: "Experimental",
       dependencies: [],
       path: "Sources/third_party/Experimental"),
-//     .testTarget(
-//       name: "ExperimentalTests",
-//       dependencies: ["Experimental"]),
+    .testTarget(
+      name: "ExperimentalTests",
+      dependencies: ["Experimental"]),
 //     .testTarget(
 //       name: "TensorTests",
 //       dependencies: ["Tensor"]),
