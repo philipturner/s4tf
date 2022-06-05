@@ -52,12 +52,12 @@ let package = Package(
     .target(
       name: "Tensor",
       dependencies: []),
-//     .target(
-//       name: "CTensorFlow",
-//       dependencies: []),
-//     .target(
-//       name: "CX10Modules",
-//       dependencies: []),
+    .target(
+      name: "CTensorFlow",
+      dependencies: []),
+    .target(
+      name: "CX10Modules",
+      dependencies: []),
 //     .target(
 //       name: "TensorFlow",
 //       dependencies: [
