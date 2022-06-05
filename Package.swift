@@ -66,17 +66,17 @@ let package = Package(
         "CTensorFlow",
         "CX10Modules",
         .product(name: "Numerics", package: "swift-numerics"),
-      ]/*,
+      ],
       swiftSettings: [
         .define("DEFAULT_BACKEND_EAGER"),
-      ]*/),
-//     .target(
-//       name: "x10_optimizers_tensor_visitor_plan",
-//       dependencies: ["TensorFlow"],
-//       path: "Sources/x10",
-//       sources: [
-//         "swift_bindings/optimizers/TensorVisitorPlan.swift",
-//       ]),
+      ]),
+    .target(
+      name: "x10_optimizers_tensor_visitor_plan",
+      dependencies: ["TensorFlow"],
+      path: "Sources/x10",
+      sources: [
+        "swift_bindings/optimizers/TensorVisitorPlan.swift",
+      ]),
 //     .target(
 //       name: "x10_optimizers_optimizer",
 //       dependencies: [
@@ -95,13 +95,13 @@ let package = Package(
     //   sources: [
     //     "swift_bindings/training_loop.swift",
     //   ]),
-//     .target(
-//       name: "Experimental",
-//       dependencies: [],
-//       path: "Sources/third_party/Experimental"),
-//     .testTarget(
-//       name: "ExperimentalTests",
-//       dependencies: ["Experimental"]),
+    .target(
+      name: "Experimental",
+      dependencies: [],
+      path: "Sources/third_party/Experimental"),
+    .testTarget(
+      name: "ExperimentalTests",
+      dependencies: ["Experimental"]),
     .testTarget(
       name: "TensorTests",
       dependencies: ["Tensor"]),
