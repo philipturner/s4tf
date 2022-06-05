@@ -66,8 +66,8 @@ let package = Package(
         "CTensorFlow",
         "CX10Modules",
         .product(name: "Numerics", package: "swift-numerics"),
-      ],
-      /*swiftSettings: [
+      ]/*,
+      swiftSettings: [
         .define("DEFAULT_BACKEND_EAGER"),
       ]*/),
 //     .target(
