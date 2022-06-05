@@ -61,6 +61,9 @@ let package = Package(
       path: "Sources/x10",
       sources: [
         "swift_bindings/optimizers/TensorVisitorPlan.swift",
+      ],
+      swiftSettings: [
+        .define("DEFAULT_BACKEND_EAGER")
       ]),
     .target(
       name: "Experimental",
