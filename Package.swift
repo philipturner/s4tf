@@ -27,7 +27,7 @@ let package = Package(
       name: "TensorFlow",
       type: .dynamic,
       targets: ["TensorFlow"]),
-    .library(
+//     .library(
 //       name: "Tensor",
 //       type: .dynamic,
 //       targets: ["Tensor"]),
