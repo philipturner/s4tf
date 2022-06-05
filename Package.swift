@@ -45,8 +45,8 @@ let package = Package(
     //   targets: ["x10_training_loop"]),
   ],
   dependencies: [
-//     .package(url: "https://github.com/apple/swift-numerics", .branch("main")),
-//     .package(url: "https://github.com/pvieito/PythonKit.git", .branch("master")),
+    .package(url: "https://github.com/apple/swift-numerics", .branch("main")),
+    .package(url: "https://github.com/pvieito/PythonKit.git", .branch("master")),
   ],
   targets: [
     .target(
@@ -58,18 +58,18 @@ let package = Package(
     .target(
       name: "CX10Modules",
       dependencies: []),
-//     .target(
-//       name: "TensorFlow",
-//       dependencies: [
-//         "Tensor",
-//         "PythonKit",
-//         "CTensorFlow",
-//         "CX10Modules",
-//         .product(name: "Numerics", package: "swift-numerics"),
-//       ],
-//       swiftSettings: [
-//         .define("DEFAULT_BACKEND_EAGER"),
-//       ]),
+    .target(
+      name: "TensorFlow",
+      dependencies: [
+        "Tensor",
+        "PythonKit",
+        "CTensorFlow",
+        "CX10Modules",
+        .product(name: "Numerics", package: "swift-numerics"),
+      ],
+      swiftSettings: [
+        .define("DEFAULT_BACKEND_EAGER"),
+      ]),
 //     .target(
 //       name: "x10_optimizers_tensor_visitor_plan",
 //       dependencies: ["TensorFlow"],
