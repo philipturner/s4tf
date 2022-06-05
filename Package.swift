@@ -62,7 +62,7 @@ let package = Package(
       name: "TensorFlow",
       dependencies: [
         "Tensor",
-//         "PythonKit",
+        "PythonKit",
         "CTensorFlow",
         "CX10Modules",
         .product(name: "Numerics", package: "swift-numerics"),
