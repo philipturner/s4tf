@@ -14,6 +14,8 @@
 
 import _Differentiation
 
+
+
 /// Returns normalized `input`.
 ///
 /// - Parameters:
@@ -118,6 +120,7 @@ public struct BatchNorm<Scalar: TensorFlowFloatingPoint>: Layer {
                                                   scale: scaleOriginal,
                                                   input: input,
                                                   positiveAxis: positiveAxis)
+//    let (offset, scale) = (self.offset, self.scale)
     switch Context.local.learningPhase {
     case .training:
       return doTraining(input, offset: offset, scale: scale, axis: positiveAxis)
@@ -129,7 +132,7 @@ public struct BatchNorm<Scalar: TensorFlowFloatingPoint>: Layer {
   @inline(never)
   @differentiable(reverse) // if the function is `public` or `internal`, the compiler crashes
   private static func _sr13263workaround(
-    offset: Tensor<Scalar>, 
+    offset: Tensor<Scalar>,
     scale: Tensor<Scalar>,
     input: Tensor<Scalar>,
     positiveAxis: Int
@@ -142,10 +145,11 @@ public struct BatchNorm<Scalar: TensorFlowFloatingPoint>: Layer {
       return (offset, scale)
     }
   }
-
+  
   private func doTraining(
     _ input: Tensor<Scalar>, offset: Tensor<Scalar>, scale: Tensor<Scalar>, axis: Int
   ) -> Tensor<Scalar> {
+//    return input
     var normalizedAxes = Array(0..<input.rank)
     normalizedAxes.remove(at: axis)
     let moments = input.moments(alongAxes: normalizedAxes)

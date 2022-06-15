@@ -1800,7 +1800,7 @@ extension Tensor where Scalar == Bool {
   /// - Precondition: Each value in `axes` must be in the range `-rank..<rank`.
   @inlinable
   public func all(squeezingAxes axes: Int...) -> Tensor {
-    ensureValid(axes: axes)
+//    ensureValid(axes: axes)
     let axes = axes.map(Int32.init)
     return _Raw.all(self, reductionIndices: Tensor<Int32>(axes, on: device), keepDims: false)
   }
@@ -1811,7 +1811,7 @@ extension Tensor where Scalar == Bool {
   /// - Precondition: Each value in `axes` must be in the range `-rank..<rank`.
   @inlinable
   public func any(squeezingAxes axes: Int...) -> Tensor {
-    ensureValid(axes: axes)
+//    ensureValid(axes: axes)
     let axes = axes.map(Int32.init)
     return _Raw.any(self, reductionIndices: Tensor<Int32>(axes, on: device), keepDims: false)
   }
@@ -1822,7 +1822,7 @@ extension Tensor where Scalar == Bool {
   /// - Precondition: Each value in `axes` must be in the range `-rank..<rank`.
   @inlinable
   public func all(alongAxes axes: Int...) -> Tensor {
-    ensureValid(axes: axes)
+//    ensureValid(axes: axes)
     let axes = axes.map(Int32.init)
     return _Raw.all(self, reductionIndices: Tensor<Int32>(axes, on: device), keepDims: true)
   }
@@ -1833,7 +1833,7 @@ extension Tensor where Scalar == Bool {
   /// - Precondition: Each value in `axes` must be in the range `-rank..<rank`.
   @inlinable
   public func any(alongAxes axes: Int...) -> Tensor {
-    ensureValid(axes: axes)
+//    ensureValid(axes: axes)
     let axes = axes.map(Int32.init)
     return _Raw.any(self, reductionIndices: Tensor<Int32>(axes, on: device), keepDims: true)
   }
@@ -1864,7 +1864,7 @@ extension Tensor where Scalar: Numeric & Comparable {
   @inlinable
   @differentiable(reverse, wrt: self where Scalar: TensorFlowFloatingPoint)
   public func max(squeezingAxes axes: Tensor<Int32>) -> Tensor {
-    ensureValid(axes: axes)
+//    ensureValid(axes: axes)
     return _Raw.max(self, reductionIndices: axes, keepDims: false)
   }
 
@@ -1893,7 +1893,7 @@ extension Tensor where Scalar: Numeric & Comparable {
   @inlinable
   @differentiable(reverse, wrt: self where Scalar: TensorFlowFloatingPoint)
   public func min(squeezingAxes axes: Tensor<Int32>) -> Tensor {
-    ensureValid(axes: axes)
+//    ensureValid(axes: axes)
     return _Raw.min(self, reductionIndices: axes, keepDims: false)
   }
 
@@ -1922,7 +1922,7 @@ extension Tensor where Scalar: Numeric & Comparable {
   /// - Precondition: Each value in `axes` must be in the range `-rank..<rank`.
   @inlinable
   public func argmax(squeezingAxis axis: Int) -> Tensor<Int32> {
-    ensureValid(axes: [axis])
+//    ensureValid(axes: [axis])
     return _Raw.argMax(self, dimension: Int64(axis))
   }
 
@@ -1932,7 +1932,7 @@ extension Tensor where Scalar: Numeric & Comparable {
   /// - Precondition: Each value in `axes` must be in the range `-rank..<rank`.
   @inlinable
   public func argmin(squeezingAxis axis: Int) -> Tensor<Int32> {
-    ensureValid(axes: [axis])
+//    ensureValid(axes: [axis])
     return _Raw.argMin(self, dimension: Tensor<Int32>(Int32(axis), on: device))
   }
 
@@ -1943,7 +1943,7 @@ extension Tensor where Scalar: Numeric & Comparable {
   @inlinable
   @differentiable(reverse, wrt: self where Scalar: TensorFlowFloatingPoint)
   public func min(alongAxes axes: Tensor<Int32>) -> Tensor {
-    ensureValid(axes: axes)
+//    ensureValid(axes: axes)
     return _Raw.min(self, reductionIndices: axes, keepDims: true)
   }
 
@@ -1975,7 +1975,7 @@ extension Tensor where Scalar: Numeric & Comparable {
   @inlinable
   @differentiable(reverse, wrt: self where Scalar: TensorFlowFloatingPoint)
   public func max(alongAxes axes: Tensor<Int32>) -> Tensor {
-    ensureValid(axes: axes)
+//    ensureValid(axes: axes)
     return _Raw.max(self, reductionIndices: axes, keepDims: true)
   }
 
@@ -2114,7 +2114,7 @@ extension Tensor where Scalar: Numeric {
   @inlinable
   @differentiable(reverse, wrt: self where Scalar: TensorFlowFloatingPoint)
   public func sum(squeezingAxes axes: Tensor<Int32>) -> Tensor {
-    ensureValid(axes: axes)
+//    ensureValid(axes: axes)
     return _Raw.sum(self, reductionIndices: axes.scalars.map { Int64($0) }, keepDims: false)
   }
 
@@ -2149,7 +2149,7 @@ extension Tensor where Scalar: Numeric {
   @inlinable
   @differentiable(reverse, wrt: self where Scalar: TensorFlowFloatingPoint)
   public func sum(alongAxes axes: Tensor<Int32>) -> Tensor {
-    ensureValid(axes: axes)
+//    ensureValid(axes: axes)
     return _Raw.sum(self, reductionIndices: axes, keepDims: true)
   }
 
@@ -2181,7 +2181,7 @@ extension Tensor where Scalar: Numeric {
   @inlinable
   @differentiable(reverse, wrt: self where Scalar: TensorFlowFloatingPoint)
   public func product(squeezingAxes axes: Tensor<Int32>) -> Tensor {
-    ensureValid(axes: axes)
+//    ensureValid(axes: axes)
     return _Raw.prod(self, reductionIndices: axes, keepDims: false)
   }
 
@@ -2218,7 +2218,7 @@ extension Tensor where Scalar: Numeric {
   /// - Precondition: Each value in `axes` must be in the range `-rank..<rank`.
   @inlinable
   public func product(alongAxes axes: Tensor<Int32>) -> Tensor {
-    ensureValid(axes: axes)
+//    ensureValid(axes: axes)
     return _Raw.prod(self, reductionIndices: axes, keepDims: true)
   }
 
@@ -2249,7 +2249,7 @@ extension Tensor where Scalar: Numeric {
   @inlinable
   @differentiable(reverse, wrt: self where Scalar: TensorFlowFloatingPoint)
   public func mean(squeezingAxes axes: Tensor<Int32>) -> Tensor {
-    ensureValid(axes: axes)
+//    ensureValid(axes: axes)
     return _Raw.mean(self, reductionIndices: axes, keepDims: false)
   }
 
@@ -2285,7 +2285,7 @@ extension Tensor where Scalar: Numeric {
   @inlinable
   @differentiable(reverse, wrt: self where Scalar: TensorFlowFloatingPoint)
   public func mean(alongAxes axes: Tensor<Int32>) -> Tensor {
-    ensureValid(axes: axes)
+//    ensureValid(axes: axes)
     return _Raw.mean(self, reductionIndices: axes, keepDims: true)
   }
 
@@ -2319,7 +2319,7 @@ extension Tensor where Scalar: Numeric {
   @inlinable
   @differentiable(reverse, wrt: self where Scalar: TensorFlowFloatingPoint)
   public func variance(squeezingAxes axes: Tensor<Int32>) -> Tensor {
-    ensureValid(axes: axes)
+//    ensureValid(axes: axes)
     let squaredDiff = squaredDifference(self, mean(alongAxes: axes))
     return squaredDiff.mean(squeezingAxes: axes)
   }
@@ -2360,7 +2360,7 @@ extension Tensor where Scalar: Numeric {
   @inlinable
   @differentiable(reverse, wrt: self where Scalar: TensorFlowFloatingPoint)
   public func variance(alongAxes axes: Tensor<Int32>) -> Tensor {
-    ensureValid(axes: axes)
+//    ensureValid(axes: axes)
     let squaredDiff = squaredDifference(self, mean(alongAxes: axes))
     return squaredDiff.mean(alongAxes: axes)
   }
@@ -2457,7 +2457,7 @@ extension Tensor where Scalar: Numeric {
     exclusive: Bool = false,
     reverse: Bool = false
   ) -> Tensor {
-    ensureValid(axes: axis)
+//    ensureValid(axes: axis)
     return _Raw.cumsum(self, axis: axis, exclusive: exclusive, reverse: reverse)
   }
 
@@ -2532,7 +2532,7 @@ extension Tensor where Scalar: Numeric {
     exclusive: Bool = false,
     reverse: Bool = false
   ) -> Tensor {
-    ensureValid(axes: axis)
+//    ensureValid(axes: axis)
     return _Raw.cumprod(self, axis: axis, exclusive: exclusive, reverse: reverse)
   }
 }
@@ -2677,50 +2677,51 @@ extension Tensor where Scalar: TensorFlowFloatingPoint {
   func _vjpProduct(squeezingAxes axes: Tensor<Int32>) -> (
     value: Tensor, pullback: (Tensor) -> Tensor
   ) {
-    // The gradient can be expressed by dividing the product by each entry of the
-    // input tensor, but this approach can't deal with zeros in the input.
-    // Here, we avoid this problem by composing the output as a product of two
-    // `cumulativeProduct` operations.
-    let result = product(squeezingAxes: axes)
-    return (
-      result,
-      { v in
-        // Reshape reduction indices for the case where the parameter is a scalar.
-        var reductionIndices = axes.flattened()
-        // Normalize any negative reduction indices to positive values.
-        reductionIndices = (reductionIndices + Int32(self.rank)) % Int32(self.rank)
-
-        // Expand `v` to full input shape.
-        var outputShape = self.shape
-        for axis in reductionIndices.scalars {
-          outputShape[Int(axis)] = 1
-        }
-        let vBroadcasted = v.reshaped(to: outputShape).broadcasted(to: self.shape)
-
-        // Pack all reduced dimensions into a single one, so we can perform the
-        // `cumulativeProduct` operations.
-        let idx = Tensor<Int32>(0..<Int32(self.rank), on: device)
-        let other = Tensor<Int32>(
-          Array(Set(idx.scalars).symmetricDifference(reductionIndices.scalars)), on: device)
-        let perm = reductionIndices.concatenated(with: other)
-        let reducedNum = Int(
-          self.shapeTensor.gathering(atIndices: reductionIndices).product().scalarized())
-        let otherNum = Int(
-          self.shapeTensor.gathering(atIndices: other).product().scalarized())
-
-        let permuted = self.transposed(permutation: perm)
-        let reshaped = permuted.reshaped(to: [reducedNum, otherNum])
-        // Calculate product, leaving out the current entry.
-        let left = reshaped.cumulativeProduct(alongAxis: 0, exclusive: true, reverse: false)
-        let right = reshaped.cumulativeProduct(alongAxis: 0, exclusive: true, reverse: true)
-        let y = (left * right).reshaped(to: permuted.shape)
-
-        // Invert the transpose and reshape operations.
-        // Make sure to set the statically known shape information through a reshape.
-        return (vBroadcasted * y.transposed(permutation: _Raw.invertPermutation(perm)))
-          .reshaped(to: self.shape)
-      }
-    )
+    fatalError()
+//    // The gradient can be expressed by dividing the product by each entry of the
+//    // input tensor, but this approach can't deal with zeros in the input.
+//    // Here, we avoid this problem by composing the output as a product of two
+//    // `cumulativeProduct` operations.
+//    let result = product(squeezingAxes: axes)
+//    return (
+//      result,
+//      { v in
+//        // Reshape reduction indices for the case where the parameter is a scalar.
+//        var reductionIndices = axes.flattened()
+//        // Normalize any negative reduction indices to positive values.
+//        reductionIndices = (reductionIndices + Int32(self.rank)) % Int32(self.rank)
+//
+//        // Expand `v` to full input shape.
+//        var outputShape = self.shape
+//        for axis in reductionIndices.scalars {
+//          outputShape[Int(axis)] = 1
+//        }
+//        let vBroadcasted = v.reshaped(to: outputShape).broadcasted(to: self.shape)
+//
+//        // Pack all reduced dimensions into a single one, so we can perform the
+//        // `cumulativeProduct` operations.
+//        let idx = Tensor<Int32>(0..<Int32(self.rank), on: device)
+//        let other = Tensor<Int32>(
+//          Array(Set(idx.scalars).symmetricDifference(reductionIndices.scalars)), on: device)
+//        let perm = reductionIndices.concatenated(with: other)
+//        let reducedNum = Int(
+//          self.shapeTensor.gathering(atIndices: reductionIndices).product().scalarized())
+//        let otherNum = Int(
+//          self.shapeTensor.gathering(atIndices: other).product().scalarized())
+//
+//        let permuted = self.transposed(permutation: perm)
+//        let reshaped = permuted.reshaped(to: [reducedNum, otherNum])
+//        // Calculate product, leaving out the current entry.
+//        let left = reshaped.cumulativeProduct(alongAxis: 0, exclusive: true, reverse: false)
+//        let right = reshaped.cumulativeProduct(alongAxis: 0, exclusive: true, reverse: true)
+//        let y = (left * right).reshaped(to: permuted.shape)
+//
+//        // Invert the transpose and reshape operations.
+//        // Make sure to set the statically known shape information through a reshape.
+//        return (vBroadcasted * y.transposed(permutation: _Raw.invertPermutation(perm)))
+//          .reshaped(to: self.shape)
+//      }
+//    )
   }
 }
 
@@ -2735,7 +2736,7 @@ extension Tensor where Scalar: TensorFlowFloatingPoint {
   @inlinable
   @differentiable(reverse, wrt: self)
   public func standardDeviation(squeezingAxes axes: Tensor<Int32>) -> Tensor {
-    ensureValid(axes: axes)
+//    ensureValid(axes: axes)
     return Tensor.sqrt(variance(squeezingAxes: axes))
   }
 
@@ -2747,7 +2748,7 @@ extension Tensor where Scalar: TensorFlowFloatingPoint {
   @inlinable
   @differentiable(reverse, wrt: self)
   public func standardDeviation(squeezingAxes axes: [Int]) -> Tensor {
-    ensureValid(axes: axes)
+//    ensureValid(axes: axes)
     return Tensor.sqrt(variance(squeezingAxes: axes))
   }
 
@@ -2781,7 +2782,7 @@ extension Tensor where Scalar: TensorFlowFloatingPoint {
   @inlinable
   @differentiable(reverse, wrt: self)
   public func standardDeviation(alongAxes axes: Tensor<Int32>) -> Tensor {
-    ensureValid(axes: axes)
+//    ensureValid(axes: axes)
     return Tensor.sqrt(variance(alongAxes: axes))
   }
 
@@ -2805,7 +2806,7 @@ extension Tensor where Scalar: TensorFlowFloatingPoint {
   @inlinable
   @differentiable(reverse, wrt: self)
   public func standardDeviation(alongAxes axes: Int...) -> Tensor {
-    ensureValid(axes: axes)
+//    ensureValid(axes: axes)
     return Tensor.sqrt(variance(alongAxes: axes))
   }
 
@@ -2820,7 +2821,7 @@ extension Tensor where Scalar: TensorFlowFloatingPoint {
   @inlinable
   @differentiable(reverse, wrt: self)
   public func logSumExp(squeezingAxes axes: Tensor<Int32>) -> Tensor {
-    ensureValid(axes: axes)
+//    ensureValid(axes: axes)
     let rawMax = max(alongAxes: axes)
     let offset = withoutDerivative(at: rawMax) { rawMax in
       Tensor<Scalar>(zerosLike: rawMax).replacing(
@@ -2884,7 +2885,7 @@ extension Tensor where Scalar: TensorFlowFloatingPoint {
   @inlinable
   @differentiable(reverse, wrt: self)
   public func logSumExp(alongAxes axes: Tensor<Int32>) -> Tensor {
-    ensureValid(axes: axes)
+//    ensureValid(axes: axes)
     let rawMax = max(alongAxes: axes)
     let offset = withoutDerivative(at: rawMax) { rawMax in
       Tensor<Scalar>(zerosLike: rawMax).replacing(
@@ -2950,7 +2951,7 @@ extension Tensor where Scalar: TensorFlowFloatingPoint {
   @inlinable
   @differentiable(reverse, wrt: self)
   public func moments(squeezingAxes axes: Tensor<Int32>) -> Moments<Scalar> {
-    ensureValid(axes: axes)
+//    ensureValid(axes: axes)
     let mean = self.mean(alongAxes: axes)
     let variance = squaredDifference(self, mean).mean(squeezingAxes: axes)
     return Moments(
@@ -2968,7 +2969,7 @@ extension Tensor where Scalar: TensorFlowFloatingPoint {
   @inlinable
   @differentiable(reverse, wrt: self)
   public func moments(squeezingAxes axes: [Int]) -> Moments<Scalar> {
-    ensureValid(axes: axes)
+//    ensureValid(axes: axes)
     let mean = self.mean(squeezingAxes: axes)
     let variance = squaredDifference(self, mean).mean(squeezingAxes: axes)
     return Moments(mean: mean, variance: variance)
@@ -3001,7 +3002,7 @@ extension Tensor where Scalar: TensorFlowFloatingPoint {
   @inlinable
   @differentiable(reverse, wrt: self)
   public func moments(alongAxes axes: Tensor<Int32>) -> Moments<Scalar> {
-    ensureValid(axes: axes)
+//    ensureValid(axes: axes)
     let mean = self.mean(alongAxes: axes)
     let variance = squaredDifference(self, mean).mean(alongAxes: axes)
     return Moments<Scalar>(mean: mean, variance: variance)
@@ -3015,7 +3016,7 @@ extension Tensor where Scalar: TensorFlowFloatingPoint {
   @inlinable
   @differentiable(reverse, wrt: self)
   public func moments(alongAxes axes: [Int]) -> Moments<Scalar> {
-    ensureValid(axes: axes)
+//    ensureValid(axes: axes)
     let mean = self.mean(alongAxes: axes)
     let variance = squaredDifference(self, mean).mean(alongAxes: axes)
     return Moments<Scalar>(mean: mean, variance: variance)

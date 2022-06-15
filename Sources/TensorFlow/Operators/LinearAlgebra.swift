@@ -185,7 +185,7 @@ public func trace<T: TensorFlowNumeric>(_ matrix: Tensor<T>) -> Tensor<T> {
 }
 
 /// Computes the determinant of an optionally batched matrix.
-/// 
+///
 /// - Parameter matrix: A tensor of shape `[..., M, M]`.
 /// - Returns: A tensor containing the determinants of all input submatrices.
 @inlinable
@@ -197,10 +197,10 @@ func det<T: TensorFlowFloatingPoint>(_ matrix: Tensor<T>) -> Tensor<T> {
 /// optionally batched square matrix.
 ///
 /// - Parameter matrix: A tensor of shape `[..., N, M, M]`.
-/// - Returns: 
-///   - sign: A tensor with shape `[N]`, representing the signs of the natural logarithms of the 
+/// - Returns:
+///   - sign: A tensor with shape `[N]`, representing the signs of the natural logarithms of the
 ///     determinants of input submatrices.
-///   - logAbsDeterminant: A tensor with shape `[N]`, representing the natural logarithms of the 
+///   - logAbsDeterminant: A tensor with shape `[N]`, representing the natural logarithms of the
 ///     absolute values of the determinants of input submatrices.
 @inlinable
 func slogdet<T: TensorFlowFloatingPoint>(_ matrix: Tensor<T>) -> (

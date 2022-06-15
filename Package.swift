@@ -31,18 +31,6 @@ let package = Package(
       name: "Tensor",
       type: .dynamic,
       targets: ["Tensor"]),
-    .library(
-      name: "x10_optimizers_optimizer",
-      type: .dynamic,
-      targets: ["x10_optimizers_optimizer"]),
-    .library(
-      name: "x10_optimizers_tensor_visitor_plan",
-      type: .dynamic,
-      targets: ["x10_optimizers_tensor_visitor_plan"]),
-    // .library(
-    //   name: "x10_training_loop",
-    //   type: .dynamic,
-    //   targets: ["x10_training_loop"]),
   ],
   dependencies: [
     .package(url: "https://github.com/apple/swift-numerics", .branch("main")),
@@ -70,43 +58,5 @@ let package = Package(
       swiftSettings: [
         .define("DEFAULT_BACKEND_EAGER"),
       ]),
-    .target(
-      name: "x10_optimizers_tensor_visitor_plan",
-      dependencies: ["TensorFlow"],
-      path: "Sources/x10",
-      sources: [
-        "swift_bindings/optimizers/TensorVisitorPlan.swift",
-      ]),
-    .target(
-      name: "x10_optimizers_optimizer",
-      dependencies: [
-        "x10_optimizers_tensor_visitor_plan",
-        "TensorFlow",
-      ],
-      path: "Sources/x10",
-      sources: [
-        "swift_bindings/optimizers/Optimizer.swift",
-        "swift_bindings/optimizers/Optimizers.swift",
-      ]),
-    // .target(
-    //   name: "x10_training_loop",
-    //   dependencies: ["TensorFlow"],
-    //   path: "Sources/x10",
-    //   sources: [
-    //     "swift_bindings/training_loop.swift",
-    //   ]),
-    .target(
-      name: "Experimental",
-      dependencies: [],
-      path: "Sources/third_party/Experimental"),
-    .testTarget(
-      name: "ExperimentalTests",
-      dependencies: ["Experimental"]),
-    .testTarget(
-      name: "TensorTests",
-      dependencies: ["Tensor"]),
-    .testTarget(
-      name: "TensorFlowTests",
-      dependencies: ["TensorFlow"]),
   ]
 )

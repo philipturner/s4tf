@@ -25,50 +25,16 @@ import CTensorFlow
 /// conform to `TensorArrayProtocol` due to the constructor requirement (i.e., in such cases it
 /// would be impossible to know how to break down `count` among the stored properties).
 public protocol TensorArrayProtocol {
-  /// Writes the tensor handles to `address`, which must be allocated with enough capacity to hold
-  /// `_tensorHandleCount` handles. The tensor handles written to `address` are borrowed: this
-  /// container still owns them.
-  func _unpackTensorHandles(into address: UnsafeMutablePointer<CTensorHandle>?)
-
-  var _tensorHandleCount: Int32 { get }
-  var _typeList: [TensorDataType] { get }
-  var _tensorHandles: [_AnyTensorHandle] { get }
-
   init(_owning tensorHandles: UnsafePointer<CTensorHandle>?, count: Int)
-  init<C: RandomAccessCollection>(_handles: C) where C.Element: _AnyTensorHandle
 }
 
 extension TensorArrayProtocol {
   public init<C: RandomAccessCollection>(_handles: C) where C.Element: _AnyTensorHandle {
-    let status = TF_NewStatus()
-    defer { TF_DeleteStatus(status) }
-    let buffer = UnsafeMutableBufferPointer<CTensorHandle>.allocate(capacity: _handles.count)
-    defer { buffer.deallocate() }
-    for (i, handle) in _handles.enumerated() {
-      // Increment the reference count in TF.
-      let handleCopy = TFE_TensorHandleCopySharingTensor(handle._cTensorHandle, status)
-      checkOk(status)
-      buffer[i] = handleCopy!
-    }
-    let baseAddress = UnsafeMutablePointer<OpaquePointer>(buffer.baseAddress)
-    self.init(_owning: baseAddress, count: _handles.count)
+    fatalError()
   }
 
   public var _tensorHandles: [_AnyTensorHandle] {
-    let status = TF_NewStatus()
-    defer { TF_DeleteStatus(status) }
-    let count = Int(_tensorHandleCount)
-    let buffer = UnsafeMutableBufferPointer<CTensorHandle>.allocate(capacity: count)
-    defer { buffer.deallocate() }
-    self._unpackTensorHandles(into: buffer.baseAddress)
-    let result: [TFETensorHandle] = (0..<count).map {
-      let cTensorHandle = buffer[$0]
-      // Increment the reference count in TF.
-      let handleCopy = TFE_TensorHandleCopySharingTensor(cTensorHandle, status)
-      checkOk(status)
-      return TFETensorHandle(_owning: handleCopy!)
-    }
-    return result
+    fatalError()
   }
 }
 
@@ -229,34 +195,6 @@ extension Tensor: TensorGroup {
   }
 }
 
-extension _TensorElementLiteral: TensorGroup {
-  @inlinable
-  public static var _unknownShapeList: [TensorShape?] {
-    return [nil]
-  }
-
-  @inlinable
-  public static var _typeList: [TensorDataType] {
-    return [Scalar.tensorFlowDataType]
-  }
-
-  public var _tensorHandles: [_AnyTensorHandle] { tensor._tensorHandles }
-
-  public func _unpackTensorHandles(into address: UnsafeMutablePointer<CTensorHandle>?) {
-    tensor._unpackTensorHandles(into: address)
-  }
-
-  public init(_owning tensorHandles: UnsafePointer<CTensorHandle>?) {
-    tensor = Tensor(_owning: tensorHandles)
-  }
-
-  public init<C: RandomAccessCollection>(
-    _handles: C
-  ) where C.Element: _AnyTensorHandle {
-    tensor = Tensor(_handles: _handles)
-  }
-}
-
 extension StringTensor: TensorGroup {
   @inlinable
   public static var _unknownShapeList: [TensorShape?] {
@@ -285,135 +223,3 @@ extension StringTensor: TensorGroup {
     self.init(handle: TensorHandle(handle: _handles[_handles.startIndex]))
   }
 }
-
-extension Array: TensorArrayProtocol where Element: TensorGroup {
-  public func _unpackTensorHandles(into address: UnsafeMutablePointer<CTensorHandle>?) {
-    var ptr = address
-    for elem in self {
-      elem._unpackTensorHandles(into: ptr)
-      ptr = ptr!.advanced(by: Int(elem._tensorHandleCount))
-    }
-  }
-
-  public var _tensorHandleCount: Int32 {
-    return Element._tensorHandleCount * Int32(count)
-  }
-
-  public var _typeList: [TensorDataType] {
-    return [TensorDataType](
-      [[TensorDataType]](
-        repeating: Element._typeList,
-        count: Int(count)
-      ).joined())
-  }
-
-  public var _tensorHandles: ([_AnyTensorHandle]) {
-    var result: [_AnyTensorHandle] = []
-    result.reserveCapacity(Int(self._tensorHandleCount))
-    for elem in self {
-      result += elem._tensorHandles
-    }
-    return result
-  }
-
-  public init(_owning tensorHandles: UnsafePointer<CTensorHandle>?, count: Int) {
-    let size = count / Int(Element._tensorHandleCount)
-    self = Array(
-      (0..<size).map {
-        Element.init(
-          _owning: tensorHandles?.advanced(by: $0 * Int(Element._tensorHandleCount)))
-      })
-  }
-
-  public init<C: RandomAccessCollection>(
-    _handles: C
-  ) where C.Element: _AnyTensorHandle {
-    let size = _handles.count / Int(Element._tensorHandleCount)
-    self = (0..<size).map {
-      let start = _handles.index(
-        _handles.startIndex, offsetBy: $0 * Int(Element._tensorHandleCount))
-      let end = _handles.index(
-        start, offsetBy: Int(Element._tensorHandleCount))
-      return Element.init(_handles: _handles[start..<end])
-    }
-  }
-}
-
-#if TENSORFLOW_USE_STANDARD_TOOLCHAIN
-
-@_spi(Reflection) import Swift
-
-func reflectionInit<T>(type: T.Type, body: (inout T, PartialKeyPath<T>) -> Void) -> T {
-  guard #available(macOS 9999, *) else {
-    fatalError("\(#function) is unavailable")
-  }
-
-  let x = UnsafeMutablePointer<T>.allocate(capacity: 1)
-  defer { x.deallocate() }
-  if !_forEachFieldWithKeyPath(of: type, body: { name, kp in
-    body(&x.pointee, kp)
-    return true
-  }) {
-    fatalError("Cannot initialize \(T.self) because of unknown fields.")
-  }
-  return x.move()
-}
-
-extension TensorGroup {
-  public static var _typeList: [TensorDataType] {
-    guard #available(macOS 9999, *) else {
-      fatalError("\(#function) is unavailable")
-    }
-
-    var out = [TensorDataType]()
-    if !(_forEachFieldWithKeyPath(of: Self.self) { name, kp in
-      guard let valueType = type(of: kp).valueType as? TensorGroup.Type else { return false }
-      out += valueType._typeList
-      return true
-    }) {
-      fatalError("\(Self.self) does not have children that conform to TensorGroup.")
-    }
-    return out
-  }
-
-  public static func initialize<Root>(
-    _ base: inout Root, _ kp: PartialKeyPath<Root>,
-    _owning tensorHandles: UnsafePointer<CTensorHandle>?
-  ) {
-    guard let kp = kp as? WritableKeyPath<Root, Self> else {
-      fatalError("\(kp) is not \(WritableKeyPath<Root, Self>.self)")
-    }
-    withUnsafeMutablePointer(to: &base[keyPath: kp]) { v in
-      v.initialize(to: .init(_owning: tensorHandles))
-    }
-  }
-
-  public init(_owning tensorHandles: UnsafePointer<CTensorHandle>?) {
-    var i = 0
-    self = reflectionInit(type: Self.self) { base, kp in
-      guard let valueType = type(of: kp).valueType as? TensorGroup.Type else {
-        fatalError("\(type(of: kp).valueType) does not conform to TensorGroup")
-      }
-      valueType.initialize(&base, kp, _owning: tensorHandles?.advanced(by: i))
-      i += Int(valueType._tensorHandleCount)
-    }
-  }
-
-  public func _unpackTensorHandles(into address: UnsafeMutablePointer<CTensorHandle>?) {
-    guard #available(macOS 9999, *) else {
-      fatalError("\(#function) is unavailable")
-    }
-
-    var i = 0
-    if !_forEachFieldWithKeyPath(of: Self.self, body: { name, kp in
-      guard let x = self[keyPath: kp] as? TensorGroup else { return false }
-      x._unpackTensorHandles(into: address?.advanced(by: i))
-      i += Int(type(of: x)._tensorHandleCount)
-      return true
-    }) {
-      fatalError("Cannot unpack \(Self.self) because of non-TensorGroup fields.")
-    }
-  }
-}
-
-#endif
