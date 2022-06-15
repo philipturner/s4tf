@@ -15,28 +15,23 @@
 import _Differentiation
 
 @_semantics("autodiff.nonvarying")
-func withoutDerivative<T, R>(at x: T, in body: (T) -> R) -> R {
+func withoutDerivative() -> Tensor {
   fatalError()
 }
 
-struct BatchNorm<Scalar> {
-  @differentiable(reverse)
-  func callAsFunction(_ input: Tensor<Scalar>) -> Tensor<Scalar> {
-    doInference(input)
-  }
-
-  func doInference(
-    _ input: Tensor<Scalar>
-  ) -> Tensor<Scalar> {
-    let eps = withoutDerivative(at: input) { $0 }
-    return eps
-  }
+func BatchNorm_doInference(
+  _ input: Tensor
+) -> Tensor {
+  withoutDerivative()
 }
 
-struct LayerNorm<Scalar> {
-  @differentiable(reverse)
-  func callAsFunction(_ input: Tensor<Scalar>) -> Tensor<Scalar> {
-//    input + Tensor<Scalar>.sqrt(input)
-    Tensor<Scalar>.add2(input, Tensor<Scalar>.sqrt(input))
-  }
+@differentiable(reverse)
+func BatchNorm_callAsFunction(_ input: Tensor) -> Tensor {
+  BatchNorm_doInference(input)
 }
+
+@differentiable(reverse)
+func LayerNorm_callAsFunction(_ input: Tensor) -> Tensor {
+  rsqrt(input)
+}
+

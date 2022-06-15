@@ -19,36 +19,15 @@ import PackageDescription
 
 let package = Package(
   name: "TensorFlow",
-  platforms: [
-    .macOS(.v10_13)
-  ],
   products: [
     .library(
       name: "TensorFlow",
-      type: .dynamic,
       targets: ["TensorFlow"]),
   ],
-  dependencies: [
-    .package(url: "https://github.com/apple/swift-numerics", .branch("main")),
-    .package(url: "https://github.com/pvieito/PythonKit.git", .branch("master")),
-  ],
+  dependencies: [],
   targets: [
     .target(
-      name: "CTensorFlow",
-      dependencies: []),
-    .target(
-      name: "CX10Modules",
-      dependencies: []),
-    .target(
       name: "TensorFlow",
-      dependencies: [
-        "PythonKit",
-        "CTensorFlow",
-        "CX10Modules",
-        .product(name: "Numerics", package: "swift-numerics"),
-      ],
-      swiftSettings: [
-        .define("DEFAULT_BACKEND_EAGER"),
-      ]),
+      dependencies: []),
   ]
 )
