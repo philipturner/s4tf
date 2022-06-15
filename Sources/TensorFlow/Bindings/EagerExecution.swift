@@ -65,14 +65,15 @@ internal struct TFE_Op: TFTensorOperation {
 
   @inlinable @inline(__always)
   internal func addInputList<T: TensorArrayProtocol>(_ input: T) {
-    let count = input._tensorHandleCount
-    let buffer = UnsafeMutableBufferPointer<CTensorHandle>.allocate(capacity: Int(count))
-    defer { buffer.deallocate() }
-    input._unpackTensorHandles(into: buffer.baseAddress)
-    for i in 0..<Int(count) {
-      TFE_OpAddInput(op, buffer[i], status)
-      checkOk(status)
-    }
+    fatalError()
+//    let count = input._tensorHandleCount
+//    let buffer = UnsafeMutableBufferPointer<CTensorHandle>.allocate(capacity: Int(count))
+//    defer { buffer.deallocate() }
+//    input._unpackTensorHandles(into: buffer.baseAddress)
+//    for i in 0..<Int(count) {
+//      TFE_OpAddInput(op, buffer[i], status)
+//      checkOk(status)
+//    }
   }
 
   @inlinable @inline(__always)

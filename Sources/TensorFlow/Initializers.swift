@@ -14,73 +14,73 @@
 
 import _Differentiation
 
-#if !COMPILING_TENSORFLOW_STDLIB_MODULE
-  import Tensor
-#endif
+//#if !COMPILING_TENSORFLOW_STDLIB_MODULE
+//  import Tensor
+//#endif
 
-extension Tensor {
-  /// Creates a tensor with the specified shape and a single, repeated scalar value.
-  ///
-  /// - Parameters:
-  ///   - shape: The dimensions of the tensor.
-  ///   - repeatedValue: The scalar value to repeat.
-  @inlinable
-  @available(*, deprecated, renamed: "init(repeating:shape:)")
-  public init(shape: TensorShape, repeating repeatedValue: Scalar) {
-    self.init(repeating: repeatedValue, shape: shape)
-  }
+//extension Tensor {
+//  /// Creates a tensor with the specified shape and a single, repeated scalar value.
+//  ///
+//  /// - Parameters:
+//  ///   - shape: The dimensions of the tensor.
+//  ///   - repeatedValue: The scalar value to repeat.
+////  @inlinable
+////  @available(*, deprecated, renamed: "init(repeating:shape:)")
+////  public init(shape: TensorShape, repeating repeatedValue: Scalar) {
+////    self.init(repeating: repeatedValue, shape: shape)
+////  }
+//
+//  /// Creates a tensor with the specified shape and a single, repeated scalar value.
+//  ///
+//  /// - Parameters:
+//  ///   - repeatedValue: The scalar value to repeat.
+//  ///   - shape: The dimensions of the tensor.
+////  @inlinable
+////  @differentiable(reverse where Scalar: TensorFlowFloatingPoint)
+////  public init(
+////    repeating repeatedValue: Scalar, shape: TensorShape,
+////    on device: Device = .default
+////  ) {
+////    self = _Raw.fill(
+////      dims: Tensor<Int32>(shape.dimensions.map(Int32.init), on: device),
+////      value: Tensor(repeatedValue, on: device))
+////  }
+//
+//  /// Creates a tensor by broadcasting the given scalar to a given rank with
+////  /// all dimensions being 1.
+////  @inlinable
+////  // @differentiable(reverse where Scalar: TensorFlowFloatingPoint)
+////  public init(broadcasting scalar: Scalar, rank: Int, on device: Device = .default) {
+////    self = Tensor(scalar, on: device).reshaped(to: TensorShape(repeating: 1, count: rank))
+////  }
+//
+//  /// Creates a tensor of shape `[4]` from a 4-tuple.
+//  /// - Note: This is intended for internal use, for example, to initialize a
+////  ///   tensor attribute from `convolved2D`'s `strides` argument.
+////  @inlinable
+////  internal init(_ scalars: (Scalar, Scalar, Scalar, Scalar), on device: Device = .default) {
+////    fatalError()
+//////    self.init([scalars.0, scalars.1, scalars.2, scalars.3], on: device)
+////  }
+//}
 
-  /// Creates a tensor with the specified shape and a single, repeated scalar value.
-  ///
-  /// - Parameters:
-  ///   - repeatedValue: The scalar value to repeat.
-  ///   - shape: The dimensions of the tensor.
-  @inlinable
-  @differentiable(reverse where Scalar: TensorFlowFloatingPoint)
-  public init(
-    repeating repeatedValue: Scalar, shape: TensorShape,
-    on device: Device = .default
-  ) {
-    self = _Raw.fill(
-      dims: Tensor<Int32>(shape.dimensions.map(Int32.init), on: device),
-      value: Tensor(repeatedValue, on: device))
-  }
-
-  /// Creates a tensor by broadcasting the given scalar to a given rank with
-  /// all dimensions being 1.
-  @inlinable
-  // @differentiable(reverse where Scalar: TensorFlowFloatingPoint)
-  public init(broadcasting scalar: Scalar, rank: Int, on device: Device = .default) {
-    self = Tensor(scalar, on: device).reshaped(to: TensorShape(repeating: 1, count: rank))
-  }
-
-  /// Creates a tensor of shape `[4]` from a 4-tuple.
-  /// - Note: This is intended for internal use, for example, to initialize a
-  ///   tensor attribute from `convolved2D`'s `strides` argument.
-  @inlinable
-  internal init(_ scalars: (Scalar, Scalar, Scalar, Scalar), on device: Device = .default) {
-    fatalError()
-//    self.init([scalars.0, scalars.1, scalars.2, scalars.3], on: device)
-  }
-}
-
-extension Tensor where Scalar: TensorFlowFloatingPoint {
-  @inlinable
-  @derivative(of: init(repeating:shape:on:))
-  static func _vjpInit(
-    repeating repeatedValue: __owned Scalar,
-    shape: __owned TensorShape,
-    on device: Device
-  ) -> (value: Tensor, pullback: (Tensor) -> Scalar) {
-    fatalError()
-//    return (
-//      Tensor(repeating: repeatedValue, shape: shape, on: device),
-//      {
-//        $0.sum().scalarized()
-//      }
-//    )
-  }
-}
+//extension Tensor where Scalar: TensorFlowFloatingPoint {
+//  @inlinable
+////  @derivative(of: init(repeating:shape:on:))
+//  static func _vjpInit(
+//    repeating repeatedValue: __owned Scalar,
+//    shape: __owned TensorShape,
+//    on device: Device
+//  ) -> (value: Tensor, pullback: (Tensor) -> Scalar) {
+//    fatalError()
+////    return (
+////      Tensor(repeating: repeatedValue, shape: shape, on: device),
+////      {
+////        $0.sum().scalarized()
+////      }
+////    )
+//  }
+//}
 
 //===------------------------------------------------------------------------------------------===//
 // Casting
@@ -88,28 +88,29 @@ extension Tensor where Scalar: TensorFlowFloatingPoint {
 
 extension Tensor where Scalar: Numeric {
   /// Perform an element-wise type conversion from a `Bool` tensor.
-  @inlinable
-  public init(_ other: Tensor<Bool>) {
-    self = _Raw.cast(other)
-  }
+//  @inlinable
+//  public init(_ other: Tensor<Bool>) {
+//    self = _Raw.cast(other)
+//  }
 
   /// Perform an element-wise conversion from another `Tensor`.
-  @inlinable
-  @differentiable(reverse where Scalar: TensorFlowFloatingPoint, OtherScalar: TensorFlowFloatingPoint)
+//  @inlinable
+//  @differentiable(reverse where Scalar: TensorFlowFloatingPoint, OtherScalar: TensorFlowFloatingPoint)
   public init<OtherScalar: Numeric>(_ other: Tensor<OtherScalar>) {
-    self = _Raw.cast(other)
+    fatalError()
+//    self = _Raw.cast(other)
   }
 }
 
-extension Tensor where Scalar: TensorFlowFloatingPoint {
-  @inlinable
-  @derivative(of: init(_:))
-  static func _vjpCast<OtherScalar: TensorFlowFloatingPoint>(
-    _ other: __owned Tensor<OtherScalar>
-  ) -> (value: Tensor, pullback: (Tensor) -> Tensor<OtherScalar>) {
-    (Tensor(other), { v in Tensor<OtherScalar>(v) })
-  }
-}
+//extension Tensor where Scalar: TensorFlowFloatingPoint {
+//  @inlinable
+//  @derivative(of: init(_:))
+//  static func _vjpCast<OtherScalar: TensorFlowFloatingPoint>(
+//    _ other: __owned Tensor<OtherScalar>
+//  ) -> (value: Tensor, pullback: (Tensor) -> Tensor<OtherScalar>) {
+//    (Tensor(other), { v in Tensor<OtherScalar>(v) })
+//  }
+//}
 
 //===------------------------------------------------------------------------------------------===//
 // Numeric
@@ -119,36 +120,38 @@ extension Tensor where Scalar: Numeric {
   /// Creates a tensor with all scalars set to zero.
   ///
   /// - Parameter shape: Shape of the tensor.
-  @inlinable
+//  @inlinable
   public init(zeros shape: TensorShape, on device: Device = .default) {
-    self.init(repeating: 0, shape: shape, on: device)
+    fatalError()
+//    self.init(repeating: 0, shape: shape, on: device)
   }
 
   /// Creates a tensor with all scalars set to one.
   ///
   /// - Parameter shape: Shape of the tensor.
-  @inlinable
+//  @inlinable
   public init(ones shape: TensorShape, on device: Device = .default) {
-    self.init(repeating: 1, shape: shape, on: device)
+    fatalError()
+//    self.init(repeating: 1, shape: shape, on: device)
   }
 
   /// Creates a tensor with all scalars set to zero that has the same shape and type as the provided
   /// tensor.
-  ///
-  /// - Parameter other: Tensor whose shape and data type to use.
-  @inlinable
-  public init(zerosLike other: Tensor) {
-    self = _Raw.zerosLike(other)
-  }
+//  ///
+//  /// - Parameter other: Tensor whose shape and data type to use.
+//  @inlinable
+//  public init(zerosLike other: Tensor) {
+//    self = _Raw.zerosLike(other)
+//  }
 
   /// Creates a tensor with all scalars set to one that has the same shape and type as the provided
   /// tensor.
-  ///
-  /// - Parameter other: Tensor whose shape and data type to use.
-  @inlinable
-  public init(onesLike other: Tensor) {
-    self = _Raw.onesLike(other)
-  }
+//  ///
+//  /// - Parameter other: Tensor whose shape and data type to use.
+//  @inlinable
+//  public init(onesLike other: Tensor) {
+//    self = _Raw.onesLike(other)
+//  }
 
   /// Creates a 1-D tensor representing a sequence from a starting value to, but not including,
   /// an end value, stepping by the specified amount.
@@ -159,16 +162,16 @@ extension Tensor where Scalar: Numeric {
   ///   - end: An end value to limit the sequence. `end` is never an element of
   ///     the resulting sequence.
   ///   - stride: The amount to step by with each iteration. `stride` must be
-  ///     positive.
-  @inlinable
-  public init(
-    rangeFrom start: Scalar, to end: Scalar, stride: Scalar,
-    on device: Device = .default
-  ) {
-    self = _Raw.range(
-      start: Tensor(start, on: device), limit: Tensor(end, on: device),
-      delta: Tensor(stride, on: device))
-  }
+//  ///     positive.
+//  @inlinable
+//  public init(
+//    rangeFrom start: Scalar, to end: Scalar, stride: Scalar,
+//    on device: Device = .default
+//  ) {
+//    self = _Raw.range(
+//      start: Tensor(start, on: device), limit: Tensor(end, on: device),
+//      delta: Tensor(stride, on: device))
+//  }
 
   /// Creates a 1-D tensor representing a sequence from a starting value to, but not including, an
   /// end value, stepping by the specified amount.
@@ -178,11 +181,11 @@ extension Tensor where Scalar: Numeric {
   ///     the first one is `start`.
   ///   - end: An end value to limit the sequence. `end` is never an element of the resulting
   ///     sequence.
-  ///   - stride: The amount to step by with each iteration. `stride` must be positive.
-  @inlinable
-  public init(rangeFrom start: Tensor<Scalar>, to end: Tensor<Scalar>, stride: Tensor<Scalar>) {
-    self = _Raw.range(start: start, limit: end, delta: stride)
-  }
+//  ///   - stride: The amount to step by with each iteration. `stride` must be positive.
+//  @inlinable
+//  public init(rangeFrom start: Tensor<Scalar>, to end: Tensor<Scalar>, stride: Tensor<Scalar>) {
+//    self = _Raw.range(start: start, limit: end, delta: stride)
+//  }
 
   /// Creates a one-hot tensor at given indices. The locations represented by
   /// `indices` take value `onValue` (`1` by default), while all other locations
@@ -211,20 +214,20 @@ extension Tensor where Scalar: Numeric {
   ///   - offValue: A scalar defining the value at a location that is not
   ///     referred to by any index in `indices`.
   ///   - axis: The axis to fill. The default is `-1`, a new inner-most axis.
-  @inlinable
-  public init(
-    oneHotAtIndices indices: Tensor<Int32>,
-    depth: Int,
-    onValue: Scalar = 1,
-    offValue: Scalar = 0,
-    axis: Int = -1
-  ) {
-    let device = indices.device
-    self = _Raw.oneHot(
-      indices: indices,
-      depth: Tensor<Int32>(Int32(depth), on: device),
-      onValue: Tensor(onValue, on: device),
-      offValue: Tensor(offValue, on: device),
-      axis: Int64(axis))
-  }
+//  @inlinable
+//  public init(
+//    oneHotAtIndices indices: Tensor<Int32>,
+//    depth: Int,
+//    onValue: Scalar = 1,
+//    offValue: Scalar = 0,
+//    axis: Int = -1
+//  ) {
+//    let device = indices.device
+//    self = _Raw.oneHot(
+//      indices: indices,
+//      depth: Tensor<Int32>(Int32(depth), on: device),
+//      onValue: Tensor(onValue, on: device),
+//      offValue: Tensor(offValue, on: device),
+//      axis: Int64(axis))
+//  }
 }

@@ -13,12 +13,12 @@
 // limitations under the License.
 
 import _Differentiation
-#if TENSORFLOW_USE_STANDARD_TOOLCHAIN
-import Numerics
-#endif
+//#if TENSORFLOW_USE_STANDARD_TOOLCHAIN
+//import Numerics
+//#endif
 
-infix operator .>: ComparisonPrecedence
-infix operator .==: ComparisonPrecedence
+//infix operator .>: ComparisonPrecedence
+//infix operator .==: ComparisonPrecedence
 
 // TODO:
 // - Consider explicit broadcasting for elementwise binary ops when
@@ -26,32 +26,33 @@ infix operator .==: ComparisonPrecedence
 
 // TODO: Remove the following extension once `./` and `./=` are defined for
 // `PointwiseMultiplicative`.
-
-infix operator ./: MultiplicationPrecedence
-infix operator ./=: AssignmentPrecedence
-
-extension PointwiseMultiplicative {
-  public static func ./ (lhs: Self, rhs: Self) -> Self {
-    lhs .* rhs.reciprocal
-  }
-
-  public static func ./= (lhs: inout Self, rhs: Self) {
-    lhs = lhs ./ rhs
-  }
-}
+//
+//infix operator ./: MultiplicationPrecedence
+//infix operator ./=: AssignmentPrecedence
+//
+//extension PointwiseMultiplicative {
+//  public static func ./ (lhs: Self, rhs: Self) -> Self {
+//    lhs .* rhs.reciprocal
+//  }
+//
+//  public static func ./= (lhs: inout Self, rhs: Self) {
+//    lhs = lhs ./ rhs
+//  }
+//}
 
 //===------------------------------------------------------------------------------------------===//
 // Generic Elementary Functions
 //===------------------------------------------------------------------------------------------===//
 
-extension Tensor: ElementaryFunctions where Scalar: TensorFlowFloatingPoint {
+extension Tensor/*: ElementaryFunctions*/ where Scalar: TensorFlowFloatingPoint {
   /// The square root of `x`.
   ///
   /// For real types, if `x` is negative the result is `.nan`. For complex
   /// types there is a branch cut on the negative real axis.
   @differentiable(reverse)
   public static func sqrt(_ x: Self) -> Self {
-    _Raw.sqrt(x)
+    fatalError()
+//    _Raw.sqrt(x)
   }
 
   @inlinable
@@ -59,349 +60,353 @@ extension Tensor: ElementaryFunctions where Scalar: TensorFlowFloatingPoint {
   internal static func _vjpSqrt(
     _ x: Tensor
   ) -> (value: Tensor, pullback: (Tensor) -> Tensor) {
-    let value = Tensor.sqrt(x)
-    return (value, { v in v / (2 * value) })
-  }
-
-  /// The cosine of `x`, interpreted as an angle in radians.
-  @differentiable(reverse)
-  public static func cos(_ x: Self) -> Self {
-    _Raw.cos(x)
-  }
-
-  @inlinable
-  @derivative(of: cos)
-  internal static func _vjpCos(
-    _ x: Tensor
-  ) -> (value: Tensor, pullback: (Tensor) -> Tensor) {
-    (cos(x), { v in -v * sin(x) })
-  }
-
-  /// The sine of `x`, interpreted as an angle in radians.
-  @differentiable(reverse)
-  public static func sin(_ x: Self) -> Self {
-    _Raw.sin(x)
-  }
-
-  @inlinable
-  @derivative(of: sin)
-  internal static func _vjpSin(
-    _ x: Tensor
-  ) -> (value: Tensor, pullback: (Tensor) -> Tensor) {
-    (sin(x), { v in v * cos(x) })
-  }
-
-  /// The tangent of `x`, interpreted as an angle in radians.
-  @differentiable(reverse)
-  public static func tan(_ x: Self) -> Self {
-    _Raw.tan(x)
-  }
-
-  @inlinable
-  @derivative(of: tan)
-  internal static func _vjpTan(
-    _ x: Tensor
-  ) -> (value: Tensor, pullback: (Tensor) -> Tensor) {
-    let value = tan(x)
-    return (value, { v in v * (1 + value.squared()) })
-  }
-
-  /// The inverse cosine of `x` in radians.
-  @differentiable(reverse)
-  public static func acos(_ x: Self) -> Self {
-    _Raw.acos(x)
-  }
-
-  @inlinable
-  @derivative(of: acos)
-  internal static func _vjpAcos(
-    _ x: Tensor
-  ) -> (value: Tensor, pullback: (Tensor) -> Tensor) {
-    (acos(x), { v in -v / sqrt(1 - x.squared()) })
-  }
-
-  /// The inverse sine of `x` in radians.
-  @differentiable(reverse)
-  public static func asin(_ x: Self) -> Self {
-    _Raw.asin(x)
-  }
-
-  @inlinable
-  @derivative(of: asin)
-  internal static func _vjpAsin(
-    _ x: Tensor
-  ) -> (value: Tensor, pullback: (Tensor) -> Tensor) {
-    (asin(x), { v in v / sqrt(1 - x.squared()) })
-  }
-
-  /// The inverse tangent of `x` in radians.
-  @differentiable(reverse)
-  public static func atan(_ x: Self) -> Self {
-    _Raw.atan(x)
-  }
-
-  @inlinable
-  @derivative(of: atan)
-  internal static func _vjpAtan(
-    _ x: Tensor
-  ) -> (value: Tensor, pullback: (Tensor) -> Tensor) {
-    (atan(x), { v in v / (1 + x.squared()) })
-  }
-
-  /// The hyperbolic cosine of `x`.
-  @differentiable(reverse)
-  public static func cosh(_ x: Self) -> Self {
-    _Raw.cosh(x)
-  }
-
-  @inlinable
-  @derivative(of: cosh)
-  internal static func _vjpCosh(
-    _ x: Tensor
-  ) -> (value: Tensor, pullback: (Tensor) -> Tensor) {
-    (cosh(x), { v in v * sinh(x) })
-  }
-
-  /// The hyperbolic sine of `x`.
-  @differentiable(reverse)
-  public static func sinh(_ x: Self) -> Self {
-    _Raw.sinh(x)
-  }
-
-  @inlinable
-  @derivative(of: sinh)
-  internal static func _vjpSinh(
-    _ x: Tensor
-  ) -> (value: Tensor, pullback: (Tensor) -> Tensor) {
-    (sinh(x), { v in v * cosh(x) })
-  }
-
-  /// The hyperbolic tangent of `x`.
-  @differentiable(reverse)
-  public static func tanh(_ x: Self) -> Self {
-    _Raw.tanh(x)
-  }
-
-  @inlinable
-  @derivative(of: tanh)
-  internal static func _vjpTanh(
-    _ x: Tensor
-  ) -> (value: Tensor, pullback: (Tensor) -> Tensor) {
-    let value = tanh(x)
-    return (value, { v in v * (1 - value.squared()) })
-  }
-
-  /// The inverse hyperbolic cosine of `x`.
-  @differentiable(reverse)
-  public static func acosh(_ x: Self) -> Self {
-    _Raw.acosh(x)
-  }
-
-  @inlinable
-  @derivative(of: acosh)
-  internal static func _vjpAcosh(
-    _ x: Tensor
-  ) -> (value: Tensor, pullback: (Tensor) -> Tensor) {
-    (acosh(x), { v in v / asinh(x) })
-  }
-
-  /// The inverse hyperbolic sine of `x`.
-  @differentiable(reverse)
-  public static func asinh(_ x: Self) -> Self {
-    _Raw.asinh(x)
-  }
-
-  @inlinable
-  @derivative(of: asinh)
-  internal static func _vjpAsinh(
-    _ x: Tensor
-  ) -> (value: Tensor, pullback: (Tensor) -> Tensor) {
-    (asinh(x), { v in v / acosh(x) })
-  }
-
-  /// The inverse hyperbolic tangent of `x`.
-  @differentiable(reverse)
-  public static func atanh(_ x: Self) -> Self {
-    _Raw.atanh(x)
-  }
-
-  @inlinable
-  @derivative(of: atanh)
-  internal static func _vjpAtanh(
-    _ x: Tensor
-  ) -> (value: Tensor, pullback: (Tensor) -> Tensor) {
-    (atanh(x), { v in v / (1 - x.squared()) })
-  }
-
-  /// The exponential function applied to `x`, or `e**x`.
-  @differentiable(reverse)
-  public static func exp(_ x: Self) -> Self {
-    _Raw.exp(x)
-  }
-
-  @inlinable
-  @derivative(of: exp)
-  internal static func _vjpExp(
-    _ x: Tensor
-  ) -> (value: Tensor, pullback: (Tensor) -> Tensor) {
-    let value = exp(x)
-    return (value, { v in value * v })
-  }
-
-  /// Two raised to to power `x`.
-  @differentiable(reverse)
-  public static func exp2(_ x: Self) -> Self {
-    pow(Tensor(2, on: x.device), x)
-  }
-
-  /// Ten raised to to power `x`.
-  @differentiable(reverse)
-  public static func exp10(_ x: Self) -> Self {
-    pow(Tensor(10, on: x.device), x)
-  }
-
-  /// `exp(x) - 1` evaluated so as to preserve accuracy close to zero.
-  @differentiable(reverse)
-  public static func expm1(_ x: Self) -> Self {
-    _Raw.expm1(x)
-  }
-
-#if TENSORFLOW_USE_STANDARD_TOOLCHAIN
-  @differentiable(reverse)
-  public static func expMinusOne(_ x: Self) -> Self {
-    return expm1(x)
-  }
-#endif
-
-  @inlinable
-  @derivative(of: expm1)
-  internal static func _vjpExpm1(
-    _ x: Tensor
-  ) -> (value: Tensor, pullback: (Tensor) -> Tensor) {
-    let y = expm1(x)
-    return (y, { v in v * y })
-  }
-
-  /// The natural logarithm of `x`.
-  @differentiable(reverse)
-  public static func log(_ x: Self) -> Self {
-    _Raw.log(x)
-  }
-
-  @inlinable
-  @derivative(of: log(_:))
-  internal static func _vjpLog(
-    _ x: Tensor
-  ) -> (value: Tensor, pullback: (Tensor) -> Tensor) {
-    (log(x), { v in v / x })
-  }
-
-  /// The base-two logarithm of `x`.
-  @differentiable(reverse)
-  public static func log2(_ x: Self) -> Self {
-    log(x) / Scalar.log(2)
-  }
-
-  /// The base-ten logarithm of `x`.
-  @differentiable(reverse)
-  public static func log10(_ x: Self) -> Self {
-    log(x) / Scalar.log(10)
-  }
-
-  /// `log(1 + x)` evaluated so as to preserve accuracy close to zero.
-  @differentiable(reverse)
-  public static func log1p(_ x: Self) -> Self {
-    _Raw.log1p(x)
-  }
-
-#if TENSORFLOW_USE_STANDARD_TOOLCHAIN
-  @differentiable(reverse)
-  public static func log(onePlus x: Self) -> Self {
-    return log1p(x)
-  }
-#endif
-
-  @inlinable
-  @derivative(of: log1p)
-  internal static func _vjpLog1p(
-    _ x: Tensor
-  ) -> (value: Tensor, pullback: (Tensor) -> Tensor) {
-    (log1p(x), { v in _Raw.xdivy(v, 1 + x) })
-  }
-
-  /// `exp(y log(x))` computed without loss of intermediate precision.
-  ///
-  /// For real types, if `x` is negative the result is NaN, even if `y` has
-  /// an integral value. For complex types, there is a branch cut on the
-  /// negative real axis.
-  @differentiable(reverse)
-  public static func pow(_ x: Self, _ y: Self) -> Self {
-    _Raw.pow(x, y)
-  }
-
-  @inlinable
-  @derivative(of: pow)
-  internal static func _vjpPow(
-    _ x: Tensor, _ y: Tensor
-  ) -> (value: Tensor, pullback: (Tensor) -> (Tensor, Tensor)) {
     fatalError()
-//    let value = pow(x, y)
-//    return (
-//      value,
-//      { v in
-//        let safeX = x.replacing(with: Tensor(onesLike: x), where: x .<= 0)
-//        let lhsGrad = v * y * pow(x, y - 1)
-//        let rhsGrad = value * v * log(safeX)
-//        let (lhsShape, rhsShape) = (x.shapeTensor, y.shapeTensor)
-//        let (lhsAxes, rhsAxes) = _Raw.broadcastGradientArgs(s0: lhsShape, s1: rhsShape)
-//        return (
-//          lhsGrad.sum(squeezingAxes: lhsAxes).reshaped(toShape: lhsShape),
-//          rhsGrad.sum(squeezingAxes: rhsAxes).reshaped(toShape: rhsShape)
-//        )
-//      }
-//    )
+//    let value = Tensor.sqrt(x)
+//    return (value, { v in v / (2 * value) })
   }
 
-  /// `x` raised to the `n`th power.
-  ///
-  /// The product of `n` copies of `x`.
-  @differentiable(reverse)
-  public static func pow(_ x: Self, _ n: Int) -> Self {
-    pow(x, Tensor(Scalar(n), on: x.device))
-  }
+//  /// The cosine of `x`, interpreted as an angle in radians.
+//  @differentiable(reverse)
+//  public static func cos(_ x: Self) -> Self {
+//    _Raw.cos(x)
+//  }
+//
+//  @inlinable
+//  @derivative(of: cos)
+//  internal static func _vjpCos(
+//    _ x: Tensor
+//  ) -> (value: Tensor, pullback: (Tensor) -> Tensor) {
+//    (cos(x), { v in -v * sin(x) })
+//  }
+//
+//  /// The sine of `x`, interpreted as an angle in radians.
+//  @differentiable(reverse)
+//  public static func sin(_ x: Self) -> Self {
+//    _Raw.sin(x)
+//  }
+//
+//  @inlinable
+//  @derivative(of: sin)
+//  internal static func _vjpSin(
+//    _ x: Tensor
+//  ) -> (value: Tensor, pullback: (Tensor) -> Tensor) {
+//    (sin(x), { v in v * cos(x) })
+//  }
+//
+//  /// The tangent of `x`, interpreted as an angle in radians.
+//  @differentiable(reverse)
+//  public static func tan(_ x: Self) -> Self {
+//    _Raw.tan(x)
+//  }
+//
+//  @inlinable
+//  @derivative(of: tan)
+//  internal static func _vjpTan(
+//    _ x: Tensor
+//  ) -> (value: Tensor, pullback: (Tensor) -> Tensor) {
+//    let value = tan(x)
+//    return (value, { v in v * (1 + value.squared()) })
+//  }
+//
+//  /// The inverse cosine of `x` in radians.
+//  @differentiable(reverse)
+//  public static func acos(_ x: Self) -> Self {
+//    _Raw.acos(x)
+//  }
+//
+//  @inlinable
+//  @derivative(of: acos)
+//  internal static func _vjpAcos(
+//    _ x: Tensor
+//  ) -> (value: Tensor, pullback: (Tensor) -> Tensor) {
+//    (acos(x), { v in -v / sqrt(1 - x.squared()) })
+//  }
+//
+//  /// The inverse sine of `x` in radians.
+//  @differentiable(reverse)
+//  public static func asin(_ x: Self) -> Self {
+//    _Raw.asin(x)
+//  }
+//
+//  @inlinable
+//  @derivative(of: asin)
+//  internal static func _vjpAsin(
+//    _ x: Tensor
+//  ) -> (value: Tensor, pullback: (Tensor) -> Tensor) {
+//    (asin(x), { v in v / sqrt(1 - x.squared()) })
+//  }
+//
+//  /// The inverse tangent of `x` in radians.
+//  @differentiable(reverse)
+//  public static func atan(_ x: Self) -> Self {
+//    _Raw.atan(x)
+//  }
+//
+//  @inlinable
+//  @derivative(of: atan)
+//  internal static func _vjpAtan(
+//    _ x: Tensor
+//  ) -> (value: Tensor, pullback: (Tensor) -> Tensor) {
+//    (atan(x), { v in v / (1 + x.squared()) })
+//  }
+//
+//  /// The hyperbolic cosine of `x`.
+//  @differentiable(reverse)
+//  public static func cosh(_ x: Self) -> Self {
+//    _Raw.cosh(x)
+//  }
+//
+//  @inlinable
+//  @derivative(of: cosh)
+//  internal static func _vjpCosh(
+//    _ x: Tensor
+//  ) -> (value: Tensor, pullback: (Tensor) -> Tensor) {
+//    (cosh(x), { v in v * sinh(x) })
+//  }
+//
+//  /// The hyperbolic sine of `x`.
+//  @differentiable(reverse)
+//  public static func sinh(_ x: Self) -> Self {
+//    _Raw.sinh(x)
+//  }
+//
+//  @inlinable
+//  @derivative(of: sinh)
+//  internal static func _vjpSinh(
+//    _ x: Tensor
+//  ) -> (value: Tensor, pullback: (Tensor) -> Tensor) {
+//    (sinh(x), { v in v * cosh(x) })
+//  }
+//
+//  /// The hyperbolic tangent of `x`.
+//  @differentiable(reverse)
+//  public static func tanh(_ x: Self) -> Self {
+//    _Raw.tanh(x)
+//  }
+//
+//  @inlinable
+//  @derivative(of: tanh)
+//  internal static func _vjpTanh(
+//    _ x: Tensor
+//  ) -> (value: Tensor, pullback: (Tensor) -> Tensor) {
+//    let value = tanh(x)
+//    return (value, { v in v * (1 - value.squared()) })
+//  }
+//
+//  /// The inverse hyperbolic cosine of `x`.
+//  @differentiable(reverse)
+//  public static func acosh(_ x: Self) -> Self {
+//    _Raw.acosh(x)
+//  }
+//
+//  @inlinable
+//  @derivative(of: acosh)
+//  internal static func _vjpAcosh(
+//    _ x: Tensor
+//  ) -> (value: Tensor, pullback: (Tensor) -> Tensor) {
+//    (acosh(x), { v in v / asinh(x) })
+//  }
+//
+//  /// The inverse hyperbolic sine of `x`.
+//  @differentiable(reverse)
+//  public static func asinh(_ x: Self) -> Self {
+//    _Raw.asinh(x)
+//  }
+//
+//  @inlinable
+//  @derivative(of: asinh)
+//  internal static func _vjpAsinh(
+//    _ x: Tensor
+//  ) -> (value: Tensor, pullback: (Tensor) -> Tensor) {
+//    (asinh(x), { v in v / acosh(x) })
+//  }
+//
+//  /// The inverse hyperbolic tangent of `x`.
+//  @differentiable(reverse)
+//  public static func atanh(_ x: Self) -> Self {
+//    _Raw.atanh(x)
+//  }
+//
+//  @inlinable
+//  @derivative(of: atanh)
+//  internal static func _vjpAtanh(
+//    _ x: Tensor
+//  ) -> (value: Tensor, pullback: (Tensor) -> Tensor) {
+//    (atanh(x), { v in v / (1 - x.squared()) })
+//  }
 
-  /// The `n`th root of `x`.
-  ///
-  /// For real types, if `x` is negative and `n` is even, the result is NaN.
-  /// For complex types, there is a branch cut along the negative real axis.
-  @differentiable(reverse)
-  public static func root(_ x: Self, _ n: Int) -> Self {
-    sign(x) * pow(abs(x), Tensor(Scalar(1) / Scalar(n), on: x.device))
-  }
+//  /// The exponential function applied to `x`, or `e**x`.
+//  @differentiable(reverse)
+//  public static func exp(_ x: Self) -> Self {
+//    _Raw.exp(x)
+//  }
+//
+//  @inlinable
+//  @derivative(of: exp)
+//  internal static func _vjpExp(
+//    _ x: Tensor
+//  ) -> (value: Tensor, pullback: (Tensor) -> Tensor) {
+//    let value = exp(x)
+//    return (value, { v in value * v })
+//  }
+//
+//  /// Two raised to to power `x`.
+//  @differentiable(reverse)
+//  public static func exp2(_ x: Self) -> Self {
+//    pow(Tensor(2, on: x.device), x)
+//  }
+//
+//  /// Ten raised to to power `x`.
+//  @differentiable(reverse)
+//  public static func exp10(_ x: Self) -> Self {
+//    pow(Tensor(10, on: x.device), x)
+//  }
+//
+//  /// `exp(x) - 1` evaluated so as to preserve accuracy close to zero.
+//  @differentiable(reverse)
+//  public static func expm1(_ x: Self) -> Self {
+//    _Raw.expm1(x)
+//  }
+//
+//#if TENSORFLOW_USE_STANDARD_TOOLCHAIN
+//  @differentiable(reverse)
+//  public static func expMinusOne(_ x: Self) -> Self {
+//    return expm1(x)
+//  }
+//#endif
+//
+//  @inlinable
+//  @derivative(of: expm1)
+//  internal static func _vjpExpm1(
+//    _ x: Tensor
+//  ) -> (value: Tensor, pullback: (Tensor) -> Tensor) {
+//    let y = expm1(x)
+//    return (y, { v in v * y })
+//  }
+//
+//  /// The natural logarithm of `x`.
+//  @differentiable(reverse)
+//  public static func log(_ x: Self) -> Self {
+//    _Raw.log(x)
+//  }
+//
+//  @inlinable
+//  @derivative(of: log(_:))
+//  internal static func _vjpLog(
+//    _ x: Tensor
+//  ) -> (value: Tensor, pullback: (Tensor) -> Tensor) {
+//    (log(x), { v in v / x })
+//  }
+//
+//  /// The base-two logarithm of `x`.
+//  @differentiable(reverse)
+//  public static func log2(_ x: Self) -> Self {
+//    log(x) / Scalar.log(2)
+//  }
+//
+//  /// The base-ten logarithm of `x`.
+//  @differentiable(reverse)
+//  public static func log10(_ x: Self) -> Self {
+//    log(x) / Scalar.log(10)
+//  }
+//
+//  /// `log(1 + x)` evaluated so as to preserve accuracy close to zero.
+//  @differentiable(reverse)
+//  public static func log1p(_ x: Self) -> Self {
+//    _Raw.log1p(x)
+//  }
+//
+//#if TENSORFLOW_USE_STANDARD_TOOLCHAIN
+//  @differentiable(reverse)
+//  public static func log(onePlus x: Self) -> Self {
+//    return log1p(x)
+//  }
+//#endif
+//
+//  @inlinable
+//  @derivative(of: log1p)
+//  internal static func _vjpLog1p(
+//    _ x: Tensor
+//  ) -> (value: Tensor, pullback: (Tensor) -> Tensor) {
+//    (log1p(x), { v in _Raw.xdivy(v, 1 + x) })
+//  }
+
+//  /// `exp(y log(x))` computed without loss of intermediate precision.
+//  ///
+//  /// For real types, if `x` is negative the result is NaN, even if `y` has
+//  /// an integral value. For complex types, there is a branch cut on the
+//  /// negative real axis.
+////  @differentiable(reverse)
+//  public static func pow(_ x: Self, _ y: Self) -> Self {
+//    fatalError()
+////    _Raw.pow(x, y)
+//  }
+//
+//  @inlinable
+//  @derivative(of: pow)
+//  internal static func _vjpPow(
+//    _ x: Tensor, _ y: Tensor
+//  ) -> (value: Tensor, pullback: (Tensor) -> (Tensor, Tensor)) {
+//    fatalError()
+////    let value = pow(x, y)
+////    return (
+////      value,
+////      { v in
+////        let safeX = x.replacing(with: Tensor(onesLike: x), where: x .<= 0)
+////        let lhsGrad = v * y * pow(x, y - 1)
+////        let rhsGrad = value * v * log(safeX)
+////        let (lhsShape, rhsShape) = (x.shapeTensor, y.shapeTensor)
+////        let (lhsAxes, rhsAxes) = _Raw.broadcastGradientArgs(s0: lhsShape, s1: rhsShape)
+////        return (
+////          lhsGrad.sum(squeezingAxes: lhsAxes).reshaped(toShape: lhsShape),
+////          rhsGrad.sum(squeezingAxes: rhsAxes).reshaped(toShape: rhsShape)
+////        )
+////      }
+////    )
+//  }
+//
+//  /// `x` raised to the `n`th power.
+//  ///
+//  /// The product of `n` copies of `x`.
+////  @differentiable(reverse)
+//  public static func pow(_ x: Self, _ n: Int) -> Self {
+//    fatalError()
+////    pow(x, Tensor(Scalar(n), on: x.device))
+//  }
+//
+//  /// The `n`th root of `x`.
+//  ///
+//  /// For real types, if `x` is negative and `n` is even, the result is NaN.
+//  /// For complex types, there is a branch cut along the negative real axis.
+////  @differentiable(reverse)
+//  public static func root(_ x: Self, _ n: Int) -> Self {
+//    fatalError()
+////    sign(x) * pow(abs(x), Tensor(Scalar(1) / Scalar(n), on: x.device))
+//  }
 }
 
 //===------------------------------------------------------------------------------------------===//
 // Vector Space
 //===------------------------------------------------------------------------------------------===//
 
-extension Tensor: VectorProtocol where Scalar: TensorFlowFloatingPoint {
-  public typealias VectorSpaceScalar = Float
-
-  // @differentiable(reverse where Scalar: TensorFlowFloatingPoint)
-  public func scaled(by scale: Float) -> Self {
-    Scalar(scale) * self
-  }
-
-  // @differentiable(reverse where Scalar: TensorFlowFloatingPoint)
-  public func adding(_ scalar: Float) -> Self {
-    self + Scalar(scalar)
-  }
-
-  // @differentiable(reverse where Scalar: TensorFlowFloatingPoint)
-  public func subtracting(_ scalar: Float) -> Self {
-    self - Scalar(scalar)
-  }
-}
+//extension Tensor: VectorProtocol where Scalar: TensorFlowFloatingPoint {
+//  public typealias VectorSpaceScalar = Float
+//
+//  // @differentiable(reverse where Scalar: TensorFlowFloatingPoint)
+//  public func scaled(by scale: Float) -> Self {
+//    Scalar(scale) * self
+//  }
+//
+//  // @differentiable(reverse where Scalar: TensorFlowFloatingPoint)
+//  public func adding(_ scalar: Float) -> Self {
+//    self + Scalar(scalar)
+//  }
+//
+//  // @differentiable(reverse where Scalar: TensorFlowFloatingPoint)
+//  public func subtracting(_ scalar: Float) -> Self {
+//    self - Scalar(scalar)
+//  }
+//}
 
 // Note: previously, these `VectorProtocol` operator definitions were internal.
 // This was confusing to library users, since operators were unavailable.
@@ -546,71 +551,71 @@ extension Tensor where Scalar: Numeric {
 
   /// Returns the quotient of dividing the first tensor by the second.
   /// - Note: `/` supports broadcasting.
-  @inlinable
-  @differentiable(reverse where Scalar: TensorFlowFloatingPoint)
-  public static func / (lhs: Tensor, rhs: Tensor) -> Tensor {
-    return _Raw.div(lhs, rhs)
-  }
-
-  /// Returns the quotient of dividing the scalar by the tensor, broadcasting the scalar.
-  @inlinable
-  @differentiable(reverse where Scalar: TensorFlowFloatingPoint)
-  public static func / (lhs: Scalar, rhs: Tensor) -> Tensor {
-    return Tensor(lhs, deviceAndPrecisionLike: rhs) / rhs
-  }
-
-  /// Returns the quotient of dividing the tensor by the scalar, broadcasting the scalar.
-  @inlinable
-  @differentiable(reverse where Scalar: TensorFlowFloatingPoint)
-  public static func / (lhs: Tensor, rhs: Scalar) -> Tensor {
-    return lhs / Tensor(rhs, deviceAndPrecisionLike: lhs)
-  }
-
-  /// Divides the first tensor by the second and stores the quotient in the left-hand-side
-  /// variable.
-  @inlinable
-  public static func /= (lhs: inout Tensor, rhs: Tensor) {
-    lhs = lhs / rhs
-  }
-
-  /// Divides the tensor by the scalar, broadcasting the scalar, and stores the quotient in the
-  /// left-hand-side variable.
-  @inlinable
-  public static func /= (lhs: inout Tensor, rhs: Scalar) {
-    lhs = lhs / rhs
-  }
+//  @inlinable
+////  @differentiable(reverse where Scalar: TensorFlowFloatingPoint)
+//  public static func / (lhs: Tensor, rhs: Tensor) -> Tensor {
+//    return _Raw.div(lhs, rhs)
+//  }
+//
+//  /// Returns the quotient of dividing the scalar by the tensor, broadcasting the scalar.
+//  @inlinable
+////  @differentiable(reverse where Scalar: TensorFlowFloatingPoint)
+//  public static func / (lhs: Scalar, rhs: Tensor) -> Tensor {
+//    return Tensor(lhs, deviceAndPrecisionLike: rhs) / rhs
+//  }
+//
+//  /// Returns the quotient of dividing the tensor by the scalar, broadcasting the scalar.
+//  @inlinable
+////  @differentiable(reverse where Scalar: TensorFlowFloatingPoint)
+//  public static func / (lhs: Tensor, rhs: Scalar) -> Tensor {
+//    return lhs / Tensor(rhs, deviceAndPrecisionLike: lhs)
+//  }
+//
+//  /// Divides the first tensor by the second and stores the quotient in the left-hand-side
+//  /// variable.
+//  @inlinable
+//  public static func /= (lhs: inout Tensor, rhs: Tensor) {
+//    lhs = lhs / rhs
+//  }
+//
+//  /// Divides the tensor by the scalar, broadcasting the scalar, and stores the quotient in the
+//  /// left-hand-side variable.
+//  @inlinable
+//  public static func /= (lhs: inout Tensor, rhs: Scalar) {
+//    lhs = lhs / rhs
+//  }
 
   /// Returns the remainder of dividing the first tensor by the second.
   /// - Note: `%` supports broadcasting.
-  @inlinable
-  public static func % (lhs: Tensor, rhs: Tensor) -> Tensor {
-    return _Raw.mod(lhs, rhs)
-  }
-
-  /// Returns the remainder of dividing the tensor by the scalar, broadcasting the scalar.
-  @inlinable
-  public static func % (lhs: Tensor, rhs: Scalar) -> Tensor {
-    return lhs % Tensor(rhs, deviceAndPrecisionLike: lhs)
-  }
-
-  /// Returns the remainder of dividing the scalar by the tensor, broadcasting the scalar.
-  @inlinable
-  public static func % (lhs: Scalar, rhs: Tensor) -> Tensor {
-    return Tensor(lhs, deviceAndPrecisionLike: rhs) % rhs
-  }
-
-  /// Divides the first tensor by the second and stores the remainder in the left-hand-side
-  /// variable.
-  @inlinable
-  public static func %= (lhs: inout Tensor, rhs: Tensor) {
-    lhs = lhs % rhs
-  }
-
-  /// Divides the tensor by the scalar and stores the remainder in the left-hand-side variable.
-  @inlinable
-  public static func %= (lhs: inout Tensor, rhs: Scalar) {
-    lhs = lhs % rhs
-  }
+//  @inlinable
+//  public static func % (lhs: Tensor, rhs: Tensor) -> Tensor {
+//    return _Raw.mod(lhs, rhs)
+//  }
+//
+//  /// Returns the remainder of dividing the tensor by the scalar, broadcasting the scalar.
+//  @inlinable
+//  public static func % (lhs: Tensor, rhs: Scalar) -> Tensor {
+//    return lhs % Tensor(rhs, deviceAndPrecisionLike: lhs)
+//  }
+//
+//  /// Returns the remainder of dividing the scalar by the tensor, broadcasting the scalar.
+//  @inlinable
+//  public static func % (lhs: Scalar, rhs: Tensor) -> Tensor {
+//    return Tensor(lhs, deviceAndPrecisionLike: rhs) % rhs
+//  }
+//
+//  /// Divides the first tensor by the second and stores the remainder in the left-hand-side
+//  /// variable.
+//  @inlinable
+//  public static func %= (lhs: inout Tensor, rhs: Tensor) {
+//    lhs = lhs % rhs
+//  }
+//
+//  /// Divides the tensor by the scalar and stores the remainder in the left-hand-side variable.
+//  @inlinable
+//  public static func %= (lhs: inout Tensor, rhs: Scalar) {
+//    lhs = lhs % rhs
+//  }
 }
 
 extension Tensor where Scalar: TensorFlowFloatingPoint {
@@ -681,44 +686,44 @@ extension Tensor where Scalar: TensorFlowFloatingPoint {
 //    return (lhs * rhs, { v in ((v * rhs).sum().scalarized(), v * lhs) })
   }
 
-  @inlinable
-  @derivative(of: /)
-  static func _vjpDivide(lhs: Tensor, rhs: Tensor) -> (
-    value: Tensor, pullback: (Tensor) -> (Tensor, Tensor)
-  ) {
-    return (
-      lhs / rhs,
-      { [broadcastPb = BroadcastingPullback(lhs, rhs)] v in
-        return broadcastPb(v / rhs, -lhs / rhs.squared() * v)
-      }
-    )
-  }
-
-  @inlinable
-  @derivative(of: /)
-  static func _vjpDivide(lhs: Tensor, rhs: Scalar) -> (
-    value: Tensor, pullback: (Tensor) -> (Tensor, Scalar)
-  ) {
-    fatalError()
+//  @inlinable
+//  @derivative(of: /)
+//  static func _vjpDivide(lhs: Tensor, rhs: Tensor) -> (
+//    value: Tensor, pullback: (Tensor) -> (Tensor, Tensor)
+//  ) {
 //    return (
 //      lhs / rhs,
-//      { v in
-//        (
-//          v / rhs,
-//          (v * -lhs / Tensor(rhs, deviceAndPrecisionLike: lhs).squared()).sum().scalarized()
-//        )
+//      { [broadcastPb = BroadcastingPullback(lhs, rhs)] v in
+//        return broadcastPb(v / rhs, -lhs / rhs.squared() * v)
 //      }
 //    )
-  }
+//  }
+//
+//  @inlinable
+//  @derivative(of: /)
+//  static func _vjpDivide(lhs: Tensor, rhs: Scalar) -> (
+//    value: Tensor, pullback: (Tensor) -> (Tensor, Scalar)
+//  ) {
+//    fatalError()
+////    return (
+////      lhs / rhs,
+////      { v in
+////        (
+////          v / rhs,
+////          (v * -lhs / Tensor(rhs, deviceAndPrecisionLike: lhs).squared()).sum().scalarized()
+////        )
+////      }
+////    )
+//  }
 
-  @inlinable
-  @derivative(of: /)
-  static func _vjpDivide(lhs: Scalar, rhs: Tensor) -> (
-    value: Tensor, pullback: (Tensor) -> (Scalar, Tensor)
-  ) {
-    fatalError()
-//    return (lhs / rhs, { v in ((v / rhs).sum().scalarized(), v * -lhs / rhs.squared()) })
-  }
+//  @inlinable
+//  @derivative(of: /)
+//  static func _vjpDivide(lhs: Scalar, rhs: Tensor) -> (
+//    value: Tensor, pullback: (Tensor) -> (Scalar, Tensor)
+//  ) {
+//    fatalError()
+////    return (lhs / rhs, { v in ((v / rhs).sum().scalarized(), v * -lhs / rhs.squared()) })
+//  }
 }
 
 // MARK: Optimized derivatives for tensor-scalar operations
@@ -778,118 +783,118 @@ extension Tensor where Scalar: TensorFlowFloatingPoint {
     return (lhs * rhs, { v in v * lhs })
   }
 
-  @inlinable
-  @derivative(of: /, wrt: lhs)
-  static func _vjpDivide(lhs: Tensor, rhs: Scalar) -> (
-    value: Tensor, pullback: (Tensor) -> Tensor
-  ) {
-    return (lhs / rhs, { v in v / rhs })
-  }
+//  @inlinable
+//  @derivative(of: /, wrt: lhs)
+//  static func _vjpDivide(lhs: Tensor, rhs: Scalar) -> (
+//    value: Tensor, pullback: (Tensor) -> Tensor
+//  ) {
+//    return (lhs / rhs, { v in v / rhs })
+//  }
 
-  @inlinable
-  @derivative(of: /, wrt: rhs)
-  static func _vjpDivide(lhs: Scalar, rhs: Tensor) -> (
-    value: Tensor, pullback: (Tensor) -> Tensor
-  ) {
-    return (lhs / rhs, { v in v * -lhs / rhs.squared() })
-  }
+//  @inlinable
+//  @derivative(of: /, wrt: rhs)
+//  static func _vjpDivide(lhs: Scalar, rhs: Tensor) -> (
+//    value: Tensor, pullback: (Tensor) -> Tensor
+//  ) {
+//    return (lhs / rhs, { v in v * -lhs / rhs.squared() })
+//  }
 }
 
-extension Tensor where Scalar == Bool {
-  /// Returns `!self` element-wise.
-  @inlinable
-  public func elementsLogicalNot() -> Tensor {
-    return _Raw.logicalNot(self)
-  }
+//extension Tensor where Scalar == Bool {
+//  /// Returns `!self` element-wise.
+//  @inlinable
+//  public func elementsLogicalNot() -> Tensor {
+//    return _Raw.logicalNot(self)
+//  }
+//
+//  /// Returns `self && other` element-wise.
+//  /// - Note: `&&` supports broadcasting.
+//  @inlinable
+//  public func elementsLogicalAnd(_ other: Tensor) -> Tensor {
+//    return _Raw.logicalAnd(self, other)
+//  }
+//
+//  /// Returns `self && other` element-wise, broadcasting `other`.
+//  @inlinable
+//  public func elementsLogicalAnd(_ other: Scalar) -> Tensor {
+//    return elementsLogicalAnd(Tensor(other, on: device))
+//  }
+//
+//  /// Returns `self || other` element-wise.
+//  @inlinable
+//  public func elementsLogicalOr(_ other: Tensor) -> Tensor {
+//    return _Raw.logicalOr(self, other)
+//  }
+//
+//  /// Returns `self || other` element-wise, broadcasting `other`.
+//  @inlinable
+//  public func elementsLogicalOr(_ other: Scalar) -> Tensor {
+//    return elementsLogicalOr(Tensor(other, on: device))
+//  }
+//}
 
-  /// Returns `self && other` element-wise.
-  /// - Note: `&&` supports broadcasting.
-  @inlinable
-  public func elementsLogicalAnd(_ other: Tensor) -> Tensor {
-    return _Raw.logicalAnd(self, other)
-  }
+//extension Tensor where Scalar: TensorFlowNumeric {
+//  /// Returns `max(min(self, max), min)`.
+//  @inlinable
+////  @differentiable(reverse where Scalar: TensorFlowFloatingPoint)
+//  public func clipped(min: Tensor, max: Tensor) -> Tensor {
+//    _Raw.clipByValue(t: self, clipValueMin: min, clipValueMax: max)
+//  }
+//
+//  /// Returns `max(min(self, max), min)`.
+//  @inlinable
+////  @differentiable(reverse, wrt: (self, min) where Scalar: TensorFlowFloatingPoint)
+//  public func clipped(min: Tensor, max: Scalar) -> Tensor {
+//    clipped(min: min, max: Tensor(max, deviceAndPrecisionLike: self))
+//  }
+//
+//  /// Returns `max(min(self, max), min)`.
+//  @inlinable
+////  @differentiable(reverse, wrt: (self, max) where Scalar: TensorFlowFloatingPoint)
+//  public func clipped(min: Scalar, max: Tensor) -> Tensor {
+//    clipped(min: Tensor(min, deviceAndPrecisionLike: self), max: max)
+//  }
+//
+//  /// Returns `max(min(self, max), min)`.
+//  @inlinable
+////  @differentiable(reverse, wrt: self where Scalar: TensorFlowFloatingPoint)
+//  public func clipped(min: Scalar, max: Scalar) -> Tensor {
+//    clipped(
+//      min: Tensor(min, deviceAndPrecisionLike: self),
+//      max: Tensor(max, deviceAndPrecisionLike: self))
+//  }
+//}
 
-  /// Returns `self && other` element-wise, broadcasting `other`.
-  @inlinable
-  public func elementsLogicalAnd(_ other: Scalar) -> Tensor {
-    return elementsLogicalAnd(Tensor(other, on: device))
-  }
-
-  /// Returns `self || other` element-wise.
-  @inlinable
-  public func elementsLogicalOr(_ other: Tensor) -> Tensor {
-    return _Raw.logicalOr(self, other)
-  }
-
-  /// Returns `self || other` element-wise, broadcasting `other`.
-  @inlinable
-  public func elementsLogicalOr(_ other: Scalar) -> Tensor {
-    return elementsLogicalOr(Tensor(other, on: device))
-  }
-}
-
-extension Tensor where Scalar: TensorFlowNumeric {
-  /// Returns `max(min(self, max), min)`.
-  @inlinable
-  @differentiable(reverse where Scalar: TensorFlowFloatingPoint)
-  public func clipped(min: Tensor, max: Tensor) -> Tensor {
-    _Raw.clipByValue(t: self, clipValueMin: min, clipValueMax: max)
-  }
-
-  /// Returns `max(min(self, max), min)`.
-  @inlinable
-  @differentiable(reverse, wrt: (self, min) where Scalar: TensorFlowFloatingPoint)
-  public func clipped(min: Tensor, max: Scalar) -> Tensor {
-    clipped(min: min, max: Tensor(max, deviceAndPrecisionLike: self))
-  }
-
-  /// Returns `max(min(self, max), min)`.
-  @inlinable
-  @differentiable(reverse, wrt: (self, max) where Scalar: TensorFlowFloatingPoint)
-  public func clipped(min: Scalar, max: Tensor) -> Tensor {
-    clipped(min: Tensor(min, deviceAndPrecisionLike: self), max: max)
-  }
-
-  /// Returns `max(min(self, max), min)`.
-  @inlinable
-  @differentiable(reverse, wrt: self where Scalar: TensorFlowFloatingPoint)
-  public func clipped(min: Scalar, max: Scalar) -> Tensor {
-    clipped(
-      min: Tensor(min, deviceAndPrecisionLike: self),
-      max: Tensor(max, deviceAndPrecisionLike: self))
-  }
-}
-
-extension Tensor where Scalar: TensorFlowFloatingPoint {
-  @inlinable
-  @derivative(of: clipped)
-  func _vjpClipped(min: Tensor, max: Tensor) -> (
-    value: Tensor, pullback: (Tensor) -> (Tensor, Tensor, Tensor)
-  ) {
-    fatalError()
-//    (
-//      clipped(min: min, max: max),
-//      { v in
-//        let selfShape = self.shapeTensor
-//        let minShape = min.shapeTensor
-//        let maxShape = max.shapeTensor
-//        let zeros = Tensor(zerosLike: v)
-//        let minMask = self .< min
-//        let maxMask = self .> max
-//        let selfGradient = v.replacing(with: zeros, where: minMask.elementsLogicalOr(maxMask))
-//        let minGradient = zeros.replacing(with: v, where: minMask)
-//        let maxGradient = zeros.replacing(with: v, where: maxMask)
-//        let (selfAxes, minAxes) = _Raw.broadcastGradientArgs(s0: selfShape, s1: minShape)
-//        let (_, maxAxes) = _Raw.broadcastGradientArgs(s0: selfShape, s1: maxShape)
-//        return (
-//          selfGradient.sum(squeezingAxes: selfAxes).reshaped(toShape: selfShape),
-//          minGradient.sum(squeezingAxes: minAxes).reshaped(toShape: minShape),
-//          maxGradient.sum(squeezingAxes: maxAxes).reshaped(toShape: maxShape)
-//        )
-//      }
-//    )
-  }
-}
+//extension Tensor where Scalar: TensorFlowFloatingPoint {
+//  @inlinable
+//  @derivative(of: clipped)
+//  func _vjpClipped(min: Tensor, max: Tensor) -> (
+//    value: Tensor, pullback: (Tensor) -> (Tensor, Tensor, Tensor)
+//  ) {
+//    fatalError()
+////    (
+////      clipped(min: min, max: max),
+////      { v in
+////        let selfShape = self.shapeTensor
+////        let minShape = min.shapeTensor
+////        let maxShape = max.shapeTensor
+////        let zeros = Tensor(zerosLike: v)
+////        let minMask = self .< min
+////        let maxMask = self .> max
+////        let selfGradient = v.replacing(with: zeros, where: minMask.elementsLogicalOr(maxMask))
+////        let minGradient = zeros.replacing(with: v, where: minMask)
+////        let maxGradient = zeros.replacing(with: v, where: maxMask)
+////        let (selfAxes, minAxes) = _Raw.broadcastGradientArgs(s0: selfShape, s1: minShape)
+////        let (_, maxAxes) = _Raw.broadcastGradientArgs(s0: selfShape, s1: maxShape)
+////        return (
+////          selfGradient.sum(squeezingAxes: selfAxes).reshaped(toShape: selfShape),
+////          minGradient.sum(squeezingAxes: minAxes).reshaped(toShape: minShape),
+////          maxGradient.sum(squeezingAxes: maxAxes).reshaped(toShape: maxShape)
+////        )
+////      }
+////    )
+//  }
+//}
 
 //===------------------------------------------------------------------------------------------===//
 // Element-wise Unary Math Functions
@@ -897,14 +902,14 @@ extension Tensor where Scalar: TensorFlowFloatingPoint {
 
 // Export Glibc/Darwin/ucrt math functions. We should not require users to import
 // Foundation/Darwin/Glibc/ucrt in order to use scalar math functions.
-
-#if os(macOS) || os(iOS) || os(watchOS) || os(tvOS)
-  @_exported import Darwin.C
-#elseif os(Windows)
-  @_exported import ucrt
-#else
-  @_exported import Glibc
-#endif
+//
+//#if os(macOS) || os(iOS) || os(watchOS) || os(tvOS)
+//  @_exported import Darwin.C
+//#elseif os(Windows)
+//  @_exported import ucrt
+//#else
+//  @_exported import Glibc
+//#endif
 
 // FIXME: Scoped imports are not yet supported in parseable module interfaces, so
 // `@_exported import` won't work. When that becomes supported, switch to `@_exported import` by
@@ -990,48 +995,48 @@ extension Tensor where Scalar: TensorFlowFloatingPoint {
 }
 
 /// Returns the absolute value of the specified tensor element-wise.
-@inlinable
-@differentiable(reverse where T: TensorFlowFloatingPoint)
-public func abs<T: SignedNumeric>(_ x: Tensor<T>) -> Tensor<T> {
-  _Raw.abs(x)
-}
+//@inlinable
+////@differentiable(reverse where T: TensorFlowFloatingPoint)
+//public func abs<T: SignedNumeric>(_ x: Tensor<T>) -> Tensor<T> {
+//  _Raw.abs(x)
+//}
 
-@inlinable
-@derivative(of: abs)
-internal func _vjpAbs<T: TensorFlowFloatingPoint>(
-  _ x: Tensor<T>
-) -> (value: Tensor<T>, pullback: (Tensor<T>) -> Tensor<T>) {
-  let sign = _Raw.sign(x)
-  return (abs(x), { v in v * sign })
-}
+//@inlinable
+//@derivative(of: abs)
+//internal func _vjpAbs<T: TensorFlowFloatingPoint>(
+//  _ x: Tensor<T>
+//) -> (value: Tensor<T>, pullback: (Tensor<T>) -> Tensor<T>) {
+//  let sign = _Raw.sign(x)
+//  return (abs(x), { v in v * sign })
+//}
 
-/// Returns the natural logarithm of the specified tensor element-wise.
-@inlinable
-@differentiable(reverse)
-public func log<T: TensorFlowFloatingPoint>(_ x: Tensor<T>) -> Tensor<T> {
-  Tensor.log(x)
-}
-
-/// Returns the base-two logarithm of the specified tensor element-wise.
-@inlinable
-@differentiable(reverse)
-public func log2<T: TensorFlowFloatingPoint>(_ x: Tensor<T>) -> Tensor<T> {
-  log(x) / T.log(2)
-}
-
-/// Returns the base-ten logarithm of the specified tensor element-wise.
-@inlinable
-@differentiable(reverse)
-public func log10<T: TensorFlowFloatingPoint>(_ x: Tensor<T>) -> Tensor<T> {
-  log(x) / T.log(10)
-}
-
-/// Returns the logarithm of `1 + x` element-wise.
-@inlinable
-@differentiable(reverse)
-public func log1p<T: TensorFlowFloatingPoint>(_ x: Tensor<T>) -> Tensor<T> {
-  Tensor.log1p(x)
-}
+///// Returns the natural logarithm of the specified tensor element-wise.
+//@inlinable
+//@differentiable(reverse)
+//public func log<T: TensorFlowFloatingPoint>(_ x: Tensor<T>) -> Tensor<T> {
+//  Tensor.log(x)
+//}
+//
+///// Returns the base-two logarithm of the specified tensor element-wise.
+//@inlinable
+//@differentiable(reverse)
+//public func log2<T: TensorFlowFloatingPoint>(_ x: Tensor<T>) -> Tensor<T> {
+//  log(x) / T.log(2)
+//}
+//
+///// Returns the base-ten logarithm of the specified tensor element-wise.
+//@inlinable
+//@differentiable(reverse)
+//public func log10<T: TensorFlowFloatingPoint>(_ x: Tensor<T>) -> Tensor<T> {
+//  log(x) / T.log(10)
+//}
+//
+///// Returns the logarithm of `1 + x` element-wise.
+//@inlinable
+//@differentiable(reverse)
+//public func log1p<T: TensorFlowFloatingPoint>(_ x: Tensor<T>) -> Tensor<T> {
+//  Tensor.log1p(x)
+//}
 
 /// Returns `log(1 - exp(x))` using a numerically stable approach.
 ///
@@ -1048,89 +1053,89 @@ public func log1p<T: TensorFlowFloatingPoint>(_ x: Tensor<T>) -> Tensor<T> {
 //  return log1p(-exp(xSafe)).replacing(with: log(-expm1(x)), where: isTooSmall)
 //}
 
-/// Returns the sine of the specified tensor element-wise.
-@inlinable
-@differentiable(reverse)
-public func sin<T: TensorFlowFloatingPoint>(_ x: Tensor<T>) -> Tensor<T> {
-  Tensor.sin(x)
-}
-
-/// Returns the cosine of the specified tensor element-wise.
-@inlinable
-@differentiable(reverse)
-public func cos<T: TensorFlowFloatingPoint>(_ x: Tensor<T>) -> Tensor<T> {
-  Tensor.cos(x)
-}
-
-/// Returns the tangent of the specified tensor element-wise.
-@inlinable
-@differentiable(reverse)
-public func tan<T: TensorFlowFloatingPoint>(_ x: Tensor<T>) -> Tensor<T> {
-  Tensor.tan(x)
-}
-
-/// Returns the hyperbolic sine of the specified tensor element-wise.
-@inlinable
-@differentiable(reverse)
-public func sinh<T: TensorFlowFloatingPoint>(_ x: Tensor<T>) -> Tensor<T> {
-  Tensor.sinh(x)
-}
-
-/// Returns the hyperbolic cosine of the specified tensor element-wise.
-@inlinable
-@differentiable(reverse)
-public func cosh<T: TensorFlowFloatingPoint>(_ x: Tensor<T>) -> Tensor<T> {
-  Tensor.cosh(x)
-}
-
-/// Returns the hyperbolic tangent of the specified tensor element-wise.
-@inlinable
-@differentiable(reverse)
-public func tanh<T: TensorFlowFloatingPoint>(_ x: Tensor<T>) -> Tensor<T> {
-  Tensor.tanh(x)
-}
-
-/// Returns the inverse cosine of the specified tensor element-wise.
-@inlinable
-@differentiable(reverse)
-public func acos<T: TensorFlowFloatingPoint>(_ x: Tensor<T>) -> Tensor<T> {
-  Tensor.acos(x)
-}
-
-/// Returns the inverse sine of the specified tensor element-wise.
-@inlinable
-@differentiable(reverse)
-public func asin<T: TensorFlowFloatingPoint>(_ x: Tensor<T>) -> Tensor<T> {
-  Tensor.asin(x)
-}
-
-/// Returns the inverse tangent of the specified tensor element-wise.
-@inlinable
-@differentiable(reverse)
-public func atan<T: TensorFlowFloatingPoint>(_ x: Tensor<T>) -> Tensor<T> {
-  Tensor.atan(x)
-}
-
-/// Returns the inverse hyperbolic cosine of the specified tensor element-wise.
-@inlinable
-@differentiable(reverse)
-public func acosh<T: TensorFlowFloatingPoint>(_ x: Tensor<T>) -> Tensor<T> {
-  Tensor.acosh(x)
-}
-
-/// Returns the inverse hyperbolic sine of the specified tensor element-wise.
-@inlinable
-@differentiable(reverse)
-public func asinh<T: TensorFlowFloatingPoint>(_ x: Tensor<T>) -> Tensor<T> {
-  Tensor.asinh(x)
-}
-
-/// Returns the inverse hyperbolic tangent of the specified tensor element-wise.
-@inlinable
-@differentiable(reverse)
-public func atanh<T: TensorFlowFloatingPoint>(_ x: Tensor<T>) -> Tensor<T> {
-  Tensor.atanh(x)
-}
+///// Returns the sine of the specified tensor element-wise.
+//@inlinable
+//@differentiable(reverse)
+//public func sin<T: TensorFlowFloatingPoint>(_ x: Tensor<T>) -> Tensor<T> {
+//  Tensor.sin(x)
+//}
+//
+///// Returns the cosine of the specified tensor element-wise.
+//@inlinable
+//@differentiable(reverse)
+//public func cos<T: TensorFlowFloatingPoint>(_ x: Tensor<T>) -> Tensor<T> {
+//  Tensor.cos(x)
+//}
+//
+///// Returns the tangent of the specified tensor element-wise.
+//@inlinable
+//@differentiable(reverse)
+//public func tan<T: TensorFlowFloatingPoint>(_ x: Tensor<T>) -> Tensor<T> {
+//  Tensor.tan(x)
+//}
+//
+///// Returns the hyperbolic sine of the specified tensor element-wise.
+//@inlinable
+//@differentiable(reverse)
+//public func sinh<T: TensorFlowFloatingPoint>(_ x: Tensor<T>) -> Tensor<T> {
+//  Tensor.sinh(x)
+//}
+//
+///// Returns the hyperbolic cosine of the specified tensor element-wise.
+//@inlinable
+//@differentiable(reverse)
+//public func cosh<T: TensorFlowFloatingPoint>(_ x: Tensor<T>) -> Tensor<T> {
+//  Tensor.cosh(x)
+//}
+//
+///// Returns the hyperbolic tangent of the specified tensor element-wise.
+//@inlinable
+//@differentiable(reverse)
+//public func tanh<T: TensorFlowFloatingPoint>(_ x: Tensor<T>) -> Tensor<T> {
+//  Tensor.tanh(x)
+//}
+//
+///// Returns the inverse cosine of the specified tensor element-wise.
+//@inlinable
+//@differentiable(reverse)
+//public func acos<T: TensorFlowFloatingPoint>(_ x: Tensor<T>) -> Tensor<T> {
+//  Tensor.acos(x)
+//}
+//
+///// Returns the inverse sine of the specified tensor element-wise.
+//@inlinable
+//@differentiable(reverse)
+//public func asin<T: TensorFlowFloatingPoint>(_ x: Tensor<T>) -> Tensor<T> {
+//  Tensor.asin(x)
+//}
+//
+///// Returns the inverse tangent of the specified tensor element-wise.
+//@inlinable
+//@differentiable(reverse)
+//public func atan<T: TensorFlowFloatingPoint>(_ x: Tensor<T>) -> Tensor<T> {
+//  Tensor.atan(x)
+//}
+//
+///// Returns the inverse hyperbolic cosine of the specified tensor element-wise.
+//@inlinable
+//@differentiable(reverse)
+//public func acosh<T: TensorFlowFloatingPoint>(_ x: Tensor<T>) -> Tensor<T> {
+//  Tensor.acosh(x)
+//}
+//
+///// Returns the inverse hyperbolic sine of the specified tensor element-wise.
+//@inlinable
+//@differentiable(reverse)
+//public func asinh<T: TensorFlowFloatingPoint>(_ x: Tensor<T>) -> Tensor<T> {
+//  Tensor.asinh(x)
+//}
+//
+///// Returns the inverse hyperbolic tangent of the specified tensor element-wise.
+//@inlinable
+//@differentiable(reverse)
+//public func atanh<T: TensorFlowFloatingPoint>(_ x: Tensor<T>) -> Tensor<T> {
+//  Tensor.atanh(x)
+//}
 
 /// Returns the square of the tensor.
 extension Tensor where Scalar: Numeric {
@@ -1172,33 +1177,33 @@ internal func _vjpRsqrt<T: TensorFlowFloatingPoint>(
   return (value, { v in _Raw.rsqrtGrad(value, dy: v) })
 }
 
-/// Returns the exponential of the specified tensor element-wise.
-@inlinable
-@differentiable(reverse)
-public func exp<T: TensorFlowFloatingPoint>(_ x: Tensor<T>) -> Tensor<T> {
-  Tensor.exp(x)
-}
-
-/// Returns two raised to the power of the specified tensor element-wise.
-@inlinable
-@differentiable(reverse)
-public func exp2<T: TensorFlowFloatingPoint>(_ x: Tensor<T>) -> Tensor<T> {
-  Tensor.exp2(x)
-}
-
-/// Returns ten raised to the power of the specified tensor element-wise.
-@inlinable
-@differentiable(reverse)
-public func exp10<T: TensorFlowFloatingPoint>(_ x: Tensor<T>) -> Tensor<T> {
-  Tensor.exp10(x)
-}
-
-/// Returns the exponential of `x - 1` element-wise.
-@inlinable
-@differentiable(reverse)
-public func expm1<T: TensorFlowFloatingPoint>(_ x: Tensor<T>) -> Tensor<T> {
-  Tensor.expm1(x)
-}
+///// Returns the exponential of the specified tensor element-wise.
+//@inlinable
+//@differentiable(reverse)
+//public func exp<T: TensorFlowFloatingPoint>(_ x: Tensor<T>) -> Tensor<T> {
+//  Tensor.exp(x)
+//}
+//
+///// Returns two raised to the power of the specified tensor element-wise.
+//@inlinable
+//@differentiable(reverse)
+//public func exp2<T: TensorFlowFloatingPoint>(_ x: Tensor<T>) -> Tensor<T> {
+//  Tensor.exp2(x)
+//}
+//
+///// Returns ten raised to the power of the specified tensor element-wise.
+//@inlinable
+//@differentiable(reverse)
+//public func exp10<T: TensorFlowFloatingPoint>(_ x: Tensor<T>) -> Tensor<T> {
+//  Tensor.exp10(x)
+//}
+//
+///// Returns the exponential of `x - 1` element-wise.
+//@inlinable
+//@differentiable(reverse)
+//public func expm1<T: TensorFlowFloatingPoint>(_ x: Tensor<T>) -> Tensor<T> {
+//  Tensor.expm1(x)
+//}
 
 ///// Returns the values of the specified tensor rounded to the nearest integer, element-wise.
 //@inlinable

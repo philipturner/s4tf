@@ -684,20 +684,20 @@ extension Tensor where Scalar: TensorFlowFloatingPoint {
 // Multiplicative Group
 //===------------------------------------------------------------------------------------------===//
 
-extension Tensor: PointwiseMultiplicative where Scalar: Numeric {
+extension Tensor where Scalar: Numeric {//}: PointwiseMultiplicative where Scalar: Numeric {
   /// The scalar one tensor.
   @inlinable
   public static var one: Tensor { Tensor(1) }
 
   /// Returns the element-wise reciprocal of `self`.
   @inlinable
-  public var reciprocal: Tensor { 1 / self }
+  public var reciprocal: Tensor { fatalError() }//1 / self }
 
   /// Multiplies two tensors element-wise and produces their product.
-  /// - Note: `.*` supports broadcasting.
-  public static func .* (lhs: Tensor, rhs: Tensor) -> Tensor {
-    return lhs * rhs
-  }
+//  /// - Note: `.*` supports broadcasting.
+//  public static func .* (lhs: Tensor, rhs: Tensor) -> Tensor {
+//    return lhs * rhs
+//  }
 }
 
 //===------------------------------------------------------------------------------------------===//
@@ -738,7 +738,7 @@ extension Tensor {
 
 public protocol TensorProtocol {
   associatedtype Scalar: TensorFlowScalar
-  init(repeating repeatedValue: Scalar, shape: TensorShape, on device: Device)
+//  init(repeating repeatedValue: Scalar, shape: TensorShape, on device: Device)
   var annotations: String { get }
   var shape: TensorShape { get }
   var summary: String { get }
