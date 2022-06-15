@@ -14,45 +14,29 @@
 
 import _Differentiation
 
-//@differentiable(reverse, wrt: (input, mean, variance, offset, scale))
-//private func normalize<Scalar: TensorFlowFloatingPoint>(
-//  _ input: Tensor<Scalar>,
-//  mean: Tensor<Scalar>,
-//  variance: Tensor<Scalar>,
-//  offset: Tensor<Scalar>,
-//  scale: Tensor<Scalar>,
-//  varianceEpsilon: Tensor<Scalar>
-//) -> Tensor<Scalar> {
-//  return input + mean + variance + offset + scale
-//}
+@_semantics("autodiff.nonvarying")
+func withoutDerivative<T, R>(at x: T, in body: (T) -> R) -> R {
+  fatalError()
+}
 
-public struct BatchNorm<Scalar: TensorFlowFloatingPoint>: Layer {
-  public var offset: Tensor<Scalar>
-  public var scale: Tensor<Scalar>
-
+struct BatchNorm<Scalar> {
   @differentiable(reverse)
-  public func callAsFunction(_ input: Tensor<Scalar>) -> Tensor<Scalar> {
-    if true {
-      let eps = withoutDerivative(at: input) { Tensor(2.333, deviceAndPrecisionLike: $0) }
-      return eps
-    } else {
-      return doInference(input)
-    }
+  func callAsFunction(_ input: Tensor<Scalar>) -> Tensor<Scalar> {
+    doInference(input)
   }
-  
-  private func doInference(
+
+  func doInference(
     _ input: Tensor<Scalar>
   ) -> Tensor<Scalar> {
-    let eps = withoutDerivative(at: input) { Tensor(2.333, deviceAndPrecisionLike: $0) }
+    let eps = withoutDerivative(at: input) { $0 }
     return eps
   }
 }
 
-public struct LayerNorm<Scalar: TensorFlowFloatingPoint> {
+struct LayerNorm<Scalar> {
   @differentiable(reverse)
-  public func callAsFunction(_ input: Tensor<Scalar>) -> Tensor<Scalar> {
-    let moments = input.moments(alongAxes: 1)
-    let inv = rsqrt(moments.mean)
-    return moments.mean * inv
+  func callAsFunction(_ input: Tensor<Scalar>) -> Tensor<Scalar> {
+//    input + Tensor<Scalar>.sqrt(input)
+    Tensor<Scalar>.add2(input, Tensor<Scalar>.sqrt(input))
   }
 }
