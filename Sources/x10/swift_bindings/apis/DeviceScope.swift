@@ -13,49 +13,50 @@
 // limitations under the License.
 
 /// Keeps around the current device to place AD zero tensors until AD can switch over to using
-/// instance zeros.
-class _DeviceThreadLocalState {
-  var deviceStack: [Device] = []
+///// instance zeros.
+//class _DeviceThreadLocalState {
+////  var deviceStack: [Device] = []
+////
+////  var currentDevice: Device { return deviceStack.last ?? .default }
+////
+////  var isReducedPrecision: Bool = false
+////
+////  private static let key: ThreadLocalStorage.Key =
+////    ThreadLocalStorage.Key {
+////      #if os(macOS) || os(iOS) || os(watchOS) || os(tvOS)
+////        let _: AnyObject = Unmanaged.fromOpaque($0).takeRetainedValue()
+////      #else
+////        let _: AnyObject = Unmanaged.fromOpaque($0!).takeRetainedValue()
+////      #endif
+////    }
+//
+////  @usableFromInline
+//  static var local: _DeviceThreadLocalState {
+//    fatalError()
+////    if let state = ThreadLocalStorage.get(for: key) {
+////      return Unmanaged.fromOpaque(state).takeUnretainedValue()
+////    }
+////
+////    let state = _DeviceThreadLocalState()
+////    ThreadLocalStorage.set(
+////      value: Unmanaged.passRetained(state).toOpaque(),
+////      for: key)
+////    return state
+//  }
+//}
 
-  var currentDevice: Device { return deviceStack.last ?? .default }
-
-  var isReducedPrecision: Bool = false
-
-  private static let key: ThreadLocalStorage.Key =
-    ThreadLocalStorage.Key {
-      #if os(macOS) || os(iOS) || os(watchOS) || os(tvOS)
-        let _: AnyObject = Unmanaged.fromOpaque($0).takeRetainedValue()
-      #else
-        let _: AnyObject = Unmanaged.fromOpaque($0!).takeRetainedValue()
-      #endif
-    }
-
-  @usableFromInline
-  static var local: _DeviceThreadLocalState {
-    if let state = ThreadLocalStorage.get(for: key) {
-      return Unmanaged.fromOpaque(state).takeUnretainedValue()
-    }
-
-    let state = _DeviceThreadLocalState()
-    ThreadLocalStorage.set(
-      value: Unmanaged.passRetained(state).toOpaque(),
-      for: key)
-    return state
-  }
-}
-
-// Evaluate the pullback on a one with the same device and precision as y.
-@usableFromInline
-func pullbackOfOneLikeY<T: TensorFlowFloatingPoint, R>(
-  y: Tensor<T>,
-  pullback: (Tensor<T>) -> R
-) -> R {
-  let adDevice = y.device
-  _DeviceThreadLocalState.local.deviceStack.append(adDevice)
-  let savedPrecision = _DeviceThreadLocalState.local.isReducedPrecision
-  _DeviceThreadLocalState.local.isReducedPrecision = y.isReducedPrecision
-  let result = pullback(Tensor<T>(1, deviceAndPrecisionLike: y))
-  _DeviceThreadLocalState.local.isReducedPrecision = savedPrecision
-  precondition(_DeviceThreadLocalState.local.deviceStack.popLast() != nil)
-  return result
-}
+//// Evaluate the pullback on a one with the same device and precision as y.
+//@usableFromInline
+//func pullbackOfOneLikeY<T: TensorFlowFloatingPoint, R>(
+//  y: Tensor<T>,
+//  pullback: (Tensor<T>) -> R
+//) -> R {
+//  let adDevice = y.device
+//  _DeviceThreadLocalState.local.deviceStack.append(adDevice)
+//  let savedPrecision = _DeviceThreadLocalState.local.isReducedPrecision
+//  _DeviceThreadLocalState.local.isReducedPrecision = y.isReducedPrecision
+//  let result = pullback(Tensor<T>(1, deviceAndPrecisionLike: y))
+//  _DeviceThreadLocalState.local.isReducedPrecision = savedPrecision
+//  precondition(_DeviceThreadLocalState.local.deviceStack.popLast() != nil)
+//  return result
+//}

@@ -86,21 +86,21 @@ import _Differentiation
 // Casting
 //===------------------------------------------------------------------------------------------===//
 
-extension Tensor where Scalar: Numeric {
-  /// Perform an element-wise type conversion from a `Bool` tensor.
-//  @inlinable
-//  public init(_ other: Tensor<Bool>) {
-//    self = _Raw.cast(other)
-//  }
-
-  /// Perform an element-wise conversion from another `Tensor`.
-//  @inlinable
-//  @differentiable(reverse where Scalar: TensorFlowFloatingPoint, OtherScalar: TensorFlowFloatingPoint)
-  public init<OtherScalar: Numeric>(_ other: Tensor<OtherScalar>) {
-    fatalError()
-//    self = _Raw.cast(other)
-  }
-}
+//extension Tensor where Scalar: Numeric {
+//  /// Perform an element-wise type conversion from a `Bool` tensor.
+////  @inlinable
+////  public init(_ other: Tensor<Bool>) {
+////    self = _Raw.cast(other)
+////  }
+//
+//  /// Perform an element-wise conversion from another `Tensor`.
+////  @inlinable
+////  @differentiable(reverse where Scalar: TensorFlowFloatingPoint, OtherScalar: TensorFlowFloatingPoint)
+////  public init<OtherScalar: Numeric>(_ other: Tensor<OtherScalar>) {
+////    fatalError()
+//////    self = _Raw.cast(other)
+////  }
+//}
 
 //extension Tensor where Scalar: TensorFlowFloatingPoint {
 //  @inlinable

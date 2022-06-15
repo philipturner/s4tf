@@ -660,12 +660,13 @@ extension Tensor where Scalar: TensorFlowFloatingPoint {
   static func _vjpMultiply(lhs: Tensor, rhs: Tensor) -> (
     value: Tensor, pullback: (Tensor) -> (Tensor, Tensor)
   ) {
-    return (
-      lhs * rhs,
-      { [broadcastPb = BroadcastingPullback(lhs, rhs)] v in
-        return broadcastPb(rhs * v, lhs * v)
-      }
-    )
+    fatalError()
+//    return (
+//      lhs * rhs,
+//      { [broadcastPb = BroadcastingPullback(lhs, rhs)] v in
+//        return broadcastPb(rhs * v, lhs * v)
+//      }
+//    )
   }
 
   @inlinable

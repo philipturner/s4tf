@@ -103,22 +103,22 @@ extension EuclideanDifferentiable {
   }
 }
 
-extension Float: EuclideanDifferentiable {}
-extension Double: EuclideanDifferentiable {}
-
-extension Array: EuclideanDifferentiable & _EuclideanDifferentiable
-where Element: EuclideanDifferentiable {
-  public func _copyWeightsToTangentVector(_ out: inout TangentVector) {
-    out = Array.DifferentiableView.TangentVector(self.map { $0.differentiableVectorView })
-  }
-}
-extension Array.DifferentiableView: EuclideanDifferentiable & _EuclideanDifferentiable
-where Element: EuclideanDifferentiable {
-  public func _copyWeightsToTangentVector(_ out: inout TangentVector) {
-    out = Array.DifferentiableView.TangentVector(self.base.map { $0.differentiableVectorView })
-  }
-}
-
-extension Tensor: _EuclideanDifferentiable where Scalar: TensorFlowFloatingPoint {}
+//extension Float: EuclideanDifferentiable {}
+//extension Double: EuclideanDifferentiable {}
+//
+//extension Array: EuclideanDifferentiable & _EuclideanDifferentiable
+//where Element: EuclideanDifferentiable {
+//  public func _copyWeightsToTangentVector(_ out: inout TangentVector) {
+//    out = Array.DifferentiableView.TangentVector(self.map { $0.differentiableVectorView })
+//  }
+//}
+//extension Array.DifferentiableView: EuclideanDifferentiable & _EuclideanDifferentiable
+//where Element: EuclideanDifferentiable {
+//  public func _copyWeightsToTangentVector(_ out: inout TangentVector) {
+//    out = Array.DifferentiableView.TangentVector(self.base.map { $0.differentiableVectorView })
+//  }
+//}
+//
+//extension Tensor: _EuclideanDifferentiable where Scalar: TensorFlowFloatingPoint {}
 
 #endif

@@ -205,7 +205,8 @@ extension Tensor {
   @inlinable
   @differentiable(reverse, wrt: self where Scalar: TensorFlowFloatingPoint)
   public func reshaped(to newShape: TensorShape) -> Tensor {
-    _Raw.reshape(self, shape: newShape.dimensions.map(Int64.init))
+    fatalError()
+//    _Raw.reshape(self, shape: newShape.dimensions.map(Int64.init))
   }
 
   /// Reshape to the specified `Tensor` representing a shape.

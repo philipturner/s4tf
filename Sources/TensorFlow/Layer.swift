@@ -20,7 +20,7 @@ import Numerics
 
 public protocol Module: EuclideanDifferentiable, KeyPathIterable_SR15884_Workaround
 where
-  TangentVector: /*VectorProtocol &*/ ElementaryFunctions & /*PointwiseMultiplicative &*/ KeyPathIterable_SR15884_Workaround
+  TangentVector: /*VectorProtocol & ElementaryFunctions & PointwiseMultiplicative &*/ KeyPathIterable_SR15884_Workaround
 {
   /// The input type of the layer.
   associatedtype Input

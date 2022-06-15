@@ -619,12 +619,13 @@ extension Tensor: Codable where Scalar: Codable {
 extension Tensor: AdditiveArithmetic where Scalar: Numeric {
   /// The scalar zero tensor.
   public static var zero: Tensor {
-    var zero = Tensor(0, on: _DeviceThreadLocalState.local.currentDevice)
-    if _DeviceThreadLocalState.local.isReducedPrecision {
-      zero = zero.toReducedPrecision
-    }
-    zero._isScalarZero = true
-    return zero
+    fatalError()
+//    var zero = Tensor(0, on: _DeviceThreadLocalState.local.currentDevice)
+//    if _DeviceThreadLocalState.local.isReducedPrecision {
+//      zero = zero.toReducedPrecision
+//    }
+//    zero._isScalarZero = true
+//    return zero
   }
 
   /// Adds two tensors and produces their sum.
@@ -632,12 +633,13 @@ extension Tensor: AdditiveArithmetic where Scalar: Numeric {
   @inlinable
   @differentiable(reverse where Scalar: TensorFlowFloatingPoint)
   public static func + (lhs: Tensor, rhs: Tensor) -> Tensor {
-    if lhs._isScalarZero {
-      return rhs
-    } else if rhs._isScalarZero {
-      return lhs
-    }
-    return _Raw.addV2(lhs, rhs)
+    fatalError()
+//    if lhs._isScalarZero {
+//      return rhs
+//    } else if rhs._isScalarZero {
+//      return lhs
+//    }
+//    return _Raw.addV2(lhs, rhs)
   }
 
   /// Subtracts one tensor from another and produces their difference.
@@ -645,10 +647,11 @@ extension Tensor: AdditiveArithmetic where Scalar: Numeric {
   @inlinable
   @differentiable(reverse where Scalar: TensorFlowFloatingPoint)
   public static func - (lhs: Tensor, rhs: Tensor) -> Tensor {
-    if rhs._isScalarZero {
-      return lhs
-    }
-    return _Raw.sub(lhs, rhs)
+    fatalError()
+//    if rhs._isScalarZero {
+//      return lhs
+//    }
+//    return _Raw.sub(lhs, rhs)
   }
 }
 
@@ -658,12 +661,13 @@ extension Tensor where Scalar: TensorFlowFloatingPoint {
   static func _vjpAdd(lhs: Tensor, rhs: Tensor) -> (
     value: Tensor, pullback: (Tensor) -> (Tensor, Tensor)
   ) {
-    (
-      lhs + rhs,
-      { [broadcastPb = BroadcastingPullback(lhs, rhs)] v in
-        return broadcastPb(v, v)
-      }
-    )
+    fatalError()
+//    (
+//      lhs + rhs,
+//      { [broadcastPb = BroadcastingPullback(lhs, rhs)] v in
+//        return broadcastPb(v, v)
+//      }
+//    )
   }
 
   @inlinable
@@ -671,12 +675,13 @@ extension Tensor where Scalar: TensorFlowFloatingPoint {
   static func _vjpSubtract(lhs: Tensor, rhs: Tensor) -> (
     value: Tensor, pullback: (Tensor) -> (Tensor, Tensor)
   ) {
-    (
-      lhs - rhs,
-      { [broadcastPb = BroadcastingPullback(lhs, rhs)] v in
-        return broadcastPb(v, -v)
-      }
-    )
+    fatalError()
+//    (
+//      lhs - rhs,
+//      { [broadcastPb = BroadcastingPullback(lhs, rhs)] v in
+//        return broadcastPb(v, -v)
+//      }
+//    )
   }
 }
 
@@ -704,7 +709,7 @@ extension Tensor where Scalar: Numeric {//}: PointwiseMultiplicative where Scala
 // Differentiable
 //===------------------------------------------------------------------------------------------===//
 
-extension Tensor: Differentiable & EuclideanDifferentiable where Scalar: TensorFlowFloatingPoint {
+extension Tensor: Differentiable /*& EuclideanDifferentiable*/ where Scalar: TensorFlowFloatingPoint {
   public typealias TangentVector = Tensor
 
   public var zeroTangentVectorInitializer: () -> TangentVector {
@@ -745,7 +750,7 @@ public protocol TensorProtocol {
 }
 
 public protocol DifferentiableTensorProtocol:
-  TensorProtocol & Differentiable & EuclideanDifferentiable
+  TensorProtocol & Differentiable //& EuclideanDifferentiable
 where Scalar: TensorFlowFloatingPoint {
   @differentiable(reverse, wrt: self)
   func annotate(_ annotation: String) -> Self

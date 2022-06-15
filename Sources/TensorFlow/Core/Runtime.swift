@@ -344,14 +344,14 @@ extension _ExecutionContext {
   }
 }
 
-internal func _trace<In: TensorGroup, Out: TensorGroup>(_ fn: (In) -> Out) -> TFFunction {
-  fatalError()
-//  let useLazyTensor = _ThreadLocalState.useLazyTensor
-//  defer { _ThreadLocalState.useLazyTensor = useLazyTensor }
-//  _ThreadLocalState.useLazyTensor = true
-//  let trace = LazyTensorTraceBuilder.trace(fn)
-//  return TFFunction(trace: trace)
-}
+//internal func _trace<In: TensorGroup, Out: TensorGroup>(_ fn: (In) -> Out) -> TFFunction {
+//  fatalError()
+////  let useLazyTensor = _ThreadLocalState.useLazyTensor
+////  defer { _ThreadLocalState.useLazyTensor = useLazyTensor }
+////  _ThreadLocalState.useLazyTensor = true
+////  let trace = LazyTensorTraceBuilder.trace(fn)
+////  return TFFunction(trace: trace)
+//}
 
 // Trace the given function to generate a TF graph and return a closure that can be used to launch
 // the graph.
@@ -529,7 +529,7 @@ func _TFCOpSetAttrTypeArray(
 class _ThreadLocalState {
   var deviceScopes = DeviceScopes()
 
-  var lazyTensorContext = LazyTensorContext()
+//  var lazyTensorContext = LazyTensorContext()
 
   static var useLazyTensor: Bool {
     get {
