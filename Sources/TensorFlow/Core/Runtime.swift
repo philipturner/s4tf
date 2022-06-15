@@ -376,58 +376,58 @@ public func _tffunc<In: TensorGroup, Out: TensorGroup>(_ fn: (In) -> Out) -> Str
 //  return tffunc.name
 }
 
-extension _ExecutionContext {
-  /// Returns a valid TensorFlow device name, which corresponds to the closest enclosing call to
-  /// one of the overloads of withDevice. A return value of `nil` indicates the absence of a
-  /// withDevice call on the call stack or the presence of an immediately enclosing
-  /// `withDefaultDevice(perform)` call.
-  var currentDeviceName: String? {
-    fatalError()
-//    return _ThreadLocalState.local.deviceScopes._currentDevice
-  }
-
-  /// See documentation for the top-level `withDevice(_:_:perform)`.
-  func withDevice<R>(
-    _ kind: DeviceKind,
-    _ index: UInt = 0,
-    perform body: () throws -> R
-  ) rethrows -> R {
-    fatalError()
-//    let name: String
-//    switch kind {
-//    case .cpu:
-//      name = "/job:localhost/replica:0/task:0/device:CPU:\(index)"
-//    case .gpu:
-//      name = "/job:localhost/replica:0/task:0/device:GPU:\(index)"
-//    case .tpu:
-//      // According to server def generated when you set
-//      // SWIFT_TENSORFLOW_SERVER_ADDRESS, the TPUs will all be on task 1.
-//      name = "/job:localhost/replica:0/task:1/device:TPU:\(index)"
-//    }
-//    return try withDevice(named: name, perform: body)
-  }
-
-  /// See documentation for the top-level `withDevice(named:perform)`.
-  func withDevice<R>(named name: String, perform body: () throws -> R) rethrows -> R {
-    fatalError()
-//    guard deviceNames.contains(name) else {
-//      fatalError("Device \(name) not found")
-//    }
-//    _ThreadLocalState.local.deviceScopes.pushDevice(name)
-//    let result = try body()
-//    _ThreadLocalState.local.deviceScopes.popDevice()
-//    return result
-  }
-
-  /// See documentation for the top-level `withDefaultDevice(perform)`.
-  func withDefaultDevice<R>(perform body: () throws -> R) rethrows -> R {
-    fatalError()
-//    _ThreadLocalState.local.deviceScopes.pushDevice(nil)
-//    let result = try body()
-//    _ThreadLocalState.local.deviceScopes.popDevice()
-//    return result
-  }
-}
+//extension _ExecutionContext {
+//  /// Returns a valid TensorFlow device name, which corresponds to the closest enclosing call to
+//  /// one of the overloads of withDevice. A return value of `nil` indicates the absence of a
+//  /// withDevice call on the call stack or the presence of an immediately enclosing
+//  /// `withDefaultDevice(perform)` call.
+////  var currentDeviceName: String? {
+////    fatalError()
+//////    return _ThreadLocalState.local.deviceScopes._currentDevice
+////  }
+////
+////  /// See documentation for the top-level `withDevice(_:_:perform)`.
+////  func withDevice<R>(
+////    _ kind: DeviceKind,
+////    _ index: UInt = 0,
+////    perform body: () throws -> R
+////  ) rethrows -> R {
+////    fatalError()
+//////    let name: String
+//////    switch kind {
+//////    case .cpu:
+//////      name = "/job:localhost/replica:0/task:0/device:CPU:\(index)"
+//////    case .gpu:
+//////      name = "/job:localhost/replica:0/task:0/device:GPU:\(index)"
+//////    case .tpu:
+//////      // According to server def generated when you set
+//////      // SWIFT_TENSORFLOW_SERVER_ADDRESS, the TPUs will all be on task 1.
+//////      name = "/job:localhost/replica:0/task:1/device:TPU:\(index)"
+//////    }
+//////    return try withDevice(named: name, perform: body)
+////  }
+//
+////  /// See documentation for the top-level `withDevice(named:perform)`.
+////  func withDevice<R>(named name: String, perform body: () throws -> R) rethrows -> R {
+////    fatalError()
+//////    guard deviceNames.contains(name) else {
+//////      fatalError("Device \(name) not found")
+//////    }
+//////    _ThreadLocalState.local.deviceScopes.pushDevice(name)
+//////    let result = try body()
+//////    _ThreadLocalState.local.deviceScopes.popDevice()
+//////    return result
+////  }
+////
+////  /// See documentation for the top-level `withDefaultDevice(perform)`.
+////  func withDefaultDevice<R>(perform body: () throws -> R) rethrows -> R {
+////    fatalError()
+//////    _ThreadLocalState.local.deviceScopes.pushDevice(nil)
+//////    let result = try body()
+//////    _ThreadLocalState.local.deviceScopes.popDevice()
+//////    return result
+////  }
+//}
 
 extension _ExecutionContext {
   /// Synchronously execute the body, preventing asynchronous computation from corrupting the

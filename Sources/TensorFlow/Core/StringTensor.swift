@@ -79,20 +79,7 @@ extension StringTensor {
   }
 }
 
-//===------------------------------------------------------------------------------------------===//
-// Array Conversion
-//===------------------------------------------------------------------------------------------===//
 
-extension StringTensor {
-  public var array: ShapedArray<String> {
-    debugLog("Returning a host copy of string array.")
-    return handle.makeHostCopy()
-  }
-
-  public var scalars: [String] {
-    return array.scalars
-  }
-}
 
 //===------------------------------------------------------------------------------------------===//
 // Element-wise comparison.
@@ -102,6 +89,6 @@ extension StringTensor {
   /// - Note: `elementsEqual` supports broadcasting.
   @inlinable
   public func elementsEqual(_ other: StringTensor) -> Tensor<Bool> {
-    return _RawTFEager.equal(self, other)
+    fatalError()
   }
 }

@@ -38,32 +38,5 @@ extension Tensor/*: CrossReplicaSummable*/ where Scalar: TensorFlowNumeric {
   /// must happen on each of the other devices participating in the sum.
   public mutating func crossReplicaSum(_ scale: Double) {
     fatalError()
-//    self = _Raw.crossReplicaSum([self], scale).first!
   }
 }
-//
-//extension _KeyPathIterableBase {
-//  /// Helper that iterates over all key paths and applies cross replica sum.
-//  func crossReplicaSumChild<Root>(
-//    _ root: inout Root, _ kp: PartialKeyPath<Root>, _ scale: Double
-//  ) {
-//    fatalError()
-////    for nkp in _allKeyPathsTypeErased {
-////      let joinedkp = kp.appending(path: nkp)!
-////      if let valueType = type(of: joinedkp).valueType as? CrossReplicaSummable.Type {
-////        valueType._doCrossReplicaSum(&root, joinedkp, scale)
-////      } else if let value = self[keyPath: nkp], let nested = value as? _KeyPathIterableBase {
-////        nested.crossReplicaSumChild(&root, joinedkp, scale)
-////      }
-////    }
-//  }
-//}
-//
-//extension KeyPathIterable {
-//  /// Runs a cross replica sum over all of the tensors found through key path
-//  /// iteration.
-//  public mutating func crossReplicaSum(_ scale: Double) {
-//    fatalError()
-////    crossReplicaSumChild(&self, \.self, scale)
-//  }
-//}

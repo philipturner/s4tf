@@ -170,14 +170,15 @@ extension Tensor where Scalar: TensorFlowFloatingPoint {
     _ value: Scalar,
     deviceAndPrecisionLike tensor: Tensor
   ) -> (value: Tensor, pullback: (Tensor) -> (Scalar, Tensor)) {
-    // Get device and precision in forward pass to avoid capturing `tensor` in pullback.
-    let device = tensor.device
-    let useReducedPrecision = tensor.isReducedPrecision
-    let result = Tensor(value, on: device)
-    return (useReducedPrecision ? result.toReducedPrecision : result, {
-      let tmp = Tensor(0, on: device)
-      return ($0.scalarized(), useReducedPrecision ? tmp.toReducedPrecision : tmp)
-    })
+    fatalError()
+//    // Get device and precision in forward pass to avoid capturing `tensor` in pullback.
+//    let device = tensor.device
+//    let useReducedPrecision = tensor.isReducedPrecision
+//    let result = Tensor(value, on: device)
+//    return (useReducedPrecision ? result.toReducedPrecision : result, {
+//      let tmp = Tensor(0, on: device)
+//      return ($0.scalarized(), useReducedPrecision ? tmp.toReducedPrecision : tmp)
+//    })
   }
 }
 
@@ -185,25 +186,13 @@ extension Tensor: ReducedPrecisionConvertible, _ReducedPrecisionConvertible {
   /// Returns a copy of `self` converted to `BFloat16` physical scalar type.
   public var toReducedPrecision: Self {
     fatalError()
-//    if isReducedPrecision {
-//      fatalError("Must not already have reduced precision")
-//    }
-//    if Scalar.self != Float.self {
-//      fatalError("Reduced precision is only supported for Float tensors")
-//    }
-//    return _Raw.physicalCast(self, destType: BFloat16.self)
+
   }
 
   /// Returns a copy of `self` converted to `Scalar` physical scalar type.
   public var toFullPrecision: Self {
     fatalError()
-//    if !isReducedPrecision {
-//      fatalError("Must have reduced precision")
-//    }
-//    if Scalar.self != Float.self {
-//      fatalError("Reduced precision is only supported for Float tensors")
-//    }
-//    return _Raw.physicalCast(self, destType: Scalar.self)
+
   }
 }
 
