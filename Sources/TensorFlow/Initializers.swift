@@ -72,12 +72,13 @@ extension Tensor where Scalar: TensorFlowFloatingPoint {
     shape: __owned TensorShape,
     on device: Device
   ) -> (value: Tensor, pullback: (Tensor) -> Scalar) {
-    return (
-      Tensor(repeating: repeatedValue, shape: shape, on: device),
-      {
-        $0.sum().scalarized()
-      }
-    )
+    fatalError()
+//    return (
+//      Tensor(repeating: repeatedValue, shape: shape, on: device),
+//      {
+//        $0.sum().scalarized()
+//      }
+//    )
   }
 }
 

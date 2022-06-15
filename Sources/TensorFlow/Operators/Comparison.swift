@@ -168,6 +168,7 @@ extension Tensor where Scalar: TensorFlowFloatingPoint {
     to other: Tensor,
     tolerance: Scalar = Scalar.ulpOfOne.squareRoot()
   ) -> Bool {
-    elementsAlmostEqual(other, tolerance: tolerance).all()
+    fatalError()
+//    elementsAlmostEqual(other, tolerance: tolerance).all()
   }
 }

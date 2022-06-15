@@ -14,183 +14,183 @@
 
 import _Differentiation
 
-infix operator .!=: ComparisonPrecedence
-
-/// Returns a tensor with the same shape and scalars as the specified tensor.
-@inlinable
-@differentiable(reverse where Scalar: TensorFlowFloatingPoint)
-public func identity<Scalar>(_ x: Tensor<Scalar>) -> Tensor<Scalar> {
-  x
-}
-
-//===------------------------------------------------------------------------------------------===//
-// Shape Transformations
-//===------------------------------------------------------------------------------------------===//
-
-extension TensorFlowScalar {
-  /// Convert to a tensor with the specified rank, with all dimensions equal to `1`.
-  @inlinable
-  public func makeTensor(rank: Int, on device: Device = .default) -> Tensor<Self> {
-    return Tensor(repeating: self, shape: TensorShape(rank), on: device)
-  }
-}
+//infix operator .!=: ComparisonPrecedence
+//
+///// Returns a tensor with the same shape and scalars as the specified tensor.
+//@inlinable
+//@differentiable(reverse where Scalar: TensorFlowFloatingPoint)
+//public func identity<Scalar>(_ x: Tensor<Scalar>) -> Tensor<Scalar> {
+//  x
+//}
+//
+////===------------------------------------------------------------------------------------------===//
+//// Shape Transformations
+////===------------------------------------------------------------------------------------------===//
+//
+//extension TensorFlowScalar {
+//  /// Convert to a tensor with the specified rank, with all dimensions equal to `1`.
+//  @inlinable
+//  public func makeTensor(rank: Int, on device: Device = .default) -> Tensor<Self> {
+//    return Tensor(repeating: self, shape: TensorShape(rank), on: device)
+//  }
+//}
 
 extension Tensor {
-  /// Unpacks the given dimension of a rank-`R` tensor into multiple rank-`(R-1)` tensors.
-  /// Unpacks `N` tensors from this tensor by chipping it along the `axis` dimension, where `N`
-  /// is inferred from this tensor's shape. For example, given a tensor with shape
-  /// `[A, B, C, D]`:
-  ///
-  ///   - If `axis == 0` then the `i`-th tensor in the returned array is the slice
-  ///     `self[i, :, :, :]` and each tensor in that array will have shape `[B, C, D]`.
-  ///     (Note that the dimension unpacked along is gone, unlike
-  ///     `Tensor.split(numSplits:alongAxis)`, or `Tensor.split(sizes:alongAxis)`).
-  ///   - If `axis == 1` then the `i`-th tensor in the returned array is the slice
-  ///     `value[:, i, :, :]` and each tensor in that array will have shape `[A, C, D]`.
-  ///   - Etc.
-  ///
-  /// This is the opposite of `Tensor.init(stacking:alongAxis:)`.
-  ///
-  /// - Parameters:
-  ///   - axis: Dimension along which to unstack. Negative values wrap around.
-  ///
-  /// - Precondition: `axis` must be in the range `[-rank, rank)`, where `rank` is the rank of
-  ///   the provided tensors.
-  ///
-  /// - Returns: Array containing the unstacked tensors.
-  @inlinable
-  @differentiable(reverse where Scalar: TensorFlowFloatingPoint)
-  public func unstacked(alongAxis axis: Int = 0) -> [Tensor] {
-//    ensureValid(axis: axis)
-    fatalError()
-//    let posAxis = axis < 0 ? axis + rank : axis
-//    return _Raw.unpack(value: self, num: Int64(shape[posAxis]), axis: Int64(posAxis))
-  }
-
-  /// Splits a tensor into multiple tensors. The tensor is split along dimension `axis` into
-  /// `count` smaller tensors. This requires that `count` evenly divides `shape[axis]`.
-  ///
-  /// For example:
-  /// ```
-  /// // 'value' is a tensor with shape [5, 30]
-  /// // Split 'value' into 3 tensors along dimension 1:
-  /// let parts = value.split(count: 3, alongAxis: 1)
-  /// parts[0] // has shape [5, 10]
-  /// parts[1] // has shape [5, 10]
-  /// parts[2] // has shape [5, 10]
-  /// ```
-  ///
-  /// - Parameters:
-  ///   - count: Number of splits to create.
-  ///   - axis: The dimension along which to split this tensor. Negative values wrap around.
-  ///
-  /// - Precondition: `count` must divide the size of dimension `axis` evenly.
-  /// - Precondition: `axis` must be in the range `[-rank, rank)`, where `rank` is the rank of
-  ///   the provided tensors.
-  ///
-  /// - Returns: An array containing the tensors part.
-  @inlinable
-  @differentiable(reverse where Scalar: TensorFlowFloatingPoint)
-  public func split(count: Int, alongAxis axis: Int = 0) -> [Tensor] {
-//    ensureValid(axis: axis)
-    fatalError()
-//    let canonicalAxis = axis < 0 ? axis + rank : axis
+//  /// Unpacks the given dimension of a rank-`R` tensor into multiple rank-`(R-1)` tensors.
+//  /// Unpacks `N` tensors from this tensor by chipping it along the `axis` dimension, where `N`
+//  /// is inferred from this tensor's shape. For example, given a tensor with shape
+//  /// `[A, B, C, D]`:
+//  ///
+//  ///   - If `axis == 0` then the `i`-th tensor in the returned array is the slice
+//  ///     `self[i, :, :, :]` and each tensor in that array will have shape `[B, C, D]`.
+//  ///     (Note that the dimension unpacked along is gone, unlike
+//  ///     `Tensor.split(numSplits:alongAxis)`, or `Tensor.split(sizes:alongAxis)`).
+//  ///   - If `axis == 1` then the `i`-th tensor in the returned array is the slice
+//  ///     `value[:, i, :, :]` and each tensor in that array will have shape `[A, C, D]`.
+//  ///   - Etc.
+//  ///
+//  /// This is the opposite of `Tensor.init(stacking:alongAxis:)`.
+//  ///
+//  /// - Parameters:
+//  ///   - axis: Dimension along which to unstack. Negative values wrap around.
+//  ///
+//  /// - Precondition: `axis` must be in the range `[-rank, rank)`, where `rank` is the rank of
+//  ///   the provided tensors.
+//  ///
+//  /// - Returns: Array containing the unstacked tensors.
+//  @inlinable
+//  @differentiable(reverse where Scalar: TensorFlowFloatingPoint)
+//  public func unstacked(alongAxis axis: Int = 0) -> [Tensor] {
+////    ensureValid(axis: axis)
+//    fatalError()
+////    let posAxis = axis < 0 ? axis + rank : axis
+////    return _Raw.unpack(value: self, num: Int64(shape[posAxis]), axis: Int64(posAxis))
+//  }
+//
+//  /// Splits a tensor into multiple tensors. The tensor is split along dimension `axis` into
+//  /// `count` smaller tensors. This requires that `count` evenly divides `shape[axis]`.
+//  ///
+//  /// For example:
+//  /// ```
+//  /// // 'value' is a tensor with shape [5, 30]
+//  /// // Split 'value' into 3 tensors along dimension 1:
+//  /// let parts = value.split(count: 3, alongAxis: 1)
+//  /// parts[0] // has shape [5, 10]
+//  /// parts[1] // has shape [5, 10]
+//  /// parts[2] // has shape [5, 10]
+//  /// ```
+//  ///
+//  /// - Parameters:
+//  ///   - count: Number of splits to create.
+//  ///   - axis: The dimension along which to split this tensor. Negative values wrap around.
+//  ///
+//  /// - Precondition: `count` must divide the size of dimension `axis` evenly.
+//  /// - Precondition: `axis` must be in the range `[-rank, rank)`, where `rank` is the rank of
+//  ///   the provided tensors.
+//  ///
+//  /// - Returns: An array containing the tensors part.
+//  @inlinable
+//  @differentiable(reverse where Scalar: TensorFlowFloatingPoint)
+//  public func split(count: Int, alongAxis axis: Int = 0) -> [Tensor] {
+////    ensureValid(axis: axis)
+//    fatalError()
+////    let canonicalAxis = axis < 0 ? axis + rank : axis
+////    precondition(
+////      shape[canonicalAxis] % count == 0,
+////      "Number of ways to split should evenly divide the split dimension.")
+////    return _Raw.split(splitDim: canonicalAxis, value: self, numSplit: Int64(count))
+//  }
+//
+//  /// Splits a tensor into multiple tensors. The tensor is split  into `sizes.shape[0]` pieces.
+//  /// The shape of the `i`-th piece has the same shape as this tensor except along dimension
+//  /// `axis` where the size is `sizes[i]`.
+//  ///
+//  /// For example:
+//  /// ```
+//  /// // 'value' is a tensor with shape [5, 30]
+//  /// // Split 'value' into 3 tensors with sizes [4, 15, 11] along dimension 1:
+//  /// let parts = value.split(sizes: Tensor<Int32>([4, 15, 11]), alongAxis: 1)
+//  /// parts[0] // has shape [5, 4]
+//  /// parts[1] // has shape [5, 15]
+//  /// parts[2] // has shape [5, 11]
+//  /// ```
+//  ///
+//  /// - Parameters:
+//  ///   - sizes: 1-D tensor containing the size of each split.
+//  ///   - axis: Dimension along which to split this tensor. Negative values wrap around.
+//  ///
+//  /// - Precondition: The values in `sizes` must add up to the size of dimension `axis`.
+//  /// - Precondition: `axis` must be in the range `[-rank, rank)`, where `rank` is the rank of
+//  ///   the provided tensors.
+//  ///
+//  /// - Returns: Array containing the tensors parts.
+//  @inlinable
+//  @differentiable(reverse, wrt: self where Scalar: TensorFlowFloatingPoint)
+//  public func split(sizes: Tensor<Int32>, alongAxis axis: Int = 0) -> [Tensor] {
+////    ensureValid(axis: axis)
+//    fatalError()
+////    precondition(
+////      shapeTensor[axis] == sizes.sum(),
+////      "The values in sizes must add up to the size of dimension axis.")
+////    return _Raw.splitV(
+////      value: self,
+////      sizeSplits: sizes,
+////      splitDim: Tensor<Int32>(Int32(axis), on: device),
+////      numSplit: Int64(sizes.shape[0]))
+//  }
+//
+//  @inlinable
+//  @differentiable(reverse, wrt: self where Scalar: TensorFlowFloatingPoint)
+//  public func split(sizes: [Int], alongAxis axis: Int = 0) -> [Tensor] {
+//    fatalError()
+////    ensureValid(axis: axis)
+////    let canonicalAxis = axis < 0 ? axis + rank : axis
+////    precondition(
+////      shape[canonicalAxis] == sizes.reduce(0, +),
+////      "The values in sizes must add up to the size of dimension axis.")
+////    return _Raw.splitV(
+////      value: self,
+////      sizeSplits: sizes,
+////      splitDim: canonicalAxis)
+//  }
+//
+//  /// Returns a tiled tensor, constructed by tiling this tensor.
+//  ///
+//  /// This constructor creates a new tensor by replicating this tensor `multiples` times. The
+//  /// constructed tensor's `i`'th dimension has `self.shape[i] * multiples[i]` elements, and the
+//  /// values of this tensor are replicated `multiples[i]` times along the `i`'th dimension. For
+//  /// example, tiling `[a b c d]` by `[2]` produces `[a b c d a b c d]`.
+//  ///
+//  /// - Precondition: The expected `rank` of multiples must be `1`.
+//  /// - Precondition: The shape of `multiples` must be `[tensor.rank]`.
+//  /// - Precondition: All scalars in `multiples` must be non-negative.
+//  @inlinable
+//  @differentiable(reverse, wrt: self where Scalar: TensorFlowFloatingPoint)
+//  public func tiled(multiples: [Int]) -> Tensor {
 //    precondition(
-//      shape[canonicalAxis] % count == 0,
-//      "Number of ways to split should evenly divide the split dimension.")
-//    return _Raw.split(splitDim: canonicalAxis, value: self, numSplit: Int64(count))
-  }
-
-  /// Splits a tensor into multiple tensors. The tensor is split  into `sizes.shape[0]` pieces.
-  /// The shape of the `i`-th piece has the same shape as this tensor except along dimension
-  /// `axis` where the size is `sizes[i]`.
-  ///
-  /// For example:
-  /// ```
-  /// // 'value' is a tensor with shape [5, 30]
-  /// // Split 'value' into 3 tensors with sizes [4, 15, 11] along dimension 1:
-  /// let parts = value.split(sizes: Tensor<Int32>([4, 15, 11]), alongAxis: 1)
-  /// parts[0] // has shape [5, 4]
-  /// parts[1] // has shape [5, 15]
-  /// parts[2] // has shape [5, 11]
-  /// ```
-  ///
-  /// - Parameters:
-  ///   - sizes: 1-D tensor containing the size of each split.
-  ///   - axis: Dimension along which to split this tensor. Negative values wrap around.
-  ///
-  /// - Precondition: The values in `sizes` must add up to the size of dimension `axis`.
-  /// - Precondition: `axis` must be in the range `[-rank, rank)`, where `rank` is the rank of
-  ///   the provided tensors.
-  ///
-  /// - Returns: Array containing the tensors parts.
-  @inlinable
-  @differentiable(reverse, wrt: self where Scalar: TensorFlowFloatingPoint)
-  public func split(sizes: Tensor<Int32>, alongAxis axis: Int = 0) -> [Tensor] {
-//    ensureValid(axis: axis)
-    fatalError()
+//      multiples.allSatisfy { $0 >= 0 },
+//      "All scalars in multiples must be non-negative.")
+//    return _Raw.tile(self, multiples: multiples)
+//  }
+//
+//  /// Returns a tiled tensor, constructed by tiling this tensor.
+//  ///
+//  /// This constructor creates a new tensor by replicating this tensor `multiples` times. The
+//  /// constructed tensor's `i`'th dimension has `self.shape[i] * multiples[i]` elements, and the
+//  /// values of this tensor are replicated `multiples[i]` times along the `i`'th dimension. For
+//  /// example, tiling `[a b c d]` by `[2]` produces `[a b c d a b c d]`.
+//  ///
+//  /// - Precondition: The expected `rank` of multiples must be `1`.
+//  /// - Precondition: The shape of `multiples` must be `[tensor.rank]`.
+//  @inlinable
+//  @differentiable(reverse, wrt: self where Scalar: TensorFlowFloatingPoint)
+//  public func tiled(multiples: Tensor<Int32>) -> Tensor {
+//    precondition(multiples.rank == 1, "The expected rank of multiples must be 1.")
 //    precondition(
-//      shapeTensor[axis] == sizes.sum(),
-//      "The values in sizes must add up to the size of dimension axis.")
-//    return _Raw.splitV(
-//      value: self,
-//      sizeSplits: sizes,
-//      splitDim: Tensor<Int32>(Int32(axis), on: device),
-//      numSplit: Int64(sizes.shape[0]))
-  }
-
-  @inlinable
-  @differentiable(reverse, wrt: self where Scalar: TensorFlowFloatingPoint)
-  public func split(sizes: [Int], alongAxis axis: Int = 0) -> [Tensor] {
-    fatalError()
-//    ensureValid(axis: axis)
-//    let canonicalAxis = axis < 0 ? axis + rank : axis
-//    precondition(
-//      shape[canonicalAxis] == sizes.reduce(0, +),
-//      "The values in sizes must add up to the size of dimension axis.")
-//    return _Raw.splitV(
-//      value: self,
-//      sizeSplits: sizes,
-//      splitDim: canonicalAxis)
-  }
-
-  /// Returns a tiled tensor, constructed by tiling this tensor.
-  ///
-  /// This constructor creates a new tensor by replicating this tensor `multiples` times. The
-  /// constructed tensor's `i`'th dimension has `self.shape[i] * multiples[i]` elements, and the
-  /// values of this tensor are replicated `multiples[i]` times along the `i`'th dimension. For
-  /// example, tiling `[a b c d]` by `[2]` produces `[a b c d a b c d]`.
-  ///
-  /// - Precondition: The expected `rank` of multiples must be `1`.
-  /// - Precondition: The shape of `multiples` must be `[tensor.rank]`.
-  /// - Precondition: All scalars in `multiples` must be non-negative.
-  @inlinable
-  @differentiable(reverse, wrt: self where Scalar: TensorFlowFloatingPoint)
-  public func tiled(multiples: [Int]) -> Tensor {
-    precondition(
-      multiples.allSatisfy { $0 >= 0 },
-      "All scalars in multiples must be non-negative.")
-    return _Raw.tile(self, multiples: multiples)
-  }
-
-  /// Returns a tiled tensor, constructed by tiling this tensor.
-  ///
-  /// This constructor creates a new tensor by replicating this tensor `multiples` times. The
-  /// constructed tensor's `i`'th dimension has `self.shape[i] * multiples[i]` elements, and the
-  /// values of this tensor are replicated `multiples[i]` times along the `i`'th dimension. For
-  /// example, tiling `[a b c d]` by `[2]` produces `[a b c d a b c d]`.
-  ///
-  /// - Precondition: The expected `rank` of multiples must be `1`.
-  /// - Precondition: The shape of `multiples` must be `[tensor.rank]`.
-  @inlinable
-  @differentiable(reverse, wrt: self where Scalar: TensorFlowFloatingPoint)
-  public func tiled(multiples: Tensor<Int32>) -> Tensor {
-    precondition(multiples.rank == 1, "The expected rank of multiples must be 1.")
-    precondition(
-      rank == multiples.shapeTensor.scalarized(),
-      "The shape of multiples must be [tensor.rank].")
-    return _Raw.tile(self, multiples: multiples)
-  }
+//      rank == multiples.shapeTensor.scalarized(),
+//      "The shape of multiples must be [tensor.rank].")
+//    return _Raw.tile(self, multiples: multiples)
+//  }
 
   /// Reshape to the shape of the specified `Tensor`.
   /// - Precondition: The number of scalars matches the new shape.
@@ -216,133 +216,133 @@ extension Tensor {
     return _Raw.reshape(self, shape: newShape)
   }
 
-  /// Return a copy of the tensor collapsed into a 1-D `Tensor`, in row-major order.
-  @inlinable
-  @differentiable(reverse, wrt: self where Scalar: TensorFlowFloatingPoint)
-  public func flattened() -> Tensor {
-    reshaped(to: [-1])
-  }
-
-  /// Returns a shape-expanded `Tensor`, with a dimension of 1 inserted at the specified shape
-  /// indices.
-  @inlinable
-  @differentiable(reverse, wrt: self where Scalar: TensorFlowFloatingPoint)
-  public func expandingShape(at axes: Int...) -> Tensor {
-    expandingShape(at: axes)
-  }
-
-  /// Returns a shape-expanded `Tensor`, with a dimension of 1 inserted at the
-  /// specified shape indices.
-  @inlinable
-  @differentiable(reverse, wrt: self where Scalar: TensorFlowFloatingPoint)
-  public func expandingShape(at axes: [Int]) -> Tensor {
-    fatalError()
-//    var resultShape = self.shape.dimensions.map { Int64($0) }
-//    for i in axes {
-//      var dim = i
-//      if dim < 0 { dim += resultShape.count + 1 }
-//      resultShape.insert(1, at: dim)
-//    }
-//    return _Raw.reshape(self, shape: resultShape)
-  }
-
-  /// Returns a rank-lifted `Tensor` with a leading dimension of 1.
-  @inlinable
-  @differentiable(reverse, wrt: self where Scalar: TensorFlowFloatingPoint)
-  public func rankLifted() -> Tensor {
-    expandingShape(at: 0)
-  }
-
-  /// Removes the specified dimensions of size 1 from the shape of a tensor. If no dimensions are
-  /// specified, then all dimensions of size 1 will be removed.
-  @inlinable
-  @differentiable(reverse, wrt: self where Scalar: TensorFlowFloatingPoint)
-  public func squeezingShape(at axes: Int...) -> Tensor {
-    squeezingShape(at: axes)
-  }
-
-  /// Removes the specified dimensions of size 1 from the shape of a tensor. If no dimensions are
-  /// specified, then all dimensions of size 1 will be removed.
-  @inlinable
-  @differentiable(reverse, wrt: self where Scalar: TensorFlowFloatingPoint)
-  public func squeezingShape(at axes: [Int]) -> Tensor {
-    _Raw.squeeze(self, squeezeDims: axes.map(Int32.init))
-  }
+//  /// Return a copy of the tensor collapsed into a 1-D `Tensor`, in row-major order.
+//  @inlinable
+//  @differentiable(reverse, wrt: self where Scalar: TensorFlowFloatingPoint)
+//  public func flattened() -> Tensor {
+//    reshaped(to: [-1])
+//  }
+//
+//  /// Returns a shape-expanded `Tensor`, with a dimension of 1 inserted at the specified shape
+//  /// indices.
+//  @inlinable
+//  @differentiable(reverse, wrt: self where Scalar: TensorFlowFloatingPoint)
+//  public func expandingShape(at axes: Int...) -> Tensor {
+//    expandingShape(at: axes)
+//  }
+//
+//  /// Returns a shape-expanded `Tensor`, with a dimension of 1 inserted at the
+//  /// specified shape indices.
+//  @inlinable
+//  @differentiable(reverse, wrt: self where Scalar: TensorFlowFloatingPoint)
+//  public func expandingShape(at axes: [Int]) -> Tensor {
+//    fatalError()
+////    var resultShape = self.shape.dimensions.map { Int64($0) }
+////    for i in axes {
+////      var dim = i
+////      if dim < 0 { dim += resultShape.count + 1 }
+////      resultShape.insert(1, at: dim)
+////    }
+////    return _Raw.reshape(self, shape: resultShape)
+//  }
+//
+//  /// Returns a rank-lifted `Tensor` with a leading dimension of 1.
+//  @inlinable
+//  @differentiable(reverse, wrt: self where Scalar: TensorFlowFloatingPoint)
+//  public func rankLifted() -> Tensor {
+//    expandingShape(at: 0)
+//  }
+//
+//  /// Removes the specified dimensions of size 1 from the shape of a tensor. If no dimensions are
+//  /// specified, then all dimensions of size 1 will be removed.
+//  @inlinable
+//  @differentiable(reverse, wrt: self where Scalar: TensorFlowFloatingPoint)
+//  public func squeezingShape(at axes: Int...) -> Tensor {
+//    squeezingShape(at: axes)
+//  }
+//
+//  /// Removes the specified dimensions of size 1 from the shape of a tensor. If no dimensions are
+//  /// specified, then all dimensions of size 1 will be removed.
+//  @inlinable
+//  @differentiable(reverse, wrt: self where Scalar: TensorFlowFloatingPoint)
+//  public func squeezingShape(at axes: [Int]) -> Tensor {
+//    _Raw.squeeze(self, squeezeDims: axes.map(Int32.init))
+//  }
 }
 
 extension Tensor where Scalar: TensorFlowFloatingPoint {
-  @inlinable
-  @derivative(of: unstacked)
-  func _vjpUnstacked(
-    alongAxis axis: Int = 0
-  ) -> (value: [Tensor], pullback: (Array<Tensor>.TangentVector) -> Tensor) {
-    fatalError()
-//    let result = unstacked(alongAxis: axis)
-//    return (result, { v in Tensor(stacking: v.base, alongAxis: axis) })
-  }
-
-  @inlinable
-  @derivative(of: tiled)
-  func _vjpTiled(multiples: Tensor<Int32>) -> (value: Tensor, pullback: (Tensor) -> Tensor) {
-    fatalError()
-//    (
-//      tiled(multiples: multiples),
-//      { [shape = shapeTensor] v in
-//        let splitShape = Tensor<Int32>(stacking: [multiples, shape]).transposed()
-//          .flattened()
-//        let axes = Tensor<Int32>(
-//          rangeFrom: 0, to: Int32(splitShape.scalarCount), stride: 2, on: device)
-//        return v.reshaped(toShape: splitShape).sum(squeezingAxes: axes)
-//      }
-//    )
-  }
-
-  @inlinable
-  @derivative(of: tiled)
-  func _vjpTiled(multiples: [Int]) -> (value: Tensor, pullback: (Tensor) -> Tensor) {
-    fatalError()
-//    (
-//      tiled(multiples: multiples),
-//      { v in
-//        let splits = zip(multiples, shape.dimensions).flatMap { [$0, $1] }
-//        let axes = Array(stride(from: 0, to: splits.count, by: 2))
-//        return v.reshaped(to: TensorShape(splits)).sum(squeezingAxes: axes)
-//      }
-//    )
-  }
-
-  @inlinable
-  @derivative(of: split)
-  func _vjpSplit(
-    count: Int,
-    alongAxis axis: Int = 0
-  ) -> (value: [Tensor], pullback: (Array<Tensor>.TangentVector) -> Tensor) {
-    fatalError()
-//    let result = split(count: count, alongAxis: axis)
-//    return (result, { v in Tensor(concatenating: v.base, alongAxis: axis) })
-  }
-
-  @inlinable
-  @derivative(of: split)
-  func _vjpSplit(
-    sizes: Tensor<Int32>,
-    alongAxis axis: Int = 0
-  ) -> (value: [Tensor], pullback: (Array<Tensor>.TangentVector) -> Tensor) {
-    fatalError()
-//    let result = split(sizes: sizes, alongAxis: axis)
-//    return (result, { v in Tensor(concatenating: v.base, alongAxis: axis) })
-  }
-
-  @inlinable
-  @derivative(of: split)
-  func _vjpSplit(
-    sizes: [Int],
-    alongAxis axis: Int = 0
-  ) -> (value: [Tensor], pullback: (Array<Tensor>.TangentVector) -> Tensor) {
-    fatalError()
-//    let result = split(sizes: sizes, alongAxis: axis)
-//    return (result, { v in Tensor(concatenating: v.base, alongAxis: axis) })
-  }
+//  @inlinable
+//  @derivative(of: unstacked)
+//  func _vjpUnstacked(
+//    alongAxis axis: Int = 0
+//  ) -> (value: [Tensor], pullback: (Array<Tensor>.TangentVector) -> Tensor) {
+//    fatalError()
+////    let result = unstacked(alongAxis: axis)
+////    return (result, { v in Tensor(stacking: v.base, alongAxis: axis) })
+//  }
+//
+//  @inlinable
+//  @derivative(of: tiled)
+//  func _vjpTiled(multiples: Tensor<Int32>) -> (value: Tensor, pullback: (Tensor) -> Tensor) {
+//    fatalError()
+////    (
+////      tiled(multiples: multiples),
+////      { [shape = shapeTensor] v in
+////        let splitShape = Tensor<Int32>(stacking: [multiples, shape]).transposed()
+////          .flattened()
+////        let axes = Tensor<Int32>(
+////          rangeFrom: 0, to: Int32(splitShape.scalarCount), stride: 2, on: device)
+////        return v.reshaped(toShape: splitShape).sum(squeezingAxes: axes)
+////      }
+////    )
+//  }
+//
+//  @inlinable
+//  @derivative(of: tiled)
+//  func _vjpTiled(multiples: [Int]) -> (value: Tensor, pullback: (Tensor) -> Tensor) {
+//    fatalError()
+////    (
+////      tiled(multiples: multiples),
+////      { v in
+////        let splits = zip(multiples, shape.dimensions).flatMap { [$0, $1] }
+////        let axes = Array(stride(from: 0, to: splits.count, by: 2))
+////        return v.reshaped(to: TensorShape(splits)).sum(squeezingAxes: axes)
+////      }
+////    )
+//  }
+//
+//  @inlinable
+//  @derivative(of: split)
+//  func _vjpSplit(
+//    count: Int,
+//    alongAxis axis: Int = 0
+//  ) -> (value: [Tensor], pullback: (Array<Tensor>.TangentVector) -> Tensor) {
+//    fatalError()
+////    let result = split(count: count, alongAxis: axis)
+////    return (result, { v in Tensor(concatenating: v.base, alongAxis: axis) })
+//  }
+//
+//  @inlinable
+//  @derivative(of: split)
+//  func _vjpSplit(
+//    sizes: Tensor<Int32>,
+//    alongAxis axis: Int = 0
+//  ) -> (value: [Tensor], pullback: (Array<Tensor>.TangentVector) -> Tensor) {
+//    fatalError()
+////    let result = split(sizes: sizes, alongAxis: axis)
+////    return (result, { v in Tensor(concatenating: v.base, alongAxis: axis) })
+//  }
+//
+//  @inlinable
+//  @derivative(of: split)
+//  func _vjpSplit(
+//    sizes: [Int],
+//    alongAxis axis: Int = 0
+//  ) -> (value: [Tensor], pullback: (Array<Tensor>.TangentVector) -> Tensor) {
+//    fatalError()
+////    let result = split(sizes: sizes, alongAxis: axis)
+////    return (result, { v in Tensor(concatenating: v.base, alongAxis: axis) })
+//  }
 
   @inlinable
   @derivative(of: reshaped)
@@ -364,348 +364,349 @@ extension Tensor where Scalar: TensorFlowFloatingPoint {
 //    return (value, { [shape = shape] v in v.reshaped(to: shape) })
   }
 
-  @inlinable
-  @derivative(of: expandingShape)
-  func _vjpExpandingShape(at axes: [Int]) -> (value: Tensor, pullback: (Tensor) -> Tensor) {
-    fatalError()
-//    let value = self.expandingShape(at: axes)
-//    return (value, { v in v.squeezingShape(at: axes) })
-  }
-
-  @inlinable
-  @derivative(of: squeezingShape)
-  func _vjpSqueezingShape(at axes: [Int]) -> (value: Tensor, pullback: (Tensor) -> Tensor) {
-    fatalError()
-//    let value = squeezingShape(at: axes)
-//    return (value, { [shape = shapeTensor] v in v.reshaped(toShape: shape) })
-  }
+//  @inlinable
+//  @derivative(of: expandingShape)
+//  func _vjpExpandingShape(at axes: [Int]) -> (value: Tensor, pullback: (Tensor) -> Tensor) {
+//    fatalError()
+////    let value = self.expandingShape(at: axes)
+////    return (value, { v in v.squeezingShape(at: axes) })
+//  }
+//
+//  @inlinable
+//  @derivative(of: squeezingShape)
+//  func _vjpSqueezingShape(at axes: [Int]) -> (value: Tensor, pullback: (Tensor) -> Tensor) {
+//    fatalError()
+////    let value = squeezingShape(at: axes)
+////    return (value, { [shape = shapeTensor] v in v.reshaped(toShape: shape) })
+//  }
 }
 
 //===------------------------------------------------------------------------------------------===//
 // Other Tensor Transformations
 //===------------------------------------------------------------------------------------------===//
 
-infix operator ++: AdditionPrecedence
-
-extension Tensor {
-  /// Returns a transposed tensor, with dimensions permuted in the specified order.
-  @inlinable
-  @differentiable(reverse, wrt: self where Scalar: TensorFlowFloatingPoint)
-  public func transposed(permutation: Tensor<Int32>) -> Tensor {
-    _Raw.transpose(self, perm: permutation)
-  }
-
-  /// Returns a transposed tensor, with dimensions permuted in the specified order.
-  @available(*, deprecated, renamed: "transposed(permutation:)")
-  @inlinable
-  @differentiable(reverse, wrt: self where Scalar: TensorFlowFloatingPoint)
-  public func transposed(withPermutations permutations: Tensor<Int32>) -> Tensor {
-    transposed(permutation: permutations)
-  }
-
-  /// Returns a transposed tensor, with dimensions permuted in the specified order.
-  @inlinable
-  @differentiable(reverse, wrt: self where Scalar: TensorFlowFloatingPoint)
-  public func transposed(permutation: [Int]) -> Tensor {
-    _Raw.transpose(self, perm: permutation)
-  }
-
-  /// Returns a transposed tensor, with dimensions permuted in the specified order.
-  @available(*, deprecated, renamed: "transposed(permutation:)")
-  @inlinable
-  @differentiable(reverse, wrt: self where Scalar: TensorFlowFloatingPoint)
-  public func transposed(withPermutations permutations: [Int]) -> Tensor {
-    transposed(permutation: permutations)
-  }
-
-  /// Returns a transposed tensor, with dimensions permuted in the specified order.
-  @inlinable
-  @differentiable(reverse, wrt: self where Scalar: TensorFlowFloatingPoint)
-  public func transposed(permutation: Int...) -> Tensor {
-    transposed(permutation: permutation)
-  }
-
-  /// Returns a transposed tensor, with dimensions permuted in the specified order.
-  @available(*, deprecated, renamed: "transposed(permutation:)")
-  @inlinable
-  @differentiable(reverse, wrt: self where Scalar: TensorFlowFloatingPoint)
-  public func transposed(withPermutations permutations: Int...) -> Tensor {
-    transposed(permutation: permutations)
-  }
-
-  /// Returns a transposed tensor, with dimensions permuted in reverse order.
-  @inlinable
-  @differentiable(reverse, wrt: self where Scalar: TensorFlowFloatingPoint)
-  public func transposed() -> Tensor {
-    return transposed(permutation: Array(stride(from: Int(rank - 1), to: -1, by: -1)))
-  }
-
-  /// Returns a tensor with specified dimensions reversed.
-  /// - Precondition: Each value in `axes` must be in the range `-rank..<rank`.
-  /// - Precondition: There must be no duplication in `axes`.
-  @inlinable
-  @differentiable(reverse, wrt: self where Scalar: TensorFlowFloatingPoint)
-  public func reversed(inAxes axes: Tensor<Int32>) -> Tensor {
-//    ensureValid(axes: axes)
-    return _Raw.reverseV2(self, axis: axes)
-  }
-
-  /// Returns a tensor with specified dimensions reversed.
-  /// - Precondition: Each value in `axes` must be in the range `-rank..<rank`.
-  /// - Precondition: There must be no duplication in `axes`.
-  @inlinable
-  @differentiable(reverse, wrt: self where Scalar: TensorFlowFloatingPoint)
-  public func reversed(inAxes axes: [Int]) -> Tensor {
-    precondition(
-      axes.count == Set(axes.map { $0 < 0 ? $0 + rank : $0 }).count,
-      "There must be no duplication in axes.")
-    let axes = axes.map(Int32.init)
-    return reversed(inAxes: Tensor<Int32>(axes, on: device))
-  }
-
-  /// Returns a tensor with specified dimensions reversed.
-  /// - Precondition: Each value in `axes` must be in the range `-rank..<rank`.
-  /// - Precondition: There must be no duplication in `axes`.
-  @inlinable
-  @differentiable(reverse, wrt: self where Scalar: TensorFlowFloatingPoint)
-  public func reversed(inAxes axes: Int...) -> Tensor {
-    reversed(inAxes: axes)
-  }
-
-  /// Returns a concatenated tensor along the specified axis.
-  /// - Precondition: The tensors must have the same dimensions, except for the
-  ///   specified axis.
-  /// - Precondition: The axis must be in the range `-rank..<rank`.
-  @inlinable
-  @differentiable(reverse where Scalar: TensorFlowFloatingPoint)
-  public func concatenated(with other: Tensor, alongAxis axis: Int = 0) -> Tensor {
-    return Tensor(concatenating: [self, other], alongAxis: axis)
-  }
-
-  /// Concatenation operator.
-  /// - Note: `++` is a custom operator that does not exist in Swift, but does
-  ///   in Haskell/Scala. Its addition is not an insignificant language change
-  ///   and may be controversial. The existence/naming of `++` will be discussed
-  ///   during a later API design phase.
-  @inlinable
-  @differentiable(reverse where Scalar: TensorFlowFloatingPoint)
-  public static func ++ (lhs: Tensor, rhs: Tensor) -> Tensor {
-    return lhs.concatenated(with: rhs)
-  }
-
-  /// Returns a tensor by gathering slices of the input at `indices` along the `axis` dimension
-  ///
-  /// For 0-D (scalar) `indices`:
-  /// ```
-  /// result[p_0,          ..., p_{axis-1},
-  ///        p_{axis + 1}, ..., p_{N-1}] =
-  /// self[p_0,          ..., p_{axis-1},
-  ///      indices,
-  ///      p_{axis + 1}, ..., p_{N-1}]
-  /// ```
-  ///
-  /// For 1-D (vector) `indices`:
-  /// ```
-  /// result[p_0,          ..., p_{axis-1},
-  ///        i,
-  ///        p_{axis + 1}, ..., p_{N-1}] =
-  /// self[p_0,          ..., p_{axis-1},
-  ///      indices[i],
-  ///      p_{axis + 1}, ..., p_{N-1}]
-  /// ```
-  ///
-  /// In the general case, produces a resulting tensor where:
-  /// ```
-  /// result[p_0,             ..., p_{axis-1},
-  ///        i_{batch\_dims}, ..., i_{M-1},
-  ///        p_{axis + 1},    ..., p_{N-1}] =
-  /// self[p_0,             ..., p_{axis-1},
-  ///      indices[i_0,     ..., i_{M-1}],
-  ///      p_{axis + 1},    ..., p_{N-1}]
-  /// ```
-  /// where `N = self.rank` and `M = indices.rank`.
-  ///
-  /// The shape of the resulting tensor is:
-  /// `self.shape[..<axis] + indices.shape + self.shape[(axis + 1)...]`.
-  ///
-  /// - Note: On CPU, if an out-of-range index is found, an error is thrown. On GPU, if an
-  /// out-of-range index is found, a 0 is stored in the corresponding output values.
-  ///
-  /// - Parameters:
-  ///   - indices: Contains the indices to gather at.
-  ///   - axis: Dimension along which to gather. Negative values wrap around.
-  ///
-  /// - Precondition: `axis` must be in the range `[-rank, rank)`.
-  ///
-  /// - Returns: The gathered tensor.
-  @inlinable
-  @differentiable(reverse, wrt: self where Scalar: TensorFlowFloatingPoint)
-  public func gathering<Index: TensorFlowIndex>(
-    atIndices indices: Tensor<Index>,
-    alongAxis axis: Int = 0
-  ) -> Tensor {
-//    ensureValid(axis: axis)
-    return _Raw.gatherV2(
-      params: self, indices: indices, axis: Tensor<Int32>(Int32(axis), on: device))
-  }
-
-  /// Returns slices of this tensor at `indices` along the `axis` dimension, while ignoring the
-  /// first `batchDimensionCount` dimensions that correspond to batch dimensions. The gather is
-  /// performed along the first non-batch dimension.
-  ///
-  /// Performs similar functionality to `gathering`, except that the resulting tensor shape is
-  /// now `shape[..<axis] + indices.shape[batchDimensionCount...] + shape[(axis + 1)...]`.
-  ///
-  /// - Parameters:
-  ///   - indices: Contains the indices to gather.
-  ///   - axis: Dimension along which to gather. Negative values wrap around.
-  ///   - batchDimensionCount: Number of leading batch dimensions to ignore.
-  ///
-  /// - Precondition: `axis` must be in the range `-rank..<rank`, while also being greater than
-  ///   or equal to `batchDimensionCount`.
-  /// - Precondition: `batchDimensionCount` must be less than `indices.rank`.
-  ///
-  /// - Returns: The gathered tensor.
-  @inlinable
-  @differentiable(reverse, wrt: self where Scalar: TensorFlowFloatingPoint)
-  public func batchGathering<Index: TensorFlowIndex>(
-    atIndices indices: Tensor<Index>,
-    alongAxis axis: Int = 1,
-    batchDimensionCount: Int = 1
-  ) -> Tensor {
-    fatalError()
-//    precondition(batchDimensionCount >= 0, "'batchDimensionCount' must be non-negative.")
+//infix operator ++: AdditionPrecedence
+//
+//extension Tensor {
+//  /// Returns a transposed tensor, with dimensions permuted in the specified order.
+//  @inlinable
+////  @differentiable(reverse, wrt: self where Scalar: TensorFlowFloatingPoint)
+//  public func transposed(permutation: Tensor<Int32>) -> Tensor {
+//    _Raw.transpose(self, perm: permutation)
+//  }
+//
+//  /// Returns a transposed tensor, with dimensions permuted in the specified order.
+//  @available(*, deprecated, renamed: "transposed(permutation:)")
+//  @inlinable
+////  @differentiable(reverse, wrt: self where Scalar: TensorFlowFloatingPoint)
+//  public func transposed(withPermutations permutations: Tensor<Int32>) -> Tensor {
+//    transposed(permutation: permutations)
+//  }
+//
+//  /// Returns a transposed tensor, with dimensions permuted in the specified order.
+//  @inlinable
+////  @differentiable(reverse, wrt: self where Scalar: TensorFlowFloatingPoint)
+//  public func transposed(permutation: [Int]) -> Tensor {
+//    _Raw.transpose(self, perm: permutation)
+//  }
+//
+//  /// Returns a transposed tensor, with dimensions permuted in the specified order.
+//  @available(*, deprecated, renamed: "transposed(permutation:)")
+//  @inlinable
+////  @differentiable(reverse, wrt: self where Scalar: TensorFlowFloatingPoint)
+//  public func transposed(withPermutations permutations: [Int]) -> Tensor {
+//    transposed(permutation: permutations)
+//  }
+//
+//  /// Returns a transposed tensor, with dimensions permuted in the specified order.
+//  @inlinable
+////  @differentiable(reverse, wrt: self where Scalar: TensorFlowFloatingPoint)
+//  public func transposed(permutation: Int...) -> Tensor {
+//    transposed(permutation: permutation)
+//  }
+//
+//  /// Returns a transposed tensor, with dimensions permuted in the specified order.
+//  @available(*, deprecated, renamed: "transposed(permutation:)")
+//  @inlinable
+////  @differentiable(reverse, wrt: self where Scalar: TensorFlowFloatingPoint)
+//  public func transposed(withPermutations permutations: Int...) -> Tensor {
+//    transposed(permutation: permutations)
+//  }
+//
+//  /// Returns a transposed tensor, with dimensions permuted in reverse order.
+//  @inlinable
+////  @differentiable(reverse, wrt: self where Scalar: TensorFlowFloatingPoint)
+//  public func transposed() -> Tensor {
+//    return transposed(permutation: Array(stride(from: Int(rank - 1), to: -1, by: -1)))
+//  }
+//
+//  /// Returns a tensor with specified dimensions reversed.
+//  /// - Precondition: Each value in `axes` must be in the range `-rank..<rank`.
+//  /// - Precondition: There must be no duplication in `axes`.
+//  @inlinable
+////  @differentiable(reverse, wrt: self where Scalar: TensorFlowFloatingPoint)
+//  public func reversed(inAxes axes: Tensor<Int32>) -> Tensor {
+////    ensureValid(axes: axes)
+//    return _Raw.reverseV2(self, axis: axes)
+//  }
+//
+//  /// Returns a tensor with specified dimensions reversed.
+//  /// - Precondition: Each value in `axes` must be in the range `-rank..<rank`.
+//  /// - Precondition: There must be no duplication in `axes`.
+//  @inlinable
+////  @differentiable(reverse, wrt: self where Scalar: TensorFlowFloatingPoint)
+//  public func reversed(inAxes axes: [Int]) -> Tensor {
 //    precondition(
-//      batchDimensionCount < indices.rank,
-//      "'batchDimensionCount' must be less than 'indices.rank'.")
-//    withoutDerivative(at: rank) {
-//      precondition(
-//        batchDimensionCount < $0,
-//        "'batchDimensionCount' must be less than the tensor's rank.")
-//    }
+//      axes.count == Set(axes.map { $0 < 0 ? $0 + rank : $0 }).count,
+//      "There must be no duplication in axes.")
+//    let axes = axes.map(Int32.init)
+//    return reversed(inAxes: Tensor<Int32>(axes, on: device))
+//  }
 //
-//    // Adjust axis to be positive.
-//    let axis = axis < 0 ? axis + rank : axis
-//    let device = self.device
+//  /// Returns a tensor with specified dimensions reversed.
+//  /// - Precondition: Each value in `axes` must be in the range `-rank..<rank`.
+//  /// - Precondition: There must be no duplication in `axes`.
+//  @inlinable
+////  @differentiable(reverse, wrt: self where Scalar: TensorFlowFloatingPoint)
+//  public func reversed(inAxes axes: Int...) -> Tensor {
+//    reversed(inAxes: axes)
+//  }
 //
-//    // Handle the axis argument by transposing the axis dimension so that it is the first
-//    // non-batch dimension, recursively calling `batchGathering` with `axis = 0`, and then
-//    // transposing the result to put the pre-axis dimensions before the indices dimensions.
-//    if axis != batchDimensionCount {
-//      // TODO: precondition(axis >= 0 && axis < rank, "'axis' is out of range.")
-//      // TODO: precondition(batchDimensionCount <= axis,
-//      //                    "'batchDimensionCount' must be less than or equal to 'axis'.")
+//  /// Returns a concatenated tensor along the specified axis.
+//  /// - Precondition: The tensors must have the same dimensions, except for the
+//  ///   specified axis.
+//  /// - Precondition: The axis must be in the range `-rank..<rank`.
+//  @inlinable
+////  @differentiable(reverse where Scalar: TensorFlowFloatingPoint)
+//  public func concatenated(with other: Tensor, alongAxis axis: Int = 0) -> Tensor {
+//    fatalError()
+////    return Tensor(concatenating: [self, other], alongAxis: axis)
+//  }
 //
-//      // Move self[axis] up to self[batchDimensionCount].
-//      let permutation = Tensor<Int32>(concatenating: [
-//        Tensor<Int32>(rangeFrom: 0, to: Int32(batchDimensionCount), stride: 1, on: device),
-//        Tensor<Int32>(Int32(axis), on: device).rankLifted(),
-//        Tensor<Int32>(
-//          rangeFrom: Int32(batchDimensionCount), to: Int32(axis), stride: 1, on: device),
-//        Tensor<Int32>(rangeFrom: Int32(axis) + 1, to: Int32(rank), stride: 1, on: device),
-//      ])
-//      let tensor = transposed(permutation: permutation)
-//      let result = tensor.batchGathering(
-//        atIndices: indices,
-//        alongAxis: batchDimensionCount,
-//        batchDimensionCount: batchDimensionCount)
+//  /// Concatenation operator.
+//  /// - Note: `++` is a custom operator that does not exist in Swift, but does
+//  ///   in Haskell/Scala. Its addition is not an insignificant language change
+//  ///   and may be controversial. The existence/naming of `++` will be discussed
+//  ///   during a later API design phase.
+//  @inlinable
+////  @differentiable(reverse where Scalar: TensorFlowFloatingPoint)
+//  public static func ++ (lhs: Tensor, rhs: Tensor) -> Tensor {
+//    return lhs.concatenated(with: rhs)
+//  }
 //
-//      // Move the result dimensions corresponding to self[batchDimensionCount..<axis] to
-//      // just before the dimensions corresponding to indices[batchDimensionCount...].
-//      let start = indices.rank + axis - batchDimensionCount
-//      let resultPermutation = Tensor<Int32>(concatenating: [
-//        Tensor<Int32>(rangeFrom: 0, to: Int32(batchDimensionCount), stride: 1, on: device),
-//        Tensor<Int32>(rangeFrom: Int32(indices.rank), to: Int32(start), stride: 1, on: device),
-//        Tensor<Int32>(
-//          rangeFrom: Int32(batchDimensionCount),
-//          to: Int32(indices.rank),
-//          stride: 1, on: device),
-//        Tensor<Int32>(rangeFrom: Int32(start), to: Int32(result.rank), stride: 1, on: device),
-//      ])
-//      return result.transposed(permutation: resultPermutation)
-//    }
+//  /// Returns a tensor by gathering slices of the input at `indices` along the `axis` dimension
+//  ///
+//  /// For 0-D (scalar) `indices`:
+//  /// ```
+//  /// result[p_0,          ..., p_{axis-1},
+//  ///        p_{axis + 1}, ..., p_{N-1}] =
+//  /// self[p_0,          ..., p_{axis-1},
+//  ///      indices,
+//  ///      p_{axis + 1}, ..., p_{N-1}]
+//  /// ```
+//  ///
+//  /// For 1-D (vector) `indices`:
+//  /// ```
+//  /// result[p_0,          ..., p_{axis-1},
+//  ///        i,
+//  ///        p_{axis + 1}, ..., p_{N-1}] =
+//  /// self[p_0,          ..., p_{axis-1},
+//  ///      indices[i],
+//  ///      p_{axis + 1}, ..., p_{N-1}]
+//  /// ```
+//  ///
+//  /// In the general case, produces a resulting tensor where:
+//  /// ```
+//  /// result[p_0,             ..., p_{axis-1},
+//  ///        i_{batch\_dims}, ..., i_{M-1},
+//  ///        p_{axis + 1},    ..., p_{N-1}] =
+//  /// self[p_0,             ..., p_{axis-1},
+//  ///      indices[i_0,     ..., i_{M-1}],
+//  ///      p_{axis + 1},    ..., p_{N-1}]
+//  /// ```
+//  /// where `N = self.rank` and `M = indices.rank`.
+//  ///
+//  /// The shape of the resulting tensor is:
+//  /// `self.shape[..<axis] + indices.shape + self.shape[(axis + 1)...]`.
+//  ///
+//  /// - Note: On CPU, if an out-of-range index is found, an error is thrown. On GPU, if an
+//  /// out-of-range index is found, a 0 is stored in the corresponding output values.
+//  ///
+//  /// - Parameters:
+//  ///   - indices: Contains the indices to gather at.
+//  ///   - axis: Dimension along which to gather. Negative values wrap around.
+//  ///
+//  /// - Precondition: `axis` must be in the range `[-rank, rank)`.
+//  ///
+//  /// - Returns: The gathered tensor.
+//  @inlinable
+////  @differentiable(reverse, wrt: self where Scalar: TensorFlowFloatingPoint)
+//  public func gathering<Index: TensorFlowIndex>(
+//    atIndices indices: Tensor<Index>,
+//    alongAxis axis: Int = 0
+//  ) -> Tensor {
+////    ensureValid(axis: axis)
+//    return _Raw.gatherV2(
+//      params: self, indices: indices, axis: Tensor<Int32>(Int32(axis), on: device))
+//  }
 //
-//    let batchIndices: Tensor<Index> = withoutDerivative(
-//      at: {
-//        var batchIndices = indices
-//        var accumulated = Tensor<Index>(ones: [], on: device)
-//        for d in (1...batchDimensionCount).reversed() {
-//          accumulated *= Tensor<Index>(self.shapeTensor[d])
-//          let dValue = self.shapeTensor[d - 1]
-//          let dIndices =
-//            Tensor<Index>(
-//              rangeFrom: Tensor<Index>(zeros: [], on: device),
-//              to: Tensor<Index>(dValue),
-//              stride: Tensor<Index>(ones: [], on: device)
-//            ) * accumulated
-//          let dShape = Tensor<Int32>(concatenating: [
-//            Tensor<Int32>([Int32](repeating: 1, count: d - 1), on: device),
-//            dValue.rankLifted(),
-//            Tensor<Int32>([Int32](repeating: 1, count: indices.rank - d), on: device),
-//          ])
-//          batchIndices += dIndices.reshaped(toShape: dShape)
-//        }
-//        return batchIndices
-//      }())
+//  /// Returns slices of this tensor at `indices` along the `axis` dimension, while ignoring the
+//  /// first `batchDimensionCount` dimensions that correspond to batch dimensions. The gather is
+//  /// performed along the first non-batch dimension.
+//  ///
+//  /// Performs similar functionality to `gathering`, except that the resulting tensor shape is
+//  /// now `shape[..<axis] + indices.shape[batchDimensionCount...] + shape[(axis + 1)...]`.
+//  ///
+//  /// - Parameters:
+//  ///   - indices: Contains the indices to gather.
+//  ///   - axis: Dimension along which to gather. Negative values wrap around.
+//  ///   - batchDimensionCount: Number of leading batch dimensions to ignore.
+//  ///
+//  /// - Precondition: `axis` must be in the range `-rank..<rank`, while also being greater than
+//  ///   or equal to `batchDimensionCount`.
+//  /// - Precondition: `batchDimensionCount` must be less than `indices.rank`.
+//  ///
+//  /// - Returns: The gathered tensor.
+//  @inlinable
+////  @differentiable(reverse, wrt: self where Scalar: TensorFlowFloatingPoint)
+//  public func batchGathering<Index: TensorFlowIndex>(
+//    atIndices indices: Tensor<Index>,
+//    alongAxis axis: Int = 1,
+//    batchDimensionCount: Int = 1
+//  ) -> Tensor {
+//    fatalError()
+////    precondition(batchDimensionCount >= 0, "'batchDimensionCount' must be non-negative.")
+////    precondition(
+////      batchDimensionCount < indices.rank,
+////      "'batchDimensionCount' must be less than 'indices.rank'.")
+////    withoutDerivative(at: rank) {
+////      precondition(
+////        batchDimensionCount < $0,
+////        "'batchDimensionCount' must be less than the tensor's rank.")
+////    }
+////
+////    // Adjust axis to be positive.
+////    let axis = axis < 0 ? axis + rank : axis
+////    let device = self.device
+////
+////    // Handle the axis argument by transposing the axis dimension so that it is the first
+////    // non-batch dimension, recursively calling `batchGathering` with `axis = 0`, and then
+////    // transposing the result to put the pre-axis dimensions before the indices dimensions.
+////    if axis != batchDimensionCount {
+////      // TODO: precondition(axis >= 0 && axis < rank, "'axis' is out of range.")
+////      // TODO: precondition(batchDimensionCount <= axis,
+////      //                    "'batchDimensionCount' must be less than or equal to 'axis'.")
+////
+////      // Move self[axis] up to self[batchDimensionCount].
+////      let permutation = Tensor<Int32>(concatenating: [
+////        Tensor<Int32>(rangeFrom: 0, to: Int32(batchDimensionCount), stride: 1, on: device),
+////        Tensor<Int32>(Int32(axis), on: device).rankLifted(),
+////        Tensor<Int32>(
+////          rangeFrom: Int32(batchDimensionCount), to: Int32(axis), stride: 1, on: device),
+////        Tensor<Int32>(rangeFrom: Int32(axis) + 1, to: Int32(rank), stride: 1, on: device),
+////      ])
+////      let tensor = transposed(permutation: permutation)
+////      let result = tensor.batchGathering(
+////        atIndices: indices,
+////        alongAxis: batchDimensionCount,
+////        batchDimensionCount: batchDimensionCount)
+////
+////      // Move the result dimensions corresponding to self[batchDimensionCount..<axis] to
+////      // just before the dimensions corresponding to indices[batchDimensionCount...].
+////      let start = indices.rank + axis - batchDimensionCount
+////      let resultPermutation = Tensor<Int32>(concatenating: [
+////        Tensor<Int32>(rangeFrom: 0, to: Int32(batchDimensionCount), stride: 1, on: device),
+////        Tensor<Int32>(rangeFrom: Int32(indices.rank), to: Int32(start), stride: 1, on: device),
+////        Tensor<Int32>(
+////          rangeFrom: Int32(batchDimensionCount),
+////          to: Int32(indices.rank),
+////          stride: 1, on: device),
+////        Tensor<Int32>(rangeFrom: Int32(start), to: Int32(result.rank), stride: 1, on: device),
+////      ])
+////      return result.transposed(permutation: resultPermutation)
+////    }
+////
+////    let batchIndices: Tensor<Index> = withoutDerivative(
+////      at: {
+////        var batchIndices = indices
+////        var accumulated = Tensor<Index>(ones: [], on: device)
+////        for d in (1...batchDimensionCount).reversed() {
+////          accumulated *= Tensor<Index>(self.shapeTensor[d])
+////          let dValue = self.shapeTensor[d - 1]
+////          let dIndices =
+////            Tensor<Index>(
+////              rangeFrom: Tensor<Index>(zeros: [], on: device),
+////              to: Tensor<Index>(dValue),
+////              stride: Tensor<Index>(ones: [], on: device)
+////            ) * accumulated
+////          let dShape = Tensor<Int32>(concatenating: [
+////            Tensor<Int32>([Int32](repeating: 1, count: d - 1), on: device),
+////            dValue.rankLifted(),
+////            Tensor<Int32>([Int32](repeating: 1, count: indices.rank - d), on: device),
+////          ])
+////          batchIndices += dIndices.reshaped(toShape: dShape)
+////        }
+////        return batchIndices
+////      }())
+////
+////    let flatIndices = batchIndices.flattened()
+////    let outerShape = shapeTensor[(batchDimensionCount + 1)...]
+////    let innerShape = shapeTensor[..<(batchDimensionCount + 1)].product(squeezingAxes: [0])
+////    let flatTensor = reshaped(toShape: innerShape.rankLifted().concatenated(with: outerShape))
+////    let flatResult = flatTensor.gathering(atIndices: flatIndices)
+////    return flatResult.reshaped(toShape: batchIndices.shapeTensor.concatenated(with: outerShape))
+//  }
 //
-//    let flatIndices = batchIndices.flattened()
-//    let outerShape = shapeTensor[(batchDimensionCount + 1)...]
-//    let innerShape = shapeTensor[..<(batchDimensionCount + 1)].product(squeezingAxes: [0])
-//    let flatTensor = reshaped(toShape: innerShape.rankLifted().concatenated(with: outerShape))
-//    let flatResult = flatTensor.gathering(atIndices: flatIndices)
-//    return flatResult.reshaped(toShape: batchIndices.shapeTensor.concatenated(with: outerShape))
-  }
-
-  /// Returns a tensor by gathering the values after applying the provided boolean mask to the input.
-  ///
-  /// For example:
-  /// ```
-  /// // 1-D example
-  /// // tensor is [0, 1, 2, 3]
-  /// // mask is [true, false, true, false]
-  /// tensor.gathering(where: mask) // is [0, 2]
-  ///
-  /// // 2-D example
-  /// // tensor is [[1, 2], [3, 4], [5, 6]]
-  /// // mask is [true, false, true]
-  /// tensor.gathering(where: mask) // is [[1, 2], [5, 6]]
-  /// ```
-  ///
-  /// In general, `0 < mask.rank = K <= tensor.rank`, and the `mask`'s shape must match the first
-  /// K dimensions of the `tensor`'s shape. We then have:
-  /// `tensor.gathering(where: mask)[i, j1, ..., jd] = tensor[i1, ..., iK, j1, ..., jd]`, where
-  /// `[i1, ..., iK]` is the `i`th `true` entry of `mask` (row-major order).
-  ///
-  /// The `axis` could be used with `mask` to indicate the axis to mask from. In that case,
-  /// `axis + mask.rank <= tensor.rank` and the `mask``'s shape must match the first
-  /// `axis + mask.rank` dimensions of the `tensor`'s shape.
-  ///
-  /// - Parameters:
-  ///   - mask: K-D boolean tensor, where `K <= self.rank`.
-  ///   - axis: 0-D integer tensor representing the axis in `self` to mask from, where
-  ///     `K + axis <= self.rank`.
-  ///
-  /// - Precondition: The `mask` cannot be a scalar: `mask.rank != 0`.
-  ///
-  /// - Returns: `(self.rank - K + 1)`-dimensional tensor populated by entries in this tensor
-  ///   corresponding to `true` values in `mask`.
-  @inlinable
-  @differentiable(reverse, wrt: self where Scalar: TensorFlowFloatingPoint)
-  public func gathering(where mask: Tensor<Bool>, alongAxis axis: Int = 0) -> Tensor {
-    fatalError()
-//    precondition(mask.rank != 0, "The boolean mask cannot be a scalar.")
-//    let posAxis = withoutDerivative(at: self.rank) { r in axis < 0 ? axis + r : axis }
-//    let leadingSize = shapeTensor[posAxis..<posAxis + mask.rank].product().rankLifted()
-//    let reshapedTensor = reshaped(
-//      toShape: Tensor<Int32>(concatenating: [
-//        shapeTensor[..<posAxis],
-//        leadingSize,
-//        shapeTensor[(posAxis + mask.rank)...],
-//      ]))
-//    let indices = Tensor<Int32>(mask.flattened().nonZeroIndices().squeezingShape(at: 1))
-//    return reshapedTensor.gathering(atIndices: indices, alongAxis: posAxis)
-  }
-}
+//  /// Returns a tensor by gathering the values after applying the provided boolean mask to the input.
+//  ///
+//  /// For example:
+//  /// ```
+//  /// // 1-D example
+//  /// // tensor is [0, 1, 2, 3]
+//  /// // mask is [true, false, true, false]
+//  /// tensor.gathering(where: mask) // is [0, 2]
+//  ///
+//  /// // 2-D example
+//  /// // tensor is [[1, 2], [3, 4], [5, 6]]
+//  /// // mask is [true, false, true]
+//  /// tensor.gathering(where: mask) // is [[1, 2], [5, 6]]
+//  /// ```
+//  ///
+//  /// In general, `0 < mask.rank = K <= tensor.rank`, and the `mask`'s shape must match the first
+//  /// K dimensions of the `tensor`'s shape. We then have:
+//  /// `tensor.gathering(where: mask)[i, j1, ..., jd] = tensor[i1, ..., iK, j1, ..., jd]`, where
+//  /// `[i1, ..., iK]` is the `i`th `true` entry of `mask` (row-major order).
+//  ///
+//  /// The `axis` could be used with `mask` to indicate the axis to mask from. In that case,
+//  /// `axis + mask.rank <= tensor.rank` and the `mask``'s shape must match the first
+//  /// `axis + mask.rank` dimensions of the `tensor`'s shape.
+//  ///
+//  /// - Parameters:
+//  ///   - mask: K-D boolean tensor, where `K <= self.rank`.
+//  ///   - axis: 0-D integer tensor representing the axis in `self` to mask from, where
+//  ///     `K + axis <= self.rank`.
+//  ///
+//  /// - Precondition: The `mask` cannot be a scalar: `mask.rank != 0`.
+//  ///
+//  /// - Returns: `(self.rank - K + 1)`-dimensional tensor populated by entries in this tensor
+//  ///   corresponding to `true` values in `mask`.
+//  @inlinable
+////  @differentiable(reverse, wrt: self where Scalar: TensorFlowFloatingPoint)
+//  public func gathering(where mask: Tensor<Bool>, alongAxis axis: Int = 0) -> Tensor {
+//    fatalError()
+////    precondition(mask.rank != 0, "The boolean mask cannot be a scalar.")
+////    let posAxis = withoutDerivative(at: self.rank) { r in axis < 0 ? axis + r : axis }
+////    let leadingSize = shapeTensor[posAxis..<posAxis + mask.rank].product().rankLifted()
+////    let reshapedTensor = reshaped(
+////      toShape: Tensor<Int32>(concatenating: [
+////        shapeTensor[..<posAxis],
+////        leadingSize,
+////        shapeTensor[(posAxis + mask.rank)...],
+////      ]))
+////    let indices = Tensor<Int32>(mask.flattened().nonZeroIndices().squeezingShape(at: 1))
+////    return reshapedTensor.gathering(atIndices: indices, alongAxis: posAxis)
+//  }
+//}
 
 /// Computes the inverse permutation of an array.
 ///
@@ -726,202 +727,202 @@ extension Tensor {
 ///
 /// - Parameter x: The input permutation.
 ///
-/// - Returns: The inverse of x.
-@usableFromInline
-@noDerivative
-internal func invertPermutationArray<T: TensorFlowIndex>(_ permutation: [T]) -> [T] {
-  let size = permutation.count
-  var inverted = [T](repeating: -1, count: size)
-  for i in 0..<size {
-    let d = permutation[i]
-    if d < 0 || d >= size {
-      fatalError("\(d) is not between 0 and \(size)")
-    }
-    if inverted[Int(d)] != -1 {
-      fatalError("\(d) is duplicated in the input.")
-    }
-    inverted[Int(d)] = T(i)
-  }
-  return inverted
-}
-
-extension Tensor where Scalar: TensorFlowFloatingPoint {
-  @inlinable
-  @derivative(of: transposed(permutation:))
-  func _vjpTransposed(permutation: Tensor<Int32>) -> (
-    value: Tensor, pullback: (Tensor) -> Tensor
-  ) {
-    let value = transposed(permutation: permutation)
-    return (value, { $0.transposed(permutation: _Raw.invertPermutation(permutation)) })
-  }
-
-  @inlinable
-  @derivative(of: transposed(permutation:))
-  func _vjpTransposed(permutation: [Int]) -> (value: Tensor, pullback: (Tensor) -> Tensor) {
-    let value = transposed(permutation: permutation)
-    let inverted = invertPermutationArray(permutation.map { Int64($0) })
-    return (value, { $0.transposed(permutation: inverted.map { Int($0) }) })
-  }
-
-  @inlinable
-  @derivative(of: transposed(permutation:))
-  func _vjpTransposed(permutation: Int...) -> (value: Tensor, pullback: (Tensor) -> Tensor) {
-    let value = transposed(permutation: permutation)
-    let inverted = invertPermutationArray(permutation.map { Int64($0) })
-    return (value, { $0.transposed(permutation: inverted.map { Int($0) }) })
-  }
-
-  @inlinable
-  @derivative(of: transposed)
-  func _vjpTransposed() -> (value: Tensor, pullback: (Tensor) -> Tensor) {
-    return (transposed(), { $0.transposed() })
-  }
-
-  @inlinable
-  @derivative(of: reversed)
-  func _vjpReversed(inAxes axes: Tensor<Int32>) -> (value: Tensor, pullback: (Tensor) -> Tensor) {
-    return (reversed(inAxes: axes), { $0.reversed(inAxes: axes) })
-  }
-
-  @inlinable
-  @derivative(of: reversed)
-  func _vjpReversed(inAxes axes: [Int]) -> (value: Tensor, pullback: (Tensor) -> Tensor) {
-    return (reversed(inAxes: axes), { $0.reversed(inAxes: axes) })
-  }
-
-  @inlinable
-  @derivative(of: reversed)
-  func _vjpReversed(inAxes axes: Int...) -> (value: Tensor, pullback: (Tensor) -> Tensor) {
-    return (reversed(inAxes: axes), { $0.reversed(inAxes: axes) })
-  }
-
-  @inlinable
-  @derivative(of: concatenated)
-  func _vjpConcatenated(
-    with other: Tensor,
-    alongAxis axis: Int
-  ) -> (value: Tensor, pullback: (Tensor) -> (Tensor, Tensor)) {
-    fatalError()
-//    let posAxis = axis < 0 ? axis + rank : axis
-//    let splits = [shape[posAxis], other.shape[posAxis]]
-//    return (
-//      concatenated(with: other, alongAxis: axis),
-//      { result in
-//        let gradients = result.split(sizes: splits, alongAxis: axis)
-//        return (gradients[0], gradients[1])
-//      }
-//    )
-  }
-
-  @inlinable
-  @derivative(of: gathering)
-  func _vjpGathering<Index: TensorFlowIndex>(
-    atIndices indices: Tensor<Index>,
-    alongAxis axis: Int = 0
-  ) -> (value: Tensor, pullback: (Tensor) -> Tensor) {
-    fatalError()
-//    let result = gathering(atIndices: indices, alongAxis: axis)
-//    let posAxis = axis < 0 ? axis + rank : axis
-//
-//    let device = self.device
-//    // We have a fast gradient implementation for the case when `posAxis == 0`.
-//    if posAxis == 0 {
-//      return (
-//        result,
-//        { v in
-//          var valuesShape = shape[1...]
-//          valuesShape.insert(indices.scalarCount, at: 0)
-//          let values = v.reshaped(to: valuesShape)
-//          let valueIndices = indices.reshaped(to: [indices.scalarCount])
-//          return _Raw.unsortedSegmentSum(
-//            data: values,
-//            segmentIds: valueIndices,
-//            numSegments: shape[0])
-//        }
-//      )
+///// - Returns: The inverse of x.
+//@usableFromInline
+//@noDerivative
+//internal func invertPermutationArray<T: TensorFlowIndex>(_ permutation: [T]) -> [T] {
+//  let size = permutation.count
+//  var inverted = [T](repeating: -1, count: size)
+//  for i in 0..<size {
+//    let d = permutation[i]
+//    if d < 0 || d >= size {
+//      fatalError("\(d) is not between 0 and \(size)")
 //    }
+//    if inverted[Int(d)] != -1 {
+//      fatalError("\(d) is duplicated in the input.")
+//    }
+//    inverted[Int(d)] = T(i)
+//  }
+//  return inverted
+//}
 //
-//    return (
-//      result,
-//      { [shape = shapeTensor] v in
-//        let indicesSize = Tensor<Int32>(Int32(indices.scalarCount), on: device).rankLifted()
-//        let outerShape = shape[..<posAxis]
-//        let outerSize = outerShape.scalarCount
-//        let innerShape = shape[(posAxis + 1)...]
-//        let innerSize = innerShape.scalarCount
-//        let outerIndices = Tensor<Int32>(rangeFrom: 0, to: Int32(outerSize), stride: 1, on: device)
-//        let innerIndices = Tensor<Int32>(
-//          rangeFrom: Int32(outerSize) + 1,
-//          to: Int32(outerSize) + 1 + Int32(innerSize),
-//          stride: 1, on: device)
-//        let valuesShape = Tensor<Int32>(concatenating: [outerShape, indicesSize, innerShape]
-//        )
-//        let values = v.reshaped(toShape: valuesShape)
-//        let valueIndices = indices.reshaped(toShape: indicesSize)
+//extension Tensor where Scalar: TensorFlowFloatingPoint {
+//  @inlinable
+//  @derivative(of: transposed(permutation:))
+//  func _vjpTransposed(permutation: Tensor<Int32>) -> (
+//    value: Tensor, pullback: (Tensor) -> Tensor
+//  ) {
+//    let value = transposed(permutation: permutation)
+//    return (value, { $0.transposed(permutation: _Raw.invertPermutation(permutation)) })
+//  }
 //
-//        // We need to sum up every slice `values[..., i, ....]` corresponding to
-//        // `tensor[..., indices[i], ...]`. Since `unsortedSegmentSum` does not support an axis
-//        // parameter, we transpose the gather dimension to the front, then use
-//        // `unsortedSegmentSum` to build a `[gatherAxis, outerAxes, innerAxes]` tensor with all
-//        // the gradients affecting each index in `gatherAxis` summed up.
-//        let permutations = Tensor<Int32>(concatenating: [
-//          Tensor<Int32>([Int32(outerSize)], on: device),
-//          outerIndices,
-//          innerIndices,
-//        ])
-//        let transposedValues = values.transposed(permutation: permutations)
-//        let gradient = _Raw.unsortedSegmentSum(
-//          data: transposedValues,
-//          segmentIds: valueIndices,
-//          numSegments: shape[posAxis])
+//  @inlinable
+//  @derivative(of: transposed(permutation:))
+//  func _vjpTransposed(permutation: [Int]) -> (value: Tensor, pullback: (Tensor) -> Tensor) {
+//    let value = transposed(permutation: permutation)
+//    let inverted = invertPermutationArray(permutation.map { Int64($0) })
+//    return (value, { $0.transposed(permutation: inverted.map { Int($0) }) })
+//  }
 //
-//        // Finally, we invert the above transpose operation by moving dimension 0 back to its
-//        // original position.
-//        let inversePermutations = Tensor<Int32>(concatenating: [
-//          outerIndices + 1,
-//          Tensor<Int32>([0], on: device),
-//          innerIndices,
-//        ])
-//        return gradient.transposed(permutation: inversePermutations)
-//      }
-//    )
-  }
-}
+//  @inlinable
+//  @derivative(of: transposed(permutation:))
+//  func _vjpTransposed(permutation: Int...) -> (value: Tensor, pullback: (Tensor) -> Tensor) {
+//    let value = transposed(permutation: permutation)
+//    let inverted = invertPermutationArray(permutation.map { Int64($0) })
+//    return (value, { $0.transposed(permutation: inverted.map { Int($0) }) })
+//  }
+//
+//  @inlinable
+//  @derivative(of: transposed)
+//  func _vjpTransposed() -> (value: Tensor, pullback: (Tensor) -> Tensor) {
+//    return (transposed(), { $0.transposed() })
+//  }
+//
+//  @inlinable
+//  @derivative(of: reversed)
+//  func _vjpReversed(inAxes axes: Tensor<Int32>) -> (value: Tensor, pullback: (Tensor) -> Tensor) {
+//    return (reversed(inAxes: axes), { $0.reversed(inAxes: axes) })
+//  }
+//
+//  @inlinable
+//  @derivative(of: reversed)
+//  func _vjpReversed(inAxes axes: [Int]) -> (value: Tensor, pullback: (Tensor) -> Tensor) {
+//    return (reversed(inAxes: axes), { $0.reversed(inAxes: axes) })
+//  }
+//
+//  @inlinable
+//  @derivative(of: reversed)
+//  func _vjpReversed(inAxes axes: Int...) -> (value: Tensor, pullback: (Tensor) -> Tensor) {
+//    return (reversed(inAxes: axes), { $0.reversed(inAxes: axes) })
+//  }
+//
+//  @inlinable
+//  @derivative(of: concatenated)
+//  func _vjpConcatenated(
+//    with other: Tensor,
+//    alongAxis axis: Int
+//  ) -> (value: Tensor, pullback: (Tensor) -> (Tensor, Tensor)) {
+//    fatalError()
+////    let posAxis = axis < 0 ? axis + rank : axis
+////    let splits = [shape[posAxis], other.shape[posAxis]]
+////    return (
+////      concatenated(with: other, alongAxis: axis),
+////      { result in
+////        let gradients = result.split(sizes: splits, alongAxis: axis)
+////        return (gradients[0], gradients[1])
+////      }
+////    )
+//  }
+//
+//  @inlinable
+//  @derivative(of: gathering)
+//  func _vjpGathering<Index: TensorFlowIndex>(
+//    atIndices indices: Tensor<Index>,
+//    alongAxis axis: Int = 0
+//  ) -> (value: Tensor, pullback: (Tensor) -> Tensor) {
+//    fatalError()
+////    let result = gathering(atIndices: indices, alongAxis: axis)
+////    let posAxis = axis < 0 ? axis + rank : axis
+////
+////    let device = self.device
+////    // We have a fast gradient implementation for the case when `posAxis == 0`.
+////    if posAxis == 0 {
+////      return (
+////        result,
+////        { v in
+////          var valuesShape = shape[1...]
+////          valuesShape.insert(indices.scalarCount, at: 0)
+////          let values = v.reshaped(to: valuesShape)
+////          let valueIndices = indices.reshaped(to: [indices.scalarCount])
+////          return _Raw.unsortedSegmentSum(
+////            data: values,
+////            segmentIds: valueIndices,
+////            numSegments: shape[0])
+////        }
+////      )
+////    }
+////
+////    return (
+////      result,
+////      { [shape = shapeTensor] v in
+////        let indicesSize = Tensor<Int32>(Int32(indices.scalarCount), on: device).rankLifted()
+////        let outerShape = shape[..<posAxis]
+////        let outerSize = outerShape.scalarCount
+////        let innerShape = shape[(posAxis + 1)...]
+////        let innerSize = innerShape.scalarCount
+////        let outerIndices = Tensor<Int32>(rangeFrom: 0, to: Int32(outerSize), stride: 1, on: device)
+////        let innerIndices = Tensor<Int32>(
+////          rangeFrom: Int32(outerSize) + 1,
+////          to: Int32(outerSize) + 1 + Int32(innerSize),
+////          stride: 1, on: device)
+////        let valuesShape = Tensor<Int32>(concatenating: [outerShape, indicesSize, innerShape]
+////        )
+////        let values = v.reshaped(toShape: valuesShape)
+////        let valueIndices = indices.reshaped(toShape: indicesSize)
+////
+////        // We need to sum up every slice `values[..., i, ....]` corresponding to
+////        // `tensor[..., indices[i], ...]`. Since `unsortedSegmentSum` does not support an axis
+////        // parameter, we transpose the gather dimension to the front, then use
+////        // `unsortedSegmentSum` to build a `[gatherAxis, outerAxes, innerAxes]` tensor with all
+////        // the gradients affecting each index in `gatherAxis` summed up.
+////        let permutations = Tensor<Int32>(concatenating: [
+////          Tensor<Int32>([Int32(outerSize)], on: device),
+////          outerIndices,
+////          innerIndices,
+////        ])
+////        let transposedValues = values.transposed(permutation: permutations)
+////        let gradient = _Raw.unsortedSegmentSum(
+////          data: transposedValues,
+////          segmentIds: valueIndices,
+////          numSegments: shape[posAxis])
+////
+////        // Finally, we invert the above transpose operation by moving dimension 0 back to its
+////        // original position.
+////        let inversePermutations = Tensor<Int32>(concatenating: [
+////          outerIndices + 1,
+////          Tensor<Int32>([0], on: device),
+////          innerIndices,
+////        ])
+////        return gradient.transposed(permutation: inversePermutations)
+////      }
+////    )
+//  }
+//}
 
-extension Tensor {
-  /// Returns the locations of non-zero / true values in this tensor.
-  ///
-  /// The coordinates are returned in a 2-D tensor where the first dimension (rows) represents the
-  /// number of non-zero elements, and the second dimension (columns) represents the coordinates
-  /// of the non-zero elements. Keep in mind that the shape of the output tensor can vary
-  /// depending on how many true values there are in this tensor. Indices are output in row-major
-  /// order.
-  ///
-  /// For example:
-  /// ```
-  /// // 'input' is [[true, false], [true, false]]
-  /// // 'input' has 2 true values and so the output has 2 rows.
-  /// // 'input' has rank of 2, and so the second dimension of the output has size 2.
-  /// input.nonZeroIndices() // is [[0, 0], [1, 0]]
-  ///
-  /// // 'input' is [[[ true, false], [ true, false]],
-  /// //             [[false,  true], [false,  true]],
-  /// //             [[false, false], [false,  true]]]
-  /// // 'input' has 5 true values and so the output has 5 rows.
-  /// // 'input' has rank 3, and so the second dimension of the output has size 3.
-  /// input.nonZeroIndices() // is [[0, 0, 0],
-  ///                        //     [0, 1, 0],
-  ///                        //     [1, 0, 1],
-  ///                        //     [1, 1, 1],
-  ///                        //     [2, 1, 1]]
-  /// ```
-  ///
-  /// - Returns: A tensor with shape `(num_true, rank(condition))`.
-  @inlinable
-  public func nonZeroIndices() -> Tensor<Int64> {
-    return _Raw.where_(self)
-  }
-}
+//extension Tensor {
+//  /// Returns the locations of non-zero / true values in this tensor.
+//  ///
+//  /// The coordinates are returned in a 2-D tensor where the first dimension (rows) represents the
+//  /// number of non-zero elements, and the second dimension (columns) represents the coordinates
+//  /// of the non-zero elements. Keep in mind that the shape of the output tensor can vary
+//  /// depending on how many true values there are in this tensor. Indices are output in row-major
+//  /// order.
+//  ///
+//  /// For example:
+//  /// ```
+//  /// // 'input' is [[true, false], [true, false]]
+//  /// // 'input' has 2 true values and so the output has 2 rows.
+//  /// // 'input' has rank of 2, and so the second dimension of the output has size 2.
+//  /// input.nonZeroIndices() // is [[0, 0], [1, 0]]
+//  ///
+//  /// // 'input' is [[[ true, false], [ true, false]],
+//  /// //             [[false,  true], [false,  true]],
+//  /// //             [[false, false], [false,  true]]]
+//  /// // 'input' has 5 true values and so the output has 5 rows.
+//  /// // 'input' has rank 3, and so the second dimension of the output has size 3.
+//  /// input.nonZeroIndices() // is [[0, 0, 0],
+//  ///                        //     [0, 1, 0],
+//  ///                        //     [1, 0, 1],
+//  ///                        //     [1, 1, 1],
+//  ///                        //     [2, 1, 1]]
+//  /// ```
+//  ///
+//  /// - Returns: A tensor with shape `(num_true, rank(condition))`.
+//  @inlinable
+//  public func nonZeroIndices() -> Tensor<Int64> {
+//    return _Raw.where_(self)
+//  }
+//}
 
 ////===------------------------------------------------------------------------------------------===//
 //// Broadcasting
