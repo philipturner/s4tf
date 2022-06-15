@@ -321,28 +321,28 @@ public final class _ExecutionContext {
   }
 }
 
-@available(
-  *, deprecated, message: "makeOp will go away in favor of directly dispatching custom ops."
-)
-public func _makeOp(_ name: String, _ nOutputs: Int) -> TFTensorOperation {
-  fatalError()
-//  _ExecutionContext.makeOp(name, nOutputs)
-}
+//@available(
+//  *, deprecated, message: "makeOp will go away in favor of directly dispatching custom ops."
+//)
+//public func _makeOp(_ name: String, _ nOutputs: Int) -> TFTensorOperation {
+//  fatalError()
+////  _ExecutionContext.makeOp(name, nOutputs)
+//}
 
-extension _ExecutionContext {
-  // The execution mode is effectively encoded in the TensorOperation.
-  // We can use this to switch between different execution modes.
-  // TODO: Can we interop between modes?
-  @usableFromInline
-  static func makeOp(
-    _ name: String, _ outputCount: Int
-  ) -> TFTensorOperation {
-    fatalError()
-//    return _ThreadLocalState.useLazyTensor
-//      ? LazyTensorOperation(name, outputCount)
-//      : TFE_Op(name, outputCount)
-  }
-}
+//extension _ExecutionContext {
+//  // The execution mode is effectively encoded in the TensorOperation.
+//  // We can use this to switch between different execution modes.
+//  // TODO: Can we interop between modes?
+//  @usableFromInline
+//  static func makeOp(
+//    _ name: String, _ outputCount: Int
+//  ) -> TFTensorOperation {
+//    fatalError()
+////    return _ThreadLocalState.useLazyTensor
+////      ? LazyTensorOperation(name, outputCount)
+////      : TFE_Op(name, outputCount)
+//  }
+//}
 
 //internal func _trace<In: TensorGroup, Out: TensorGroup>(_ fn: (In) -> Out) -> TFFunction {
 //  fatalError()
@@ -355,26 +355,26 @@ extension _ExecutionContext {
 
 // Trace the given function to generate a TF graph and return a closure that can be used to launch
 // the graph.
-public func _graph<In: TensorGroup, Out: TensorGroup>(
-  _ fn: (In) -> Out,
-  useXLA: Bool = false
-) -> (In) -> Out {
-  fatalError()
-//  let tffunc = _trace(fn)
-//  return { input in
-//    let inputHandles = input._tensorHandles.map { $0._tfeTensorHandle }
-//    let outputHandles = tffunc.execute(inputHandles, usingXLA: useXLA)
-//    return Out(_handles: outputHandles)
-//  }
-}
-
-/// Trace the given function and return the name of the corresponding `TF_Function: In -> Out` that
-/// was created.
-public func _tffunc<In: TensorGroup, Out: TensorGroup>(_ fn: (In) -> Out) -> String {
-  fatalError()
-//  let tffunc = _trace(fn)
-//  return tffunc.name
-}
+//public func _graph<In: TensorGroup, Out: TensorGroup>(
+//  _ fn: (In) -> Out,
+//  useXLA: Bool = false
+//) -> (In) -> Out {
+//  fatalError()
+////  let tffunc = _trace(fn)
+////  return { input in
+////    let inputHandles = input._tensorHandles.map { $0._tfeTensorHandle }
+////    let outputHandles = tffunc.execute(inputHandles, usingXLA: useXLA)
+////    return Out(_handles: outputHandles)
+////  }
+//}
+//
+///// Trace the given function and return the name of the corresponding `TF_Function: In -> Out` that
+///// was created.
+//public func _tffunc<In: TensorGroup, Out: TensorGroup>(_ fn: (In) -> Out) -> String {
+//  fatalError()
+////  let tffunc = _trace(fn)
+////  return tffunc.name
+//}
 
 //extension _ExecutionContext {
 //  /// Returns a valid TensorFlow device name, which corresponds to the closest enclosing call to
@@ -427,183 +427,183 @@ public func _tffunc<In: TensorGroup, Out: TensorGroup>(_ fn: (In) -> Out) -> Str
 //////    _ThreadLocalState.local.deviceScopes.popDevice()
 //////    return result
 ////  }
+////}
+//
+//extension _ExecutionContext {
+//  /// Synchronously execute the body, preventing asynchronous computation from corrupting the
+//  /// context data.
+//  private func sync<Result>(execute body: () throws -> Result) rethrows -> Result {
+//    fatalError()
+////    let lockStatus = mutex.acquire()
+////    internalConsistencyCheck(lockStatus == 0)
+////    defer {
+////      let unlockStatus = mutex.release()
+////      internalConsistencyCheck(unlockStatus == 0)
+////    }
+////    return try body()
+//  }
+////}
+//
+//@inlinable
+//func _TFCEagerExecute(
+//  _ op: CTFEOp,
+//  _ retvals: UnsafeMutablePointer<OpaquePointer?>,
+//  _ retvalCount: UnsafeMutablePointer<Int32>,
+//  _ status: CTFStatus
+//) {
+//  fatalError()
+////  TFE_Execute(op, retvals, retvalCount, status)
 //}
-
-extension _ExecutionContext {
-  /// Synchronously execute the body, preventing asynchronous computation from corrupting the
-  /// context data.
-  private func sync<Result>(execute body: () throws -> Result) rethrows -> Result {
-    fatalError()
-//    let lockStatus = mutex.acquire()
-//    internalConsistencyCheck(lockStatus == 0)
-//    defer {
-//      let unlockStatus = mutex.release()
-//      internalConsistencyCheck(unlockStatus == 0)
+//
+////===----------------------------------------------------------------------===//
+//// - MARK: Dynamic compilation (per-op dispatch) entrypoints
+////===----------------------------------------------------------------------===//
+//
+//@usableFromInline
+//func _TFCGetGlobalEagerContext() -> CTFEContext {
+//  fatalError()
+////  debugLog("Calling _GetGlobalEagerContext()")
+////  return _ExecutionContext.global.eagerContext
+//}
+//
+///// Adds `handle` as an input to `op`.
+//@usableFromInline
+//func _TFCOpAddInputFromTensorHandle(_ op: CTFEOp, _ handle: _AnyTensorHandle, _ status: CTFStatus) {
+//  fatalError()
+////  TFE_OpAddInput(op, handle._cTensorHandle, status)
+//}
+//
+///// Adds `t` as an input or inputs to `op`. Returns the number of inputs added.
+//@usableFromInline
+//func _TFCOpAddInputFromTensorGroup<T: TensorArrayProtocol>(
+//  _ op: CTFEOp,
+//  _ t: T,
+//  _ status: CTFStatus
+//) -> Int32 {
+//  fatalError()
+////  let count = t._tensorHandleCount
+////  let buffer = UnsafeMutableBufferPointer<CTensorHandle>.allocate(capacity: Int(count))
+////  defer { buffer.deallocate() }
+////  t._unpackTensorHandles(into: buffer.baseAddress)
+////  for handle in buffer {
+////    TFE_OpAddInput(op, handle, status)
+////    guard TF_GetCode(status) == TF_OK else {
+////      return 0
+////    }
+////  }
+////  return count
+//}
+//
+//@usableFromInline
+//func _TFCOpAddInputFromAnyTensors(_ op: CTFEOp, _ tensors: [AnyTensor], _ status: CTFStatus) {
+//  fatalError()
+////  for tensor in tensors {
+////    let handle = tensor._rawTensorHandle
+////    TFE_OpAddInput(op, handle, status)
+////    checkOk(status)
+////  }
+//}
+//
+//// _TFCOpSetAttr*Array functions are wrappers around TFE_OpSetAttr*List functions. The wrappers
+//// handle converting the Swift Stdlib Array<T> values into buffers that TFE_OpSetAttr*List functions
+//// can read.
+//
+//@usableFromInline
+//func _TFCOpSetAttrTypeArray(
+//  _ op: CTFEOp,
+//  _ attrName: UnsafePointer<Int8>,
+//  _ value: [TensorDataType]
+//) {
+//  fatalError()
+////  value.withUnsafeBufferPointer { buffer in
+////    buffer.withMemoryRebound(to: TF_DataType.self) { reboundBuffer in
+////      TFE_OpSetAttrTypeList(
+////        op, attrName, reboundBuffer.baseAddress, Int32(reboundBuffer.count))
+////    }
+////  }
+//}
+//
+///// A class to keep around thread local state:
+/////  - DeviceScopes
+/////  - LazyTensorContext
+//class _ThreadLocalState {
+//  var deviceScopes = DeviceScopes()
+//
+////  var lazyTensorContext = LazyTensorContext()
+//
+//  static var useLazyTensor: Bool {
+//    get {
+//      fatalError()
+////      _ThreadLocalState.local.lazyTensorEnabled ?? _RuntimeConfig.useLazyTensor
 //    }
-//    return try body()
-  }
-}
-
-@inlinable
-func _TFCEagerExecute(
-  _ op: CTFEOp,
-  _ retvals: UnsafeMutablePointer<OpaquePointer?>,
-  _ retvalCount: UnsafeMutablePointer<Int32>,
-  _ status: CTFStatus
-) {
-  fatalError()
-//  TFE_Execute(op, retvals, retvalCount, status)
-}
-
-//===----------------------------------------------------------------------===//
-// - MARK: Dynamic compilation (per-op dispatch) entrypoints
-//===----------------------------------------------------------------------===//
-
-@usableFromInline
-func _TFCGetGlobalEagerContext() -> CTFEContext {
-  fatalError()
-//  debugLog("Calling _GetGlobalEagerContext()")
-//  return _ExecutionContext.global.eagerContext
-}
-
-/// Adds `handle` as an input to `op`.
-@usableFromInline
-func _TFCOpAddInputFromTensorHandle(_ op: CTFEOp, _ handle: _AnyTensorHandle, _ status: CTFStatus) {
-  fatalError()
-//  TFE_OpAddInput(op, handle._cTensorHandle, status)
-}
-
-/// Adds `t` as an input or inputs to `op`. Returns the number of inputs added.
-@usableFromInline
-func _TFCOpAddInputFromTensorGroup<T: TensorArrayProtocol>(
-  _ op: CTFEOp,
-  _ t: T,
-  _ status: CTFStatus
-) -> Int32 {
-  fatalError()
-//  let count = t._tensorHandleCount
-//  let buffer = UnsafeMutableBufferPointer<CTensorHandle>.allocate(capacity: Int(count))
-//  defer { buffer.deallocate() }
-//  t._unpackTensorHandles(into: buffer.baseAddress)
-//  for handle in buffer {
-//    TFE_OpAddInput(op, handle, status)
-//    guard TF_GetCode(status) == TF_OK else {
-//      return 0
-//    }
-//  }
-//  return count
-}
-
-@usableFromInline
-func _TFCOpAddInputFromAnyTensors(_ op: CTFEOp, _ tensors: [AnyTensor], _ status: CTFStatus) {
-  fatalError()
-//  for tensor in tensors {
-//    let handle = tensor._rawTensorHandle
-//    TFE_OpAddInput(op, handle, status)
-//    checkOk(status)
-//  }
-}
-
-// _TFCOpSetAttr*Array functions are wrappers around TFE_OpSetAttr*List functions. The wrappers
-// handle converting the Swift Stdlib Array<T> values into buffers that TFE_OpSetAttr*List functions
-// can read.
-
-@usableFromInline
-func _TFCOpSetAttrTypeArray(
-  _ op: CTFEOp,
-  _ attrName: UnsafePointer<Int8>,
-  _ value: [TensorDataType]
-) {
-  fatalError()
-//  value.withUnsafeBufferPointer { buffer in
-//    buffer.withMemoryRebound(to: TF_DataType.self) { reboundBuffer in
-//      TFE_OpSetAttrTypeList(
-//        op, attrName, reboundBuffer.baseAddress, Int32(reboundBuffer.count))
+//    set {
+//      fatalError()
+////      _ThreadLocalState.local.lazyTensorEnabled = newValue
 //    }
 //  }
-}
-
-/// A class to keep around thread local state:
-///  - DeviceScopes
-///  - LazyTensorContext
-class _ThreadLocalState {
-  var deviceScopes = DeviceScopes()
-
-//  var lazyTensorContext = LazyTensorContext()
-
-  static var useLazyTensor: Bool {
-    get {
-      fatalError()
-//      _ThreadLocalState.local.lazyTensorEnabled ?? _RuntimeConfig.useLazyTensor
-    }
-    set {
-      fatalError()
-//      _ThreadLocalState.local.lazyTensorEnabled = newValue
-    }
-  }
-
-  /// When true, use lazy evaluation. If this is not set, we should use the
-  /// value of `_RuntimeConfig.useLazyTensor` to determine if lazy evaluation
-  /// is enabled.
-  private var lazyTensorEnabled: Bool? = nil
-
-  private static let key: ThreadLocalStorage.Key =
-    ThreadLocalStorage.Key {
-      #if os(macOS) || os(iOS) || os(watchOS) || os(tvOS)
-        Unmanaged<AnyObject>.fromOpaque($0).release()
-      #else
-        Unmanaged<AnyObject>.fromOpaque($0!).release()
-      #endif
-    }
-
-  @usableFromInline
-  static var local: _ThreadLocalState {
-    fatalError()
-//    if let state = ThreadLocalStorage.get(for: key) {
-//      return Unmanaged.fromOpaque(state).takeUnretainedValue()
+//
+//  /// When true, use lazy evaluation. If this is not set, we should use the
+//  /// value of `_RuntimeConfig.useLazyTensor` to determine if lazy evaluation
+//  /// is enabled.
+//  private var lazyTensorEnabled: Bool? = nil
+//
+//  private static let key: ThreadLocalStorage.Key =
+//    ThreadLocalStorage.Key {
+//      #if os(macOS) || os(iOS) || os(watchOS) || os(tvOS)
+//        Unmanaged<AnyObject>.fromOpaque($0).release()
+//      #else
+//        Unmanaged<AnyObject>.fromOpaque($0!).release()
+//      #endif
 //    }
 //
-//    let state = _ThreadLocalState()
-//    ThreadLocalStorage.set(
-//      value: Unmanaged.passRetained(state).toOpaque(),
-//      for: key)
-//    return state
-  }
-}
-
-/// Stack of devices that models nested calls to withDevice/withDefaultDevice. Devices are
-/// represented by their names in TensorFlow notation. See documentation for
-/// `withDevice(named:perform:)` to learn about device names.
-///
-/// All TensorFlow operations will be put on the topmost device on the stack. When the stack is
-/// empty or the topmost device is `nil`, that allows TensorFlow to place operations on any device
-/// that it sees fit.
-@usableFromInline
-struct DeviceScopes {
-  var deviceStack: [String?] = []
-
-  var _currentDevice: String? {
-    fatalError()
-//    return deviceStack.last ?? nil
-  }
-
-  @usableFromInline
-  mutating func pushDevice(_ device: String?) {
-    fatalError()
-//    deviceStack.append(device)
-  }
-
-  @usableFromInline
-  mutating func popDevice() {
-    fatalError()
-//    internalConsistencyCheck(deviceStack.popLast() != nil)
-  }
-}
-
-@usableFromInline
-func _TFCOpSetDeviceFromScope(_ op: CTFEOp, _ status: CTFStatus) {
-  fatalError()
-//  if let deviceName = _ExecutionContext.global.currentDeviceName {
-//    TFE_OpSetDevice(op, deviceName, status)
+//  @usableFromInline
+//  static var local: _ThreadLocalState {
+//    fatalError()
+////    if let state = ThreadLocalStorage.get(for: key) {
+////      return Unmanaged.fromOpaque(state).takeUnretainedValue()
+////    }
+////
+////    let state = _ThreadLocalState()
+////    ThreadLocalStorage.set(
+////      value: Unmanaged.passRetained(state).toOpaque(),
+////      for: key)
+////    return state
 //  }
-}
+//}
+//
+///// Stack of devices that models nested calls to withDevice/withDefaultDevice. Devices are
+///// represented by their names in TensorFlow notation. See documentation for
+///// `withDevice(named:perform:)` to learn about device names.
+/////
+///// All TensorFlow operations will be put on the topmost device on the stack. When the stack is
+///// empty or the topmost device is `nil`, that allows TensorFlow to place operations on any device
+///// that it sees fit.
+//@usableFromInline
+//struct DeviceScopes {
+//  var deviceStack: [String?] = []
+//
+//  var _currentDevice: String? {
+//    fatalError()
+////    return deviceStack.last ?? nil
+//  }
+//
+//  @usableFromInline
+//  mutating func pushDevice(_ device: String?) {
+//    fatalError()
+////    deviceStack.append(device)
+//  }
+//
+//  @usableFromInline
+//  mutating func popDevice() {
+//    fatalError()
+////    internalConsistencyCheck(deviceStack.popLast() != nil)
+//  }
+//}
+//
+//@usableFromInline
+//func _TFCOpSetDeviceFromScope(_ op: CTFEOp, _ status: CTFStatus) {
+//  fatalError()
+////  if let deviceName = _ExecutionContext.global.currentDeviceName {
+////    TFE_OpSetDevice(op, deviceName, status)
+////  }
+//}

@@ -31,7 +31,7 @@ extension Tensor where Scalar: Numeric {
   ///
   /// - Parameter shape: Shape of the tensor.
 //  @inlinable
-  public init(zeros shape: TensorShape, on device: Device = .default) {
+  public init(zeros shape: TensorShape/*, on device: Device = .default*/) {
     fatalError()
 //    self.init(repeating: 0, shape: shape, on: device)
   }
@@ -40,7 +40,7 @@ extension Tensor where Scalar: Numeric {
   ///
   /// - Parameter shape: Shape of the tensor.
 //  @inlinable
-  public init(ones shape: TensorShape, on device: Device = .default) {
+  public init(ones shape: TensorShape/*, on device: Device = .default*/) {
     fatalError()
 //    self.init(repeating: 1, shape: shape, on: device)
   }

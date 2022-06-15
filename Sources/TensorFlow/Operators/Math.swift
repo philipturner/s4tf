@@ -36,28 +36,28 @@ extension Tensor where Scalar: Numeric {
   @inlinable
   @differentiable(reverse where Scalar: TensorFlowFloatingPoint)
   public static func + (lhs: Scalar, rhs: Tensor) -> Tensor {
-    return Tensor(lhs, deviceAndPrecisionLike: rhs) + rhs
+    return Tensor(lhs/*, deviceAndPrecisionLike: rhs*/) + rhs
   }
 
   /// Adds the scalar to every scalar of the tensor and produces the sum.
   @inlinable
   @differentiable(reverse where Scalar: TensorFlowFloatingPoint)
   public static func + (lhs: Tensor, rhs: Scalar) -> Tensor {
-    return lhs + Tensor(rhs, deviceAndPrecisionLike: lhs)
+    return lhs + Tensor(rhs/*, deviceAndPrecisionLike: lhs*/)
   }
 
   /// Subtracts the scalar from every scalar of the tensor and produces the difference.
   @inlinable
   @differentiable(reverse where Scalar: TensorFlowFloatingPoint)
   public static func - (lhs: Scalar, rhs: Tensor) -> Tensor {
-    return Tensor(lhs, deviceAndPrecisionLike: rhs) - rhs
+    return Tensor(lhs/*, deviceAndPrecisionLike: rhs*/) - rhs
   }
 
   /// Subtracts the scalar from every scalar of the tensor and produces the difference
   @inlinable
   @differentiable(reverse where Scalar: TensorFlowFloatingPoint)
   public static func - (lhs: Tensor, rhs: Scalar) -> Tensor {
-    return lhs - Tensor(rhs, deviceAndPrecisionLike: lhs)
+    return lhs - Tensor(rhs/*, deviceAndPrecisionLike: lhs*/)
   }
 
   /// Adds two tensors and stores the result in the left-hand-side variable.
