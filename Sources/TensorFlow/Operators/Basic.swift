@@ -690,184 +690,184 @@ extension Tensor {
   }
 }
 
-///// Computes the inverse permutation of an array.
-/////
-///// This operation computes the inverse of an index permutation. It takes an array `permutation`
-///// and swaps each value with its index position. In other words, for an output array `y` and an
-///// input array `x`, this operation computes the following:
-/////
-///// `y[x[i]] = i for i in [0, 1, ..., len(x) - 1]`
-/////
-///// The values must include 0. There can be no duplicate values or negative values.
-/////
-///// For example:
-/////
-///// ```
-///// # array `x` is [3, 4, 0, 2, 1]
-///// invertPermutationArray(x) ==> [2, 4, 3, 0, 1]
-///// ```
-/////
-///// - Parameter x: The input permutation.
-/////
-///// - Returns: The inverse of x.
-//@usableFromInline
-//@noDerivative
-//internal func invertPermutationArray<T: TensorFlowIndex>(_ permutation: [T]) -> [T] {
-//  let size = permutation.count
-//  var inverted = [T](repeating: -1, count: size)
-//  for i in 0..<size {
-//    let d = permutation[i]
-//    if d < 0 || d >= size {
-//      fatalError("\(d) is not between 0 and \(size)")
-//    }
-//    if inverted[Int(d)] != -1 {
-//      fatalError("\(d) is duplicated in the input.")
-//    }
-//    inverted[Int(d)] = T(i)
-//  }
-//  return inverted
-//}
-//
-//extension Tensor where Scalar: TensorFlowFloatingPoint {
-//  @inlinable
-//  @derivative(of: transposed(permutation:))
-//  func _vjpTransposed(permutation: Tensor<Int32>) -> (
-//    value: Tensor, pullback: (Tensor) -> Tensor
-//  ) {
-//    let value = transposed(permutation: permutation)
-//    return (value, { $0.transposed(permutation: _Raw.invertPermutation(permutation)) })
-//  }
-//
-//  @inlinable
-//  @derivative(of: transposed(permutation:))
-//  func _vjpTransposed(permutation: [Int]) -> (value: Tensor, pullback: (Tensor) -> Tensor) {
-//    let value = transposed(permutation: permutation)
-//    let inverted = invertPermutationArray(permutation.map { Int64($0) })
-//    return (value, { $0.transposed(permutation: inverted.map { Int($0) }) })
-//  }
-//
-//  @inlinable
-//  @derivative(of: transposed(permutation:))
-//  func _vjpTransposed(permutation: Int...) -> (value: Tensor, pullback: (Tensor) -> Tensor) {
-//    let value = transposed(permutation: permutation)
-//    let inverted = invertPermutationArray(permutation.map { Int64($0) })
-//    return (value, { $0.transposed(permutation: inverted.map { Int($0) }) })
-//  }
-//
-//  @inlinable
-//  @derivative(of: transposed)
-//  func _vjpTransposed() -> (value: Tensor, pullback: (Tensor) -> Tensor) {
-//    return (transposed(), { $0.transposed() })
-//  }
-//
-//  @inlinable
-//  @derivative(of: reversed)
-//  func _vjpReversed(inAxes axes: Tensor<Int32>) -> (value: Tensor, pullback: (Tensor) -> Tensor) {
-//    return (reversed(inAxes: axes), { $0.reversed(inAxes: axes) })
-//  }
-//
-//  @inlinable
-//  @derivative(of: reversed)
-//  func _vjpReversed(inAxes axes: [Int]) -> (value: Tensor, pullback: (Tensor) -> Tensor) {
-//    return (reversed(inAxes: axes), { $0.reversed(inAxes: axes) })
-//  }
-//
-//  @inlinable
-//  @derivative(of: reversed)
-//  func _vjpReversed(inAxes axes: Int...) -> (value: Tensor, pullback: (Tensor) -> Tensor) {
-//    return (reversed(inAxes: axes), { $0.reversed(inAxes: axes) })
-//  }
-//
-//  @inlinable
-//  @derivative(of: concatenated)
-//  func _vjpConcatenated(
-//    with other: Tensor,
-//    alongAxis axis: Int
-//  ) -> (value: Tensor, pullback: (Tensor) -> (Tensor, Tensor)) {
-//    let posAxis = axis < 0 ? axis + rank : axis
-//    let splits = [shape[posAxis], other.shape[posAxis]]
-//    return (
-//      concatenated(with: other, alongAxis: axis),
-//      { result in
-//        let gradients = result.split(sizes: splits, alongAxis: axis)
-//        return (gradients[0], gradients[1])
-//      }
-//    )
-//  }
-//
-//  @inlinable
-//  @derivative(of: gathering)
-//  func _vjpGathering<Index: TensorFlowIndex>(
-//    atIndices indices: Tensor<Index>,
-//    alongAxis axis: Int = 0
-//  ) -> (value: Tensor, pullback: (Tensor) -> Tensor) {
-//    let result = gathering(atIndices: indices, alongAxis: axis)
-//    let posAxis = axis < 0 ? axis + rank : axis
-//
-//    let device = self.device
-//    // We have a fast gradient implementation for the case when `posAxis == 0`.
-//    if posAxis == 0 {
-//      return (
-//        result,
-//        { v in
-//          var valuesShape = shape[1...]
-//          valuesShape.insert(indices.scalarCount, at: 0)
-//          let values = v.reshaped(to: valuesShape)
-//          let valueIndices = indices.reshaped(to: [indices.scalarCount])
-//          return _Raw.unsortedSegmentSum(
-//            data: values,
-//            segmentIds: valueIndices,
-//            numSegments: shape[0])
-//        }
-//      )
-//    }
-//
-//    return (
-//      result,
-//      { [shape = shapeTensor] v in
-//        let indicesSize = Tensor<Int32>(Int32(indices.scalarCount), on: device).rankLifted()
-//        let outerShape = shape[..<posAxis]
-//        let outerSize = outerShape.scalarCount
-//        let innerShape = shape[(posAxis + 1)...]
-//        let innerSize = innerShape.scalarCount
-//        let outerIndices = Tensor<Int32>(rangeFrom: 0, to: Int32(outerSize), stride: 1, on: device)
-//        let innerIndices = Tensor<Int32>(
-//          rangeFrom: Int32(outerSize) + 1,
-//          to: Int32(outerSize) + 1 + Int32(innerSize),
-//          stride: 1, on: device)
-//        let valuesShape = Tensor<Int32>(concatenating: [outerShape, indicesSize, innerShape]
-//        )
-//        let values = v.reshaped(toShape: valuesShape)
-//        let valueIndices = indices.reshaped(toShape: indicesSize)
-//
-//        // We need to sum up every slice `values[..., i, ....]` corresponding to
-//        // `tensor[..., indices[i], ...]`. Since `unsortedSegmentSum` does not support an axis
-//        // parameter, we transpose the gather dimension to the front, then use
-//        // `unsortedSegmentSum` to build a `[gatherAxis, outerAxes, innerAxes]` tensor with all
-//        // the gradients affecting each index in `gatherAxis` summed up.
-//        let permutations = Tensor<Int32>(concatenating: [
-//          Tensor<Int32>([Int32(outerSize)], on: device),
-//          outerIndices,
-//          innerIndices,
-//        ])
-//        let transposedValues = values.transposed(permutation: permutations)
-//        let gradient = _Raw.unsortedSegmentSum(
-//          data: transposedValues,
-//          segmentIds: valueIndices,
-//          numSegments: shape[posAxis])
-//
-//        // Finally, we invert the above transpose operation by moving dimension 0 back to its
-//        // original position.
-//        let inversePermutations = Tensor<Int32>(concatenating: [
-//          outerIndices + 1,
-//          Tensor<Int32>([0], on: device),
-//          innerIndices,
-//        ])
-//        return gradient.transposed(permutation: inversePermutations)
-//      }
-//    )
-//  }
-//}
+/// Computes the inverse permutation of an array.
+///
+/// This operation computes the inverse of an index permutation. It takes an array `permutation`
+/// and swaps each value with its index position. In other words, for an output array `y` and an
+/// input array `x`, this operation computes the following:
+///
+/// `y[x[i]] = i for i in [0, 1, ..., len(x) - 1]`
+///
+/// The values must include 0. There can be no duplicate values or negative values.
+///
+/// For example:
+///
+/// ```
+/// # array `x` is [3, 4, 0, 2, 1]
+/// invertPermutationArray(x) ==> [2, 4, 3, 0, 1]
+/// ```
+///
+/// - Parameter x: The input permutation.
+///
+/// - Returns: The inverse of x.
+@usableFromInline
+@noDerivative
+internal func invertPermutationArray<T: TensorFlowIndex>(_ permutation: [T]) -> [T] {
+  let size = permutation.count
+  var inverted = [T](repeating: -1, count: size)
+  for i in 0..<size {
+    let d = permutation[i]
+    if d < 0 || d >= size {
+      fatalError("\(d) is not between 0 and \(size)")
+    }
+    if inverted[Int(d)] != -1 {
+      fatalError("\(d) is duplicated in the input.")
+    }
+    inverted[Int(d)] = T(i)
+  }
+  return inverted
+}
+
+extension Tensor where Scalar: TensorFlowFloatingPoint {
+  @inlinable
+  @derivative(of: transposed(permutation:))
+  func _vjpTransposed(permutation: Tensor<Int32>) -> (
+    value: Tensor, pullback: (Tensor) -> Tensor
+  ) {
+    let value = transposed(permutation: permutation)
+    return (value, { $0.transposed(permutation: _Raw.invertPermutation(permutation)) })
+  }
+
+  @inlinable
+  @derivative(of: transposed(permutation:))
+  func _vjpTransposed(permutation: [Int]) -> (value: Tensor, pullback: (Tensor) -> Tensor) {
+    let value = transposed(permutation: permutation)
+    let inverted = invertPermutationArray(permutation.map { Int64($0) })
+    return (value, { $0.transposed(permutation: inverted.map { Int($0) }) })
+  }
+
+  @inlinable
+  @derivative(of: transposed(permutation:))
+  func _vjpTransposed(permutation: Int...) -> (value: Tensor, pullback: (Tensor) -> Tensor) {
+    let value = transposed(permutation: permutation)
+    let inverted = invertPermutationArray(permutation.map { Int64($0) })
+    return (value, { $0.transposed(permutation: inverted.map { Int($0) }) })
+  }
+
+  @inlinable
+  @derivative(of: transposed)
+  func _vjpTransposed() -> (value: Tensor, pullback: (Tensor) -> Tensor) {
+    return (transposed(), { $0.transposed() })
+  }
+
+  @inlinable
+  @derivative(of: reversed)
+  func _vjpReversed(inAxes axes: Tensor<Int32>) -> (value: Tensor, pullback: (Tensor) -> Tensor) {
+    return (reversed(inAxes: axes), { $0.reversed(inAxes: axes) })
+  }
+
+  @inlinable
+  @derivative(of: reversed)
+  func _vjpReversed(inAxes axes: [Int]) -> (value: Tensor, pullback: (Tensor) -> Tensor) {
+    return (reversed(inAxes: axes), { $0.reversed(inAxes: axes) })
+  }
+
+  @inlinable
+  @derivative(of: reversed)
+  func _vjpReversed(inAxes axes: Int...) -> (value: Tensor, pullback: (Tensor) -> Tensor) {
+    return (reversed(inAxes: axes), { $0.reversed(inAxes: axes) })
+  }
+
+  @inlinable
+  @derivative(of: concatenated)
+  func _vjpConcatenated(
+    with other: Tensor,
+    alongAxis axis: Int
+  ) -> (value: Tensor, pullback: (Tensor) -> (Tensor, Tensor)) {
+    let posAxis = axis < 0 ? axis + rank : axis
+    let splits = [shape[posAxis], other.shape[posAxis]]
+    return (
+      concatenated(with: other, alongAxis: axis),
+      { result in
+        let gradients = result.split(sizes: splits, alongAxis: axis)
+        return (gradients[0], gradients[1])
+      }
+    )
+  }
+
+  @inlinable
+  @derivative(of: gathering)
+  func _vjpGathering<Index: TensorFlowIndex>(
+    atIndices indices: Tensor<Index>,
+    alongAxis axis: Int = 0
+  ) -> (value: Tensor, pullback: (Tensor) -> Tensor) {
+    let result = gathering(atIndices: indices, alongAxis: axis)
+    let posAxis = axis < 0 ? axis + rank : axis
+
+    let device = self.device
+    // We have a fast gradient implementation for the case when `posAxis == 0`.
+    if posAxis == 0 {
+      return (
+        result,
+        { v in
+          var valuesShape = shape[1...]
+          valuesShape.insert(indices.scalarCount, at: 0)
+          let values = v.reshaped(to: valuesShape)
+          let valueIndices = indices.reshaped(to: [indices.scalarCount])
+          return _Raw.unsortedSegmentSum(
+            data: values,
+            segmentIds: valueIndices,
+            numSegments: shape[0])
+        }
+      )
+    }
+
+    return (
+      result,
+      { [shape = shapeTensor] v in
+        let indicesSize = Tensor<Int32>(Int32(indices.scalarCount), on: device).rankLifted()
+        let outerShape = shape[..<posAxis]
+        let outerSize = outerShape.scalarCount
+        let innerShape = shape[(posAxis + 1)...]
+        let innerSize = innerShape.scalarCount
+        let outerIndices = Tensor<Int32>(rangeFrom: 0, to: Int32(outerSize), stride: 1, on: device)
+        let innerIndices = Tensor<Int32>(
+          rangeFrom: Int32(outerSize) + 1,
+          to: Int32(outerSize) + 1 + Int32(innerSize),
+          stride: 1, on: device)
+        let valuesShape = Tensor<Int32>(concatenating: [outerShape, indicesSize, innerShape]
+        )
+        let values = v.reshaped(toShape: valuesShape)
+        let valueIndices = indices.reshaped(toShape: indicesSize)
+
+        // We need to sum up every slice `values[..., i, ....]` corresponding to
+        // `tensor[..., indices[i], ...]`. Since `unsortedSegmentSum` does not support an axis
+        // parameter, we transpose the gather dimension to the front, then use
+        // `unsortedSegmentSum` to build a `[gatherAxis, outerAxes, innerAxes]` tensor with all
+        // the gradients affecting each index in `gatherAxis` summed up.
+        let permutations = Tensor<Int32>(concatenating: [
+          Tensor<Int32>([Int32(outerSize)], on: device),
+          outerIndices,
+          innerIndices,
+        ])
+        let transposedValues = values.transposed(permutation: permutations)
+        let gradient = _Raw.unsortedSegmentSum(
+          data: transposedValues,
+          segmentIds: valueIndices,
+          numSegments: shape[posAxis])
+
+        // Finally, we invert the above transpose operation by moving dimension 0 back to its
+        // original position.
+        let inversePermutations = Tensor<Int32>(concatenating: [
+          outerIndices + 1,
+          Tensor<Int32>([0], on: device),
+          innerIndices,
+        ])
+        return gradient.transposed(permutation: inversePermutations)
+      }
+    )
+  }
+}
 //
 //extension Tensor {
 //  /// Returns the locations of non-zero / true values in this tensor.
