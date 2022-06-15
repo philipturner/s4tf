@@ -1439,11 +1439,12 @@ public enum _RawXLA {
     axis: Tensor<Taxis>,
     batchDims: Int64 = 0
   ) -> Tensor<Tparams> {
-    precondition(batchDims == 0)
-    let canonicalAxis = canonicalDims(axis.scalars.map { Int64($0) }, Int64(params.rank)).first!
-    return gather(
-      params, indices: Tensor<Tindices>(stacking: [indices], alongAxis: indices.rank),
-      start_dim: canonicalAxis)
+    fatalError()
+//    precondition(batchDims == 0)
+//    let canonicalAxis = canonicalDims(axis.scalars.map { Int64($0) }, Int64(params.rank)).first!
+//    return gather(
+//      params, indices: Tensor<Tindices>(stacking: [indices], alongAxis: indices.rank),
+//      start_dim: canonicalAxis)
   }
 
   /// Computes the inverse permutation of a tensor.

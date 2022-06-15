@@ -409,15 +409,16 @@ extension _Raw {
     segmentIds: Tensor<Tindices>,
     numSegments: Int
   ) -> Tensor<T> {
-    switch data.handle.backend {
-    case .XLA:
-      return _RawXLA.unsortedSegmentSum(
-        data: data, segmentIds: segmentIds, numSegments: numSegments)
-    case .TF_EAGER:
-      return _RawTFEager.unsortedSegmentSum(
-        data: data, segmentIds: segmentIds,
-        numSegments: Tensor(Int32(numSegments), on: .defaultTFEager))
-    }
+    fatalError()
+//    switch data.handle.backend {
+//    case .XLA:
+//      return _RawXLA.unsortedSegmentSum(
+//        data: data, segmentIds: segmentIds, numSegments: numSegments)
+//    case .TF_EAGER:
+//      return _RawTFEager.unsortedSegmentSum(
+//        data: data, segmentIds: segmentIds,
+//        numSegments: Tensor(Int32(numSegments), on: .defaultTFEager))
+//    }
   }
 
   public static func broadcastTo<

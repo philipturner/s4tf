@@ -59,7 +59,8 @@ extension Tensor {
   ///   tensor attribute from `convolved2D`'s `strides` argument.
   @inlinable
   internal init(_ scalars: (Scalar, Scalar, Scalar, Scalar), on device: Device = .default) {
-    self.init([scalars.0, scalars.1, scalars.2, scalars.3], on: device)
+    fatalError()
+//    self.init([scalars.0, scalars.1, scalars.2, scalars.3], on: device)
   }
 }
 
