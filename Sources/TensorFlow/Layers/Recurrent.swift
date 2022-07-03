@@ -568,7 +568,37 @@ extension Tensor: Mergeable where Scalar: TensorFlowFloatingPoint {
     }
   }
 #endif
+  
+  
+  
+//  @differentiable(reverse)
+//  public static func slack(_ lhs: Float) -> Float {
+//    Tensor.initi(slacking: [lhs])
+//  }
+//
+//
+//  @differentiable(reverse)// where Scalar: TensorFlowFloatingPoint)
+//  public static func initi(slacking tensors: [Float]) -> Float {
+//    fatalError()
+////    self = _Raw.pack(tensors, axis: Int64(0))
+//  }
+//
+//  @usableFromInline
+//  @derivative(of: initi(slacking:))
+//  static func _vjpSlacking(
+//    stacking tensors: [Float]
+//  ) -> (value: Float, pullback: (Float) -> Array<Float>.TangentVector) {
+//    fatalError()
+////    (
+////      Tensor(slacking: tensors),
+////      { v in
+////        Array<Tensor>.DifferentiableView(v.unstacked(alongAxis: 0))
+////      }
+////    )
+//  }
 }
+
+
 
 /// Concatenates two values.
 @differentiable(reverse)
